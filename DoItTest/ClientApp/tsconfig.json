@@ -1,0 +1,46 @@
+{
+	"compileOnSave": false,
+	"buildOnSave": false,
+	"compilerOptions": {
+		"baseUrl": "./src",
+		"rootDir": "./src",
+		"target": "es2020",
+		"module": "es6",
+		"moduleResolution": "node",
+		"newLine": "lf",
+		"jsx": "react-jsx",
+		"allowJs": true,
+		"importHelpers": true,
+		"esModuleInterop": true,
+		"sourceMap": true,
+		"strict": true,
+		"noImplicitAny": false,
+		"removeComments": true,
+		"forceConsistentCasingInFileNames": false
+	},
+	"include": [ "src" ],
+	"exclude": [ "node_modules", ".vs" ],
+	"tasks":[
+		{
+			"label": "tsc watch",
+			"type": "shell",
+			"command": "./node_modules/.bin/tsc",
+			"isBackground": true,
+			"args": ["--watch", "--noEmit", "--project", "src"],
+			"group": {
+                "kind": "build",
+                "isDefault": true
+            },
+			"presentation": {
+                "reveal": "never",
+                "echo": false,
+                "focus": false,
+                "panel": "dedicated"
+            },
+            "problemMatcher": "$tsc-watch",
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
+		}
+	]
+}
