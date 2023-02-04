@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace DoItTest.Areas
+namespace DoItTest.Site.Areas
 {
-    public class HomeController : Controller
+    public class UsersController : Controller
     {
         [Route("")]
         public IActionResult App()

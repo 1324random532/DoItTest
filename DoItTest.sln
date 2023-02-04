@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoItTest", "DoItTest\DoItTest.csproj", "{97AEDFC4-5879-43E5-B8D1-634550B0A55E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoItTest.Site", "DoItTest\DoItTest.Site.csproj", "{97AEDFC4-5879-43E5-B8D1-634550B0A55E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoItTest.Domain", "DoItTest.Domain\DoItTest.Domain.csproj", "{D34716BC-39EB-4332-B58A-65D1A0C6F4D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoItTest.Domain", "DoItTest.Domain\DoItTest.Domain.csproj", "{D34716BC-39EB-4332-B58A-65D1A0C6F4D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoItTest.Services", "DoItTest.Services\DoItTest.Services.csproj", "{3D09205A-F5DF-46E1-B4AF-F8BA4ABFE78D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoItTest.Services", "DoItTest.Services\DoItTest.Services.csproj", "{3D09205A-F5DF-46E1-B4AF-F8BA4ABFE78D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoItTest.Services.Configurator", "DoItTest.Services.Configurator\DoItTest.Services.Configurator.csproj", "{B1DD5061-61A0-4752-967E-D90AC0D61EE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoItTest.Services.Configurator", "DoItTest.Services.Configurator\DoItTest.Services.Configurator.csproj", "{B1DD5061-61A0-4752-967E-D90AC0D61EE2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoItTest.Tools", "DoItTest.Tools\DoItTest.Tools.csproj", "{48470666-F022-4E98-9F20-B1896D0D6748}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{B1DD5061-61A0-4752-967E-D90AC0D61EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1DD5061-61A0-4752-967E-D90AC0D61EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1DD5061-61A0-4752-967E-D90AC0D61EE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48470666-F022-4E98-9F20-B1896D0D6748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48470666-F022-4E98-9F20-B1896D0D6748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48470666-F022-4E98-9F20-B1896D0D6748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48470666-F022-4E98-9F20-B1896D0D6748}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

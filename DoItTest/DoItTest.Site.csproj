@@ -14,4 +14,8 @@
     <None Remove="ClientApp\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DoItTest.Services.Configurator\DoItTest.Services.Configurator.csproj" />
+  </ItemGroup>
+
 </Project>
