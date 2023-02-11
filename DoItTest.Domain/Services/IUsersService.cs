@@ -1,10 +1,5 @@
 ﻿using DoItTest.Domain.Users;
 using DoItTest.Tools.Types.Results;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DoItTest.Domain.Services
 {
@@ -13,5 +8,11 @@ namespace DoItTest.Domain.Services
         Result SaveUser(UserBlank userBlank, Guid? userId);
         User? GetUser(Guid id);
         Result RemoveUser(Guid id);
+
+        DataResult<UserToken> Registration(RegistrationData registrationData);
+
+        DataResult<UserToken> LogIn(AuthorizationData authorizationData);
+        UserToken? GetUserToken(String? token);
+        Result LogOut(String? token);
     }
 }

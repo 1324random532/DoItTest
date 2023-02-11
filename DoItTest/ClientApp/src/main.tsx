@@ -1,46 +1,51 @@
 import { Box, Button, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
-import { FC, useEffect, useMemo, useState } from 'react';
-import * as ReactDOM from 'react-dom';
+import { FC, PropsWithChildren, useEffect, useMemo, useState } from 'react';
+import 'tools/prototypes/string'
+import { createRoot } from 'react-dom/client'
+import { AuthRouter } from 'apps/authorization/router';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Home } from 'apps/infrastructure/home';
+import { HomeLinks } from 'apps/infrastructure/links';
+import { AuthLinks } from 'apps/authorization/links';
+import { Authorization } from 'apps/authorization/auth';
+import { InfrastructureRouter } from 'apps/infrastructure/router';
+import { BlockUi } from 'sharedComponents/blockUi/blockUi';
+import { NotificationProvider } from 'sharedComponents/notification/store/notificationStore';
+import { BlockUiProvider } from 'sharedComponents/blockUi/blockUiContext';
+import { NotificationManager } from 'sharedComponents/notification/notificationManager';
 
-interface Props{
+interface Props {
 
 }
 const theme = createTheme({
 
 });
 
-const AppBase: FC<Props> = (props) => {
-
-
-  return (<ThemeProvider theme={theme}>
+function AppBase(props: PropsWithChildren<Props>) {
+  return (<BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <NotificationProvider>
+        <NotificationManager />
+        <BlockUiProvider>
+          <BlockUi />
           <CssBaseline />
-          <Box mt={2}>
-
-          </Box>
           {props.children}
-  </ThemeProvider>)
+        </BlockUiProvider>
+      </NotificationProvider>
+    </ThemeProvider>
+  </BrowserRouter>)
 }
 
 const Main: FC<{}> = (props) => {
-  const [value, setValue] = useState<number>(0)
-
-  useEffect(() => {
-    console.log(value)
-  }, [value])
-
-  const a = useMemo(() => {return 1}, [value])
 
   return <AppBase>
-    <Button sx={{margin: "10px"}} onClick={() => setValue((prevValue) => prevValue+1)} variant='contained'>{value}</Button>
+    <Routes>
+      {AuthRouter()}
+      {InfrastructureRouter()}
+    </Routes>
   </AppBase>
 }
 
-function Main1(props: Props){
 
-
-  return (<div></div>)
-}
-
-
-const container = document.getElementById('app');
-ReactDOM.render(<Main />, container)
+const root = createRoot(document.getElementById("app")!)
+root.render(<Main />)

@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DoItTest.Site.Areas.Bases;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DoItTest.Site.Areas
 {
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
-        [Route("")]
+        [Route("/Users")]
         public IActionResult App()
         {
-            return View();
+            return ReactApp();
         }
     }
 }

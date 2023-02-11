@@ -22,22 +22,22 @@ namespace DoItTest.Services.Users.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"INSERT INTO users(id, login, passwordhash, role, createduserid, createddatetime)" +
-                    $"VALUES(@Id,@Login,@PasswordHash,@Role,@UserId,@DateTime)" +
-                    $"ON" +
-                    $"CONFLICT(id) DO" +
-                    $"UPDATE" +
+                String query = $"INSERT INTO users(id, login, passwordhash, role, createddatetimeutc) " +
+                    $"VALUES(@Id,@Login,@PasswordHash,@Role,@DateTime) " +
+                    $"ON " +
+                    $"CONFLICT(id) DO " +
+                    $"UPDATE " +
                     $"SET id = @Id, login = @Login, passwordhash = @PasswordHash, role = @Role," +
-                    $"modifieduserid = @Userid, modifieddatetime = @Datetime;";
+                    $"modifieduserid = @Userid, modifieddatetimeutc = @Datetime;";
 
-                SqlParameter[] parameters =
+                var parameters = new
                 {
-                    new ("Id", userBlank.Id),
-                    new ("Login", userBlank.Login),
-                    new ("PasswordHash", userBlank.PasswordHash),
-                    new ("Role", userBlank.Role),
-                    new ("Userid", userId),
-                    new ("Datetime", DateTime.Now)
+                    Id = userBlank.Id,
+                    Login = userBlank.Login,
+                    PasswordHash = userBlank.PasswordHash,
+                    Role = userBlank.Role,
+                    Userid = userId,
+                    Datetime = DateTime.UtcNow
                 };
 
                 db.Execute(query, parameters);
@@ -49,14 +49,35 @@ namespace DoItTest.Services.Users.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"SELECT *" +
-                    $"FROM users" +
-                    $"WHERE Id=@Id" +
-                    $"  AND NOT isremoved";
+                String query = $"SELECT * " +
+                    $"FROM users " +
+                    $"WHERE id=@Id " +
+                    $"  AND NOT isremoved;";
 
-                SqlParameter[] parameters =
+                var parameters = new
                 {
-                    new ("Id", id)
+                    Id = id
+                };
+
+                return db.Query<UserDb>(query, parameters).FirstOrDefault()?.ToUser();
+            }
+        }
+
+        public User? GetUser(String login, String passwordHash)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT * " +
+                    $"FROM users " +
+                    $"WHERE login=@Login " +
+                    $"  AND passwordHash=@PasswordHash " +
+                    $"  AND NOT isremoved ";
+
+                var parameters = new
+                {
+                    Login = login,
+                    PasswordHash= passwordHash,
                 };
 
                 return db.Query<UserDb>(query, parameters).FirstOrDefault()?.ToUser();
@@ -68,14 +89,14 @@ namespace DoItTest.Services.Users.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"SELECT *" +
-                    $"FROM users" +
-                    $"WHERE Login=@Login" +
+                String query = $"SELECT * " +
+                    $"FROM users " +
+                    $"WHERE login=@Login " +
                     $"  AND NOT isremoved";
 
-                SqlParameter[] parameters =
+                var parameters = new
                 {
-                    new ("Login", login)
+                    Login = login,
                 };
 
                 return db.Query<UserDb>(query, parameters).FirstOrDefault()?.ToUser();
@@ -98,6 +119,61 @@ namespace DoItTest.Services.Users.Repositories
                 };
 
                 db.Execute(query, id);
+            }
+        }
+
+        public void SaveUserToken(UserToken token)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"INSERT INTO usertokens (token, userid, expirationdatetimeutc) " +
+                    $"VALUES (@Token, @UserId, @ExpirationDateTimeUtc);";
+
+                var parameters = new
+                {
+                    Token = token.Value,
+                    UserId = token.UserId,
+                    ExpirationDateTimeUtc = token.ExpirationDateTimeUtc
+                };
+
+                db.Execute(query, parameters);
+            }
+        }
+
+        public UserToken? GetUserToken(String token)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT *" +
+                    $"FROM usertokens " +
+                    $"WHERE token = @Token;";
+
+                var parameters = new
+                {
+                    Token = token
+                };
+
+                return db.Query<UserTokenDb>(query, parameters).FirstOrDefault()?.ToUserToken();
+            }
+        }
+
+        public void DeleteUserToken(String token)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"DELETE " +
+                    $"FROM usertokens " +
+                    $"WHERE token = @Token;";
+
+                var parameters = new
+                {
+                    Token = token
+                };
+
+                db.Execute(query, parameters);
             }
         }
     }

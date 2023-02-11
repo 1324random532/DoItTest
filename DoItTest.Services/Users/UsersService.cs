@@ -56,5 +56,61 @@ namespace DoItTest.Services.Users
 
 			return Result.Success();
 		}
+
+		public UserToken? GetUserToken(String? token)
+		{
+			return _usersRepository.GetUserToken(token);
+		}
+
+		public DataResult<UserToken> Registration(RegistrationData registrationData)
+		{
+			UserBlank userBlank = new UserBlank
+			{
+				Id = Guid.NewGuid(),
+				Login = registrationData.Login,
+				Password = registrationData.Password,
+				Role = UserRole.TestCreator
+			};
+
+			Result userResult = SaveUser(userBlank, null);
+			if (!userResult.IsSuccess) return DataResult<UserToken>.Failed(userResult.Errors);
+
+			UserToken token = UserToken.New(userBlank.Id!.Value);
+
+			_usersRepository.SaveUserToken(token);
+
+			return DataResult<UserToken>.Success(token);
+		}
+
+		#region auth
+
+		public DataResult<UserToken> LogIn(AuthorizationData authorizationData)
+		{
+			if (String.IsNullOrWhiteSpace(authorizationData.Login) || String.IsNullOrWhiteSpace(authorizationData.Password))
+				return DataResult<UserToken>.Failed("Не указан логин или пароль");
+
+			String? passwordHash = User.DefinePasswordHash(authorizationData.Password);
+			User? user = _usersRepository.GetUser(authorizationData.Login, passwordHash);
+			if (user is null) return DataResult<UserToken>.Failed("Неправильно указан логин или пароль");
+
+			UserToken token = UserToken.New(user.Id);
+
+			_usersRepository.SaveUserToken(token);
+
+			return DataResult<UserToken>.Success(token);
+		}
+
+		public Result LogOut(String? userTokenId)
+		{
+			if (userTokenId is null) return Result.Success();
+
+			UserToken? userToken = _usersRepository.GetUserToken(userTokenId);
+			if (userToken is null) return Result.Success();
+
+			_usersRepository.DeleteUserToken(userToken.Value);
+			return Result.Success();
+		}
+
+		#endregion
 	}
 }

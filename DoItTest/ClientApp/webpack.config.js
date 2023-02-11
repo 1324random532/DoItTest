@@ -1,5 +1,4 @@
 const path = require('path');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
 	context: __dirname,
@@ -16,16 +15,6 @@ module.exports = {
 	},
 	module: {
 		rules: [
-			{ test: /\.module\.s[ac]ss$/, use: [
-				'style-loader',
-				{ loader: 'css-loader', options: { modules: { localIdentName: '[name]__[local]--[hash:base64:5]' } } },
-				'sass-loader',
-			]},
-			{ test: /\.s[ac]ss$/, exclude: /\.module.(s[ac]ss)$/, use: [
-				'style-loader',
-				'css-loader',
-				'sass-loader',
-			]},
 			{ test: /\.css$/, use: [
 				'style-loader',
 				'css-loader'
@@ -33,7 +22,6 @@ module.exports = {
 			{ test: /\.tsx?$/, exclude: /node_modules/, use: [
 				{ loader: 'ts-loader', options: { transpileOnly: true } },
 			]},
-			{ test: /\.js$/, use: 'source-map-loader', enforce: 'pre' },
 			{ test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
 				type: 'asset/resource',
 				generator: { filename: 'fonts/[name][ext]'},
@@ -43,9 +31,6 @@ module.exports = {
 	watchOptions: {
 		ignored: ['*css.d.ts', 'node_modules/**', '.yarn/**'],
 	},
-	plugins: [
-		new ForkTsCheckerWebpackPlugin({ devServer: false }),
-	],
 	stats:
 	{
 		hash: false,
