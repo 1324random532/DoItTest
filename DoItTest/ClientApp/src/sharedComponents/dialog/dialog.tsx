@@ -19,7 +19,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>) {
             sx={props.sx}
         >
             <DialogTitle>{props.title}</DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ paddingTop: 5 }}>
                 {props.children}
             </DialogContent>
             <DialogActions>

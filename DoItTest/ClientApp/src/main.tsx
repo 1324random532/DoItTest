@@ -13,6 +13,8 @@ import { BlockUi } from 'sharedComponents/blockUi/blockUi';
 import { NotificationProvider } from 'sharedComponents/notification/store/notificationStore';
 import { BlockUiProvider } from 'sharedComponents/blockUi/blockUiContext';
 import { NotificationManager } from 'sharedComponents/notification/notificationManager';
+import { TestRouter } from 'apps/tests/router';
+import DialogProvider from 'sharedComponents/dialog/dialogProvider';
 
 interface Props {
 
@@ -27,9 +29,11 @@ function AppBase(props: PropsWithChildren<Props>) {
       <NotificationProvider>
         <NotificationManager />
         <BlockUiProvider>
-          <BlockUi />
-          <CssBaseline />
-          {props.children}
+          <DialogProvider>
+            <BlockUi />
+            <CssBaseline />
+            {props.children}
+          </DialogProvider>
         </BlockUiProvider>
       </NotificationProvider>
     </ThemeProvider>
@@ -42,6 +46,7 @@ const Main: FC<{}> = (props) => {
     <Routes>
       {AuthRouter()}
       {InfrastructureRouter()}
+      {TestRouter()}
     </Routes>
   </AppBase>
 }

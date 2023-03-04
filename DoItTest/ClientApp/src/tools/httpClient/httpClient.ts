@@ -1,4 +1,5 @@
 ﻿import { NeverUnreachable } from "tools/errors/neverUnreachable"
+import { PagedResult } from "tools/results/pagedResult"
 import { Result } from "tools/results/result"
 
 
