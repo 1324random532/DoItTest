@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader, Checkbox, FormControlLabel, FormGroup, Radio, RadioGroup } from "@mui/material";
 import { Box } from "@mui/system";
 import { AnserOptionBlank } from "domain/tests/anserOptionBlank";
-import { AnserOption } from "domain/tests/items/anserOption";
 import { TestItemType } from "domain/tests/items/testItemType";
 import { TestItemBlank } from "domain/tests/testItemBlank";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "sharedComponents/buttons/button";
+import { IconButton } from "sharedComponents/buttons/iconButton";
+import { ConfirmDialogAsync } from "sharedComponents/dialog/dialog2";
+import useDialog from "sharedComponents/dialog/useDialog";
 import { Input } from "sharedComponents/inputs/input";
 import { SetState } from "tools/setState";
 
@@ -16,12 +18,39 @@ export interface CheckBoxesItemEditorProps {
 
 
 export function CheckBoxesItemEditor({ item, changeItem }: CheckBoxesItemEditorProps) {
-    function setAnswerOption(key: string, title: string) {
-        changeItem(prev => {
-            const item = { ...prev }
-            const index = item.answerOptions.findIndex(o => o.key === key)
-            if (index !== -1) item.answerOptions[index].title = title
-            return item
+
+    const [answerOptions, setAnswerOptions] = useState<AnserOptionBlank[]>(item.answerOptions)
+    const confirmDialog = useDialog(ConfirmDialogAsync)
+
+
+    useEffect(() => changeItem({ ...item, answerOptions }), [answerOptions])
+
+    function changeTitle(key: string, title: string) {
+        setAnswerOptions(prev => {
+            const answerOptions = [...prev]
+            const index = answerOptions.findIndex(a => a.key == key)
+            if (index !== -1) answerOptions[index].title = title
+            return answerOptions
+        })
+    }
+
+    function changeChecked(key: string, checked: boolean) {
+        setAnswerOptions(prev => {
+            const answerOptions = [...prev]
+            const index = answerOptions.findIndex(a => a.key == key)
+            if (index !== -1) answerOptions[index].isTrue = checked
+            return answerOptions
+        })
+    }
+
+    async function remove(key: string) {
+        const result = await confirmDialog.show({ title: "Вы действительно хотите удалить данный вопрос?" })
+        if (!result) return
+
+        setAnswerOptions(prev => {
+            let answerOptions = [...prev]
+            answerOptions = answerOptions.filter(o => o.key != key)
+            return answerOptions
         })
     }
 
@@ -31,35 +60,29 @@ export function CheckBoxesItemEditor({ item, changeItem }: CheckBoxesItemEditorP
             flexDirection: "column",
             gap: 2
         }}>
-            <Input
-                type='text'
-                label="Вопрос"
-                value={item.question ?? ""}
-                onChange={question => changeItem({ ...item, question })}
-                multiline
-            />
             <FormGroup sx={{ gap: 2 }}>
                 {
-                    item.answerOptions.map(o =>
-                        <Box sx={{ display: "flex" }}>
+                    answerOptions.map(o =>
+                        <Box sx={{ display: "flex" }} key={o.key}>
                             <Checkbox
-                                onChange={(_, checked) => {
-                                    let stringAnsres = item.answerKeys
-                                    checked ? stringAnsres.push(o.key) : stringAnsres = stringAnsres.filter(a => a != o.key)
-                                    changeItem({ ...item, answerKeys: stringAnsres })
-                                }}
-                                checked={item.answerKeys.includes(o.key)}
+                                onChange={(_, checked) => { changeChecked(o.key, checked) }}
+                                checked={o.isTrue ?? false}
                                 sx={{ flexBasis: 50 }}
                             />
                             <Input
                                 type="text"
                                 label="Вариант ответа"
                                 value={o.title}
-                                onChange={value => setAnswerOption(o.key, value)}
+                                onChange={value => changeTitle(o.key, value)}
                                 sx={{
                                     flexBasis: "100%"
                                 }}
                             />
+                            <IconButton
+                                icon='delete'
+                                onClick={() => remove(o.key)}
+                                title='Удалить тест'
+                                sx={{ flexBasis: 50 }} />
                         </Box>
                     )
                 }
@@ -67,9 +90,11 @@ export function CheckBoxesItemEditor({ item, changeItem }: CheckBoxesItemEditorP
             <Button
                 title="Добавить вариант ответа"
                 onClick={() => {
-                    const answerOptions = item.answerOptions
-                    answerOptions.push(AnserOptionBlank.getDefault())
-                    changeItem({ ...item, answerOptions })
+                    setAnswerOptions(prev => {
+                        const answerOptions = [...prev]
+                        answerOptions.push(AnserOptionBlank.getDefault(false))
+                        return answerOptions
+                    })
                 }}
             >
                 Добавить вариант ответа

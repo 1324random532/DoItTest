@@ -12,6 +12,7 @@ namespace DoItTest.Services.Users.Repositories.Models
 		public DateTime CreatedDateTime { get; set; }
 		public Guid? ModifiedUserId { get; set; }
 		public DateTime? ModifiedDateTime { get; set; }
+		public Int32 FullCount { get; set; }
 		public Boolean IsRemoved { get; set; }
 	}
 }

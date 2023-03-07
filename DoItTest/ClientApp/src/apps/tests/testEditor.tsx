@@ -7,6 +7,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useBlockUi } from "sharedComponents/blockUi/blockUiContext";
 import { Button } from "sharedComponents/buttons/button";
 import { Content } from "sharedComponents/content/content";
+import { ConfirmDialogAsync } from "sharedComponents/dialog/dialog2";
+import useDialog from "sharedComponents/dialog/useDialog";
 import { Input } from "sharedComponents/inputs/input";
 import { useNotification } from "sharedComponents/notification/store/notificationStore";
 import useComponent from "tools/components/useComponent";
@@ -20,6 +22,7 @@ export function TestEditor() {
     const routeParams = useParams();
 
     const { showError, showSuccess } = useNotification()
+    const confirmDialog = useDialog(ConfirmDialogAsync)
 
     const blockUi = useBlockUi();
 
@@ -59,8 +62,10 @@ export function TestEditor() {
         setEditItem(null)
     }
 
-    function removeTestItemBlank(itemKey: string) {
-        if (!window.confirm("Вы действительно хотите удалить вопрос?")) return;
+    async function removeTestItemBlank(itemKey: string) {
+        const result = await confirmDialog.show({ title: "Вы действительно хотите удалить данный вопрос?" })
+        if (!result) return
+
         const testItems = testItemBlanks
         setTestItemBlanks(testItems.filter(i => (i.key != itemKey)))
     }
@@ -89,7 +94,6 @@ export function TestEditor() {
                     label="Название теста"
                     value={testBlank.title}
                     onChange={title => setTestBlank({ ...testBlank, title })}
-                    multiline
                     sx={{ width: 250 }}
                 />
             </Box>

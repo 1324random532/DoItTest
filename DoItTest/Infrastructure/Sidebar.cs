@@ -1,5 +1,5 @@
-﻿using DoItTest.Site.Areas;
-using FKM.BackOffice.Areas.Infrastructures;
+﻿using DoItTest.Site.Areas.Tests;
+using DoItTest.Site.Areas.Users;
 using static DoItTest.Site.Infrastructure.SidebarItem;
 
 namespace DoItTest.Site.Infrastructure
@@ -8,7 +8,8 @@ namespace DoItTest.Site.Infrastructure
     {
         private static readonly SidebarItem[] LinkItems =
         {
-            //ListItem("Пользователи", nameof(UsersController.App), SidebarIconType.Users),
+            ListItem("Пользователи", nameof(UsersController.App), SidebarIconType.Users),
+            ListItem("Тесты", nameof(TestsController.App), SidebarIconType.Tests)
         };
 
         public static SidebarItem[] GetLinksTree()

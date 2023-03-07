@@ -8,7 +8,8 @@ export function ActionTableCell(props: PropsWithChildren<Props>) {
     return (
         <TableCell
             children={props.children}
-            sx={{ display:'flex' }}
+            sx={{ display: 'flex' }}
+            align='right'
         />
     )
 }

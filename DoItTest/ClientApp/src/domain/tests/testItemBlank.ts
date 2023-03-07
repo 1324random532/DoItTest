@@ -1,5 +1,4 @@
 import { AnserOptionBlank } from "./anserOptionBlank";
-import { AnserOption } from "./items/anserOption";
 import { CheckboxesItem } from "./items/checkboxesItem";
 import { NumericFieldItem } from "./items/numericFieldItem";
 import { RadioButtonItem } from "./items/radioButtonItem";
@@ -14,16 +13,13 @@ export class TestItemBlank {
         public type: TestItemType | null,
         public question: string | null,
         public answerOptions: AnserOptionBlank[],
-        public stringAnswer: string | null,
-        public numberAnswer: number | null,
-        public answerKey: string | null,
-        public answerKeys: string[],
+        public answerOption: AnserOptionBlank | null,
         public key: string,
         public isCreated: boolean
     ) { }
 
     public static getDefault(): TestItemBlank {
-        return new TestItemBlank(null, null, null, null, [], null, null, null, [], crypto.randomUUID(), false)
+        return new TestItemBlank(null, null, null, null, [], null, crypto.randomUUID(), false)
     }
 
     public static formTestItem(testItem: TestItem): TestItemBlank {
@@ -32,7 +28,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 testItem.id, testItem.testId, testItem.type,
-                testItem.question, answerOptions, null, null, null, testItem.answers, crypto.randomUUID(), true
+                testItem.question, answerOptions, null, crypto.randomUUID(), true
             );
         }
         if (testItem instanceof RadioButtonItem) {
@@ -40,19 +36,23 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 testItem.id, testItem.testId, testItem.type,
-                testItem.question, answerOptions, null, null, testItem.answer, [], crypto.randomUUID(), true
+                testItem.question, answerOptions, null, crypto.randomUUID(), true
             );
         }
         if (testItem instanceof TextFieldItem) {
+            const answerOption = AnserOptionBlank.formAnserOption(testItem.answerOption)
+
             return new TestItemBlank(
                 testItem.id, testItem.testId, testItem.type,
-                testItem.question, [], testItem.answer, null, null, [], crypto.randomUUID(), true
+                testItem.question, [], answerOption, crypto.randomUUID(), true
             );
         }
         if (testItem instanceof NumericFieldItem) {
+            const answerOption = AnserOptionBlank.formAnserOption(testItem.answerOption)
+
             return new TestItemBlank(
                 testItem.id, testItem.testId, testItem.type,
-                testItem.question, [], null, testItem.answer, null, [], crypto.randomUUID(), true
+                testItem.question, [], answerOption, crypto.randomUUID(), true
             );
         }
 

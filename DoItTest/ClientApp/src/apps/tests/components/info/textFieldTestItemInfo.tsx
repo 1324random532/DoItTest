@@ -10,7 +10,7 @@ export interface TextFieldTestItemEditorProps {
 export function TextFieldTestItemInfo({ item, sx }: TextFieldTestItemEditorProps) {
     return (
         <Typography variant="body2" sx={{ wordWrap: "break-word" }}>
-            Ответ: {item.stringAnswer}
+            Ответ: {item.answerOption?.stringAnswer}
         </Typography>
     )
 }

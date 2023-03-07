@@ -1,6 +1,6 @@
 import { mapToCheckboxesItem } from "./checkboxesItem";
 import { mapToNumericFieldItem } from "./numericFieldItem";
-import { mapToPicturesItem } from "./picturesItem";
+import { mapToRadioButtonItem } from "./radioButtonItem";
 import { TestItem } from "./testItem";
 import { TestItemType } from "./testItemType";
 import { mapToTextFieldItem } from "./textFieldItem";
@@ -11,10 +11,10 @@ export const mapToTestItem = (data: any): TestItem => {
             return mapToTextFieldItem(data);
         case TestItemType.NumericField:
             return mapToNumericFieldItem(data);
-        case TestItemType.RadioButtonsGroup:
+        case TestItemType.CheckboxesGroup:
             return mapToCheckboxesItem(data);
-        case TestItemType.Pictures:
-            return mapToPicturesItem(data);
+        case TestItemType.RadioButtonsGroup:
+            return mapToRadioButtonItem(data);
         default:
             throw new Error('unknown testItemType');
     }

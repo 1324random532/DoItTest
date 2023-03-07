@@ -1,20 +1,16 @@
 import { Add, Create, Home } from '@mui/icons-material';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import BadgeIcon from '@mui/icons-material/Badge';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import MenuIcon from '@mui/icons-material/Menu';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import PeopleIcon from '@mui/icons-material/People';
-import RouterIcon from '@mui/icons-material/Router';
 import WestIcon from '@mui/icons-material/West';
-import WorkIcon from '@mui/icons-material/Work';
+import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 import { IconButton as MaterialIconButton, SxProps, Theme } from '@mui/material';
 import { Tooltip } from 'sharedComponents/tooltip/tooltip';
 import { NeverUnreachable } from 'tools/errors/neverUnreachable';
 
-type IconType = 'delete' | 'create' | 'add' | 'home' | 'users' | 'exit' | 'menu' | 'chevronLeft' | 'door' | 'suitcase' | 'servers' | 'projects' | 'tariffs' | 'versions'
+type IconType = 'delete' | 'create' | 'add' | 'home' | 'users' | 'exit' | 'menu' | 'chevronLeft' | 'door' | 'tests'
 interface IconProps {
     icon: IconType
     onClick?: () => void
@@ -43,11 +39,7 @@ export function Icon(props: { type: IconType }) {
         case 'menu': return <MenuIcon />
         case 'chevronLeft': return <ChevronLeftIcon />
         case 'door': return <MeetingRoomIcon />
-        case 'suitcase': return <BadgeIcon />
-        case 'servers': return <RouterIcon />
-        case 'projects': return <WorkIcon />
-        case 'tariffs': return <MonetizationOnIcon />
-        case 'versions': return <AppRegistrationIcon />
+        case 'tests': return <AssignmentLateIcon />
         default: throw new NeverUnreachable(props.type);
     }
 }

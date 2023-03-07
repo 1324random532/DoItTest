@@ -45,7 +45,6 @@ export default function TestItemEditorModal(props: TestItemEditorModalProps) {
         props.changeTestItemBlank(item)
     }
 
-
     return (
         <Dialog
             isOpen={props.open}
@@ -58,16 +57,28 @@ export default function TestItemEditorModal(props: TestItemEditorModalProps) {
                 Сохранить
             </Button>}
         >
-            <Box sx={{ width: 500 }}>
+            <Box sx={{
+                width: 500,
+                display: "flex",
+                flexDirection: "column",
+                gap: 2
+            }}>
                 <Input
                     type="select"
                     label="Тип вопроса"
                     value={item.type}
                     options={testItemTypes}
                     getOptionLabel={TestItemType.getDisplayName}
-                    onChange={type => setItem({ ...item, type, answerKey: null, answerKeys: [], answerOptions: [], numberAnswer: null, stringAnswer: null })}
+                    onChange={type => setItem({ ...item, type, answerOptions: [], answerOption: null })}
                 />
-                <br />
+                <Input
+                    type='text'
+                    label="Вопрос"
+                    value={item.question ?? ""}
+                    onChange={question => setItem({ ...item, question })}
+                    multiline
+                />
+
                 <TestItemEditor item={item} changeItem={setItem} />
             </Box>
         </Dialog >
@@ -80,18 +91,19 @@ export function ValidateTestItem(testItem: TestItemBlank): Result {
     if (testItem.type == null) errors.push(new ResultError(null, "Укажите тип вопроса"));
 
     if (testItem.type == TestItemType.TextField) {
-        if (String.isNullOrEmpty(testItem.stringAnswer)) errors.push(new ResultError(null, "Напишите ответ"));
+        if (String.isNullOrEmpty(testItem.answerOption?.stringAnswer)) errors.push(new ResultError(null, "Напишите ответ"));
     }
 
     if (testItem.type == TestItemType.NumericField) {
-        if (testItem.numberAnswer == null) errors.push(new ResultError(null, "Напишите ответ"));
+        if (testItem.answerOption?.numberAnswer == null) errors.push(new ResultError(null, "Напишите ответ"));
     }
 
     if (testItem.type == TestItemType.RadioButtonsGroup || testItem.type == TestItemType.CheckboxesGroup) {
         if (testItem.answerOptions.length < 2) errors.push(new ResultError(null, "Создайте хотябы 2 варианта ответа"));
 
-        if (testItem.type == TestItemType.RadioButtonsGroup && String.isNullOrEmpty(testItem.answerKey)) errors.push(new ResultError(null, "Укажите правильный ответ"));
-        if (testItem.type == TestItemType.CheckboxesGroup && testItem.answerKeys.length == 0) errors.push(new ResultError(null, "Укажите правильный ответ"));
+        const trueAnswerOptions = testItem.answerOptions.filter(o => o.isTrue)
+        if (testItem.type == TestItemType.RadioButtonsGroup && trueAnswerOptions.length == 0) errors.push(new ResultError(null, "Укажите правильный ответ"));
+        if (testItem.type == TestItemType.CheckboxesGroup && trueAnswerOptions.length == 0) errors.push(new ResultError(null, "Укажите правильный ответы"));
 
         const withoutTitleAnswers = testItem.answerOptions.filter(o => String.isNullOrEmpty(o.title))
         if (withoutTitleAnswers.length != 0) errors.push(new ResultError(null, "Все ответы должны иметь заголовок"));

@@ -8,28 +8,28 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace FKM.BackOffice.Areas.Authorizations
+namespace DoItTest.Site.Areas.Registration
 {
     public class RegistrationController : BaseController
-	{
-		private readonly IUsersService _usersService;
+    {
+        private readonly IUsersService _usersService;
 
-		public RegistrationController(IUsersService usersService)
-		{
-			_usersService = usersService;
-		}
+        public RegistrationController(IUsersService usersService)
+        {
+            _usersService = usersService;
+        }
 
-		[HttpPost("/Registration")]
-		[AllowAnonymous]
-		public Result Registration([FromBody] RegistrationData registrationData)
-		{
-			DataResult<UserToken> tokenResult = _usersService.Registration(registrationData);
-			if (!tokenResult.IsSuccess) return Result.Fail(tokenResult.Errors);
+        [HttpPost("/Registration")]
+        [AllowAnonymous]
+        public Result Registration([FromBody] RegistrationData registrationData)
+        {
+            DataResult<UserToken> tokenResult = _usersService.Registration(registrationData);
+            if (!tokenResult.IsSuccess) return Result.Fail(tokenResult.Errors);
 
-			Cookie cookie = new Cookie(IsAuthorizedAttribute.CookieName, tokenResult.Data!.Value);
-			CookieManager.Write(Response, cookie, DateTime.MaxValue);
+            Cookie cookie = new Cookie(IsAuthorizedAttribute.CookieName, tokenResult.Data!.Value);
+            CookieManager.Write(Response, cookie, DateTime.MaxValue);
 
-			return Result.Success();
-		}
-	}
+            return Result.Success();
+        }
+    }
 }

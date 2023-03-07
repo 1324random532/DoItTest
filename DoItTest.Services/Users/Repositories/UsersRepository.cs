@@ -5,6 +5,7 @@ using DoItTest.Domain.Users;
 using DoItTest.Services.Users.Repositories.Models;
 using DoItTest.Services.Users.Repositories.Converters;
 using DoItTest.Tools.DB;
+using DoItTest.Tools.Types.Results;
 
 namespace DoItTest.Services.Users.Repositories
 {
@@ -103,24 +104,51 @@ namespace DoItTest.Services.Users.Repositories
             }
         }
 
+        public PagedResult<User> GetPagedUsers(Int32 page, Int32 count)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT *,COUNT(*) OVER() AS FullCount " +
+                    $"FROM users " +
+                    $"WHERE NOT isremoved " +
+                    $"  OFFSET @Offset " +
+                    $"  LIMIT @Limit ";
+
+                var parameters = new
+                {
+                    Offset = Math.Max((page - 1) * count, 0),
+                    Limit = Math.Max(count, 0)
+                };
+
+                UserDb[] userDbs = db.Query<UserDb > (query, parameters).ToArray();
+                Int32 totalRows = userDbs.FirstOrDefault()?.FullCount ?? 0;
+                User[] users = userDbs.ToUsers();
+
+                return new PagedResult<User>(users, totalRows);
+            }
+        }
+
         public void RemoveUser(Guid id)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"UPDATE users" +
-                    $"SET isremoved = TRUE" +
-                    $"WHERE id = @Id" +
+                String query = $"UPDATE users " +
+                    $"SET isremoved = TRUE " +
+                    $"WHERE id = @Id " +
                     $"AND NOT isremoved;";
 
-                SqlParameter[] parameters =
+                var parameters = new
                 {
-                    new ("Id", id)
+                    Id = id,
                 };
 
-                db.Execute(query, id);
+                db.Execute(query, parameters);
             }
         }
+
+
 
         public void SaveUserToken(UserToken token)
         {

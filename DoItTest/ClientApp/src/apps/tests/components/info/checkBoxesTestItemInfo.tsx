@@ -12,8 +12,10 @@ export function CheckBoxesTestItemInfo({ item, sx }: CheckBoxesTestItemInfoProps
         <FormGroup>
             {
                 item.answerOptions.map(o => {
-                    const isСorrect = item.answerKeys.includes(o.key)
-                    return <FormControlLabel control={<Checkbox checked={isСorrect} />} label={o.title} />
+                    return <FormControlLabel
+                        key={o.key}
+                        control={<Checkbox checked={o.isTrue ?? false} />}
+                        label={o.title} />
                 })
             }
         </FormGroup>

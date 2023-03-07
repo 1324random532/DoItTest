@@ -7,6 +7,7 @@ namespace DoItTest.Domain.Services
     {
         Result SaveUser(UserBlank userBlank, Guid? userId);
         User? GetUser(Guid id);
+        PagedResult<User> GetPagedUsers(Int32 page, Int32 count);
         Result RemoveUser(Guid id);
 
         DataResult<UserToken> Registration(RegistrationData registrationData);

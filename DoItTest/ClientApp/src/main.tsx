@@ -15,6 +15,7 @@ import { BlockUiProvider } from 'sharedComponents/blockUi/blockUiContext';
 import { NotificationManager } from 'sharedComponents/notification/notificationManager';
 import { TestRouter } from 'apps/tests/router';
 import DialogProvider from 'sharedComponents/dialog/dialogProvider';
+import { UsersRouter } from 'apps/users/router';
 
 interface Props {
 
@@ -47,6 +48,7 @@ const Main: FC<{}> = (props) => {
       {AuthRouter()}
       {InfrastructureRouter()}
       {TestRouter()}
+      {UsersRouter()}
     </Routes>
   </AppBase>
 }

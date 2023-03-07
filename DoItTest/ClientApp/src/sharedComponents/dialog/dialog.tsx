@@ -23,7 +23,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>) {
                 {props.children}
             </DialogContent>
             <DialogActions>
-                {props.actionsContent ?? <Button onClick={props.onClose}>Закрыть</Button>}
+                {props.actionsContent}
             </DialogActions>
         </MaterialDialog>
     );

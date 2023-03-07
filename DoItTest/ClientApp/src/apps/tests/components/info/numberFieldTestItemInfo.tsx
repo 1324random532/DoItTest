@@ -10,8 +10,8 @@ export interface NumberFieldTestItemEditorProps {
 export function NumberFieldTestItemInfo({ item, sx }: NumberFieldTestItemEditorProps) {
 
     return (
-        <Typography variant="body2" sx={{ wordWrap: "break-word"}}>
-            Ответ: {`${item.numberAnswer}`}
+        <Typography variant="body2" sx={{ wordWrap: "break-word" }}>
+            Ответ: {`${item.answerOption?.numberAnswer}`}
         </Typography>
     )
 }

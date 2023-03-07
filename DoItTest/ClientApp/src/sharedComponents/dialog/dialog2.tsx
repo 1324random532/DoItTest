@@ -19,8 +19,8 @@ export function ConfirmDialogAsync(dialogProps: AsyncDialogProps<Props, boolean>
 
             <Box mt={2}>
                 <DialogActions>
-                    <Button onClick={() => dialogProps.onClose(false)} color="primary">No</Button>
-                    <Button variant="contained" onClick={() => dialogProps.onClose(true)} color="primary">Yes</Button>
+                    <Button onClick={() => dialogProps.onClose(false)} color="primary">Нет</Button>
+                    <Button variant="contained" onClick={() => dialogProps.onClose(true)} color="primary">Да</Button>
                 </DialogActions>
             </Box>
 

@@ -46,6 +46,11 @@ namespace DoItTest.Services.Users
 			return _usersRepository.GetUser(id);
 		}
 
+		public PagedResult<User> GetPagedUsers(Int32 page, Int32 count)
+		{
+			return _usersRepository.GetPagedUsers(page, count);
+		}
+
 		public Result RemoveUser(Guid id)
 		{
 			User? removingUser = GetUser(id);

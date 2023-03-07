@@ -14,18 +14,18 @@ export class TestsProvider {
         return result;
     }
 
-    public static async getTest(testId: string): Promise<Test> {
-        const result = await HttpRequest.get("Tests/GetTest").withQueryParams({ testId }).asAny()
+    public static async getTest(id: string): Promise<Test> {
+        const result = await HttpRequest.get("/Tests/GetTest").withQueryParams({ id }).asAny()
         return mapToTest(result)
     }
 
-    public static async getPagedTests(userId: string, page: number, count: number): Promise<PagedResult<Test>> {
-        const result = await HttpRequest.get("/Tests/GetPaged").withQueryParams({ userId, page, count }).asAny()
+    public static async getPagedTests(page: number, count: number): Promise<PagedResult<Test>> {
+        const result = await HttpRequest.get("/Tests/GetPaged").withQueryParams({ page, count }).asAny()
         return PagedResult.convert(result, mapToTest);
     }
 
-    public static async removeTest(testId: string): Promise<Result> {
-        const result = await HttpRequest.post("/Tests/Remove").withBody({ testId }).asResult()
+    public static async removeTest(id: string): Promise<Result> {
+        const result = await HttpRequest.post("/Tests/Remove").withBody(id).asResult()
         return result;
     }
 

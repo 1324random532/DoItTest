@@ -1,4 +1,6 @@
-import { AnserOption } from "./anserOption";
+
+import { AnserOption } from "./anserOption/anserOption";
+import { CheckboxesAnserOption, mapCheckboxesAnserOptions } from "./anserOption/checkboxesAnserOption";
 import { TestItem } from "./testItem";
 import { TestItemType } from "./testItemType";
 
@@ -8,13 +10,14 @@ export class CheckboxesItem extends TestItem {
         public testId: string,
         public type: TestItemType,
         public question: string,
-        public answerOptions: AnserOption[],
-        public answers: string[]
+        public answerOptions: CheckboxesAnserOption[],
     ) {
         super(id, testId, type, question)
     }
 }
 
 export function mapToCheckboxesItem(value: any): CheckboxesItem {
-    return new CheckboxesItem(value.id, value.testId, value.type, value.question, value.answerOptions, value.answer)
+    const answerOptions = mapCheckboxesAnserOptions(value.answerOptions)
+
+    return new CheckboxesItem(value.id, value.testId, value.type, value.question, answerOptions)
 }

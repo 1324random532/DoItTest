@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader } from "@mui/material";
 import { Box } from "@mui/system";
+import { AnserOptionBlank } from "domain/tests/anserOptionBlank";
 import { TestItemType } from "domain/tests/items/testItemType";
 import { TestItemBlank } from "domain/tests/testItemBlank";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "sharedComponents/buttons/button";
 import { Input } from "sharedComponents/inputs/input";
 import { TextInput } from "sharedComponents/inputs/textInput";
@@ -16,6 +17,10 @@ export interface TextFieldTestItemEditorProps {
 
 export function TextFieldTestItemEditor({ item, changeItem }: TextFieldTestItemEditorProps) {
 
+    const [answerOption, setAnswerOption] = useState<AnserOptionBlank>(item.answerOption ?? AnserOptionBlank.getDefault())
+
+    useEffect(() => changeItem({ ...item, answerOption }), [answerOption])
+
     return (
         <Box sx={{
             display: "flex",
@@ -23,20 +28,10 @@ export function TextFieldTestItemEditor({ item, changeItem }: TextFieldTestItemE
             gap: 2
         }}>
             <Input
-                type='text'
-                label="Вопрос"
-                value={item.question ?? ""}
-                onChange={question => {
-                    changeItem({ ...item, question })
-                    console.log(item)
-                }}
-                multiline
-            />
-            <Input
                 type="text"
                 label="Ответ"
-                value={item.stringAnswer}
-                onChange={answer => changeItem({ ...item, stringAnswer: answer })}
+                value={answerOption.stringAnswer}
+                onChange={stringAnswer => setAnswerOption({ ...answerOption, stringAnswer })}
             />
         </Box>
     )

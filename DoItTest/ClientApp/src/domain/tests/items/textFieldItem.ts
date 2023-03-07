@@ -1,3 +1,4 @@
+import { mapTextFildAnserOption, TextFildAnserOption } from "./anserOption/textFildAnserOption";
 import { TestItem } from "./testItem";
 import { TestItemType } from "./testItemType";
 
@@ -7,12 +8,14 @@ export class TextFieldItem extends TestItem {
         public testId: string,
         public type: TestItemType,
         public question: string,
-        public answer: string
+        public answerOption: TextFildAnserOption
     ) {
         super(id, testId, type, question)
     }
 }
 
 export function mapToTextFieldItem(value: any): TextFieldItem {
-    return new TextFieldItem(value.id, value.testId, value.type, value.question, value.answer)
+    const answerOption = mapTextFildAnserOption(value.answerOption)
+
+    return new TextFieldItem(value.id, value.testId, value.type, value.question, answerOption)
 }

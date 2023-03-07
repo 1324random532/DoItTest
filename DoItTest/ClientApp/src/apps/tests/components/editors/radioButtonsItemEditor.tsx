@@ -2,7 +2,11 @@ import { Card, CardContent, CardHeader, FormControlLabel, Radio, RadioGroup } fr
 import { Box } from "@mui/system";
 import { AnserOptionBlank } from "domain/tests/anserOptionBlank";
 import { TestItemBlank } from "domain/tests/testItemBlank";
+import { useEffect, useState } from "react";
 import { Button } from "sharedComponents/buttons/button";
+import { IconButton } from "sharedComponents/buttons/iconButton";
+import { ConfirmDialogAsync } from "sharedComponents/dialog/dialog2";
+import useDialog from "sharedComponents/dialog/useDialog";
 import { Input } from "sharedComponents/inputs/input";
 import { SetState } from "tools/setState";
 
@@ -13,12 +17,42 @@ export interface RadioButtonsItemEditorProps {
 
 
 export function RadioButtonsItemEditor({ item, changeItem }: RadioButtonsItemEditorProps) {
-    function setAnswerOption(key: string, title: string) {
-        changeItem(prev => {
-            const item = { ...prev }
-            const index = item.answerOptions.findIndex(o => o.key === key)
-            if (index !== -1) item.answerOptions[index].title = title
-            return item
+    const [answerOptions, setAnswerOptions] = useState<AnserOptionBlank[]>(item.answerOptions)
+
+    useEffect(() => changeItem({ ...item, answerOptions }), [answerOptions])
+    const confirmDialog = useDialog(ConfirmDialogAsync)
+
+    function changeTitle(key: string, title: string) {
+        setAnswerOptions(prev => {
+            const answerOptions = [...prev]
+            const index = answerOptions.findIndex(a => a.key == key)
+            if (index !== -1) answerOptions[index].title = title
+            return answerOptions
+        })
+    }
+
+    function changeChecked(key: string, checked: boolean) {
+        setAnswerOptions(prev => {
+            const answerOptions = [...prev]
+            const index = answerOptions.findIndex(a => a.key == key)
+            if (index !== -1) {
+                answerOptions.forEach(o => {
+                    o.isTrue = false
+                });
+                answerOptions[index].isTrue = checked
+            }
+            return answerOptions
+        })
+    }
+
+    async function remove(key: string) {
+        const result = await confirmDialog.show({ title: "Вы действительно хотите удалить данный вопрос?" })
+        if (!result) return
+
+        setAnswerOptions(prev => {
+            let answerOptions = [...prev]
+            answerOptions = answerOptions.filter(o => o.key != key)
+            return answerOptions
         })
     }
 
@@ -28,23 +62,16 @@ export function RadioButtonsItemEditor({ item, changeItem }: RadioButtonsItemEdi
             flexDirection: "column",
             gap: 2
         }}>
-            <Input
-                type='text'
-                label="Вопрос"
-                value={item.question ?? ""}
-                onChange={question => changeItem({ ...item, question })}
-                multiline
-            />
             <RadioGroup
                 aria-labelledby="demo-controlled-radio-buttons-group"
                 name="controlled-radio-buttons-group"
-                value={item.answerKey}
-                onChange={(_, value) => changeItem({ ...item, answerKey: value })}
+                value={answerOptions.find(o => o.isTrue)?.key ?? null}
+                onChange={(e, value) => changeChecked(value, e.currentTarget.checked)}
                 sx={{ gap: 2 }}
             >
                 {
-                    item.answerOptions.map(o =>
-                        <Box sx={{ display: "flex" }}>
+                    answerOptions.map(o =>
+                        <Box sx={{ display: "flex" }} key={o.key}>
                             <Radio value={o.key}
                                 sx={{
                                     flexBasis: 50
@@ -54,11 +81,16 @@ export function RadioButtonsItemEditor({ item, changeItem }: RadioButtonsItemEdi
                                 type="text"
                                 label="Вариант ответа"
                                 value={o.title}
-                                onChange={value => setAnswerOption(o.key, value)}
+                                onChange={value => changeTitle(o.key, value)}
                                 sx={{
                                     flexBasis: "100%"
                                 }}
                             />
+                            <IconButton
+                                icon='delete'
+                                onClick={() => remove(o.key)}
+                                title='Удалить тест'
+                                sx={{ flexBasis: 50 }} />
                         </Box>
                     )
                 }
@@ -67,9 +99,11 @@ export function RadioButtonsItemEditor({ item, changeItem }: RadioButtonsItemEdi
             <Button
                 title="Добавить вариант ответа"
                 onClick={() => {
-                    const answerOptions = item.answerOptions
-                    answerOptions.push(AnserOptionBlank.getDefault())
-                    changeItem({ ...item, answerOptions })
+                    setAnswerOptions(prev => {
+                        const answerOptions = [...prev]
+                        answerOptions.push(AnserOptionBlank.getDefault())
+                        return answerOptions
+                    })
                 }}
             >
                 Добавить вариант ответа

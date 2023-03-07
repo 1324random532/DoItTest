@@ -1,4 +1,5 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { screenSize } from "content/screenSize";
 import { Test } from "domain/tests/test";
 import { TestsProvider } from "domain/tests/testsProvider";
 import { useState } from "react";
@@ -15,12 +16,12 @@ import { ActionTableCell } from "sharedComponents/table/actionTableCell";
 import useComponent from "tools/components/useComponent";
 import { TestLinks } from "./links";
 
-interface ILoadClientsPageParams {
+interface ILoadTestsPageParams {
     page?: number;
     pageSize?: number;
 }
 
-export function ProjectList() {
+export function TestsList() {
 
     const routeParams = useParams();
     const navigateTo = useNavigate();
@@ -30,6 +31,13 @@ export function ProjectList() {
 
     const [pagination, setPagination] = useState<PaginationState>({ pageSize: 10, page: 1, totalRows: 0 })
     const [tests, setTests] = useState<Test[]>([])
+
+    const tableSize = {
+        width: '70%',
+        [`@media (min-width:${screenSize.lg}px)`]: {
+            width: '50%'
+        }
+    }
 
     useComponent({
         didMount: async () => {
@@ -42,12 +50,10 @@ export function ProjectList() {
     async function loadTestsPage({
         page = pagination.page,
         pageSize = pagination.pageSize
-    }: ILoadClientsPageParams) {
+    }: ILoadTestsPageParams) {
         blockUi(async () => {
-            const userId = routeParams.userId ?? null
-            if (userId == null) return
 
-            const testsPage = await TestsProvider.getPagedTests(userId, page, pageSize);
+            const testsPage = await TestsProvider.getPagedTests(page, pageSize);
 
             setTests(testsPage.values)
             setPagination(pagination => ({ ...pagination, page, pageSize, totalRows: testsPage.totalRows }))
@@ -80,7 +86,7 @@ export function ProjectList() {
         <Content withSidebar={true}>
             <h1>Тесты</h1>
             <LinkButton href={TestLinks.add} title='Добавить тест' sx={{ mb: 2 }}><Icon type='add' /> Добавить</LinkButton>
-            <TableContainer component={Paper}>
+            <TableContainer sx={tableSize} component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>
                         <TableRow>

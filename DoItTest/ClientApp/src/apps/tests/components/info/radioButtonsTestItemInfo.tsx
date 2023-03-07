@@ -12,12 +12,15 @@ export function RadioButtonsFieldTestItemInfo({ item, sx }: RadioButtonsTestItem
         <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
-            value={item.answerKey}
+            value={item.answerOptions.find(o => o.isTrue)}
             sx={{ gap: 2 }}
         >
             {
                 item.answerOptions.map(o =>
-                    <FormControlLabel value="female" control={<Radio value={o.key} />} label={o.title} />
+                    <FormControlLabel
+                        key={o.key}
+                        control={<Radio checked={o.isTrue ?? false} />}
+                        label={o.title} />
                 )
             }
         </RadioGroup>
