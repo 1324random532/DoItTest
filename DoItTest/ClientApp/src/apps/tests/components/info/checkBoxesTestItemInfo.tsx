@@ -14,7 +14,7 @@ export function CheckBoxesTestItemInfo({ item, sx }: CheckBoxesTestItemInfoProps
                 item.answerOptions.map(o => {
                     return <FormControlLabel
                         key={o.key}
-                        control={<Checkbox checked={o.isTrue ?? false} />}
+                        control={<Checkbox checked={o.isTrue ?? false} readOnly />}
                         label={o.title} />
                 })
             }

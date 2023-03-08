@@ -1,4 +1,4 @@
-import { mapNumericAnserOption, NumericAnswerOption } from "./anserOption/numericAnserOption";
+import { mapNumericAnswerOption, NumericAnswerOption } from "./answerOption/numericAnswerOption";
 import { TestItem } from "./testItem";
 import { TestItemType } from "./testItemType";
 
@@ -15,7 +15,7 @@ export class NumericFieldItem extends TestItem {
 }
 
 export function mapToNumericFieldItem(value: any): NumericFieldItem {
-    const answerOption = mapNumericAnserOption(value.answerOption)
+    const answerOption = mapNumericAnswerOption(value.answerOption)
 
     return new NumericFieldItem(value.id, value.testId, value.type, value.question, answerOption)
 }

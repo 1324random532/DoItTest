@@ -17,6 +17,7 @@ export function TextInput(props: TextInputProps) {
             variant="outlined"
             autoComplete='new-password'
             type="text"
+            fullWidth
             multiline={props.multiline}
             onChange={event => props.onChange(event.target.value)}
             InputProps={props.InputProps}

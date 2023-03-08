@@ -1,4 +1,5 @@
 import { mapToCheckboxesItem } from "./checkboxesItem";
+import { mapToComparisonItem } from "./comparisonItem";
 import { mapToNumericFieldItem } from "./numericFieldItem";
 import { mapToRadioButtonItem } from "./radioButtonItem";
 import { TestItem } from "./testItem";
@@ -15,6 +16,8 @@ export const mapToTestItem = (data: any): TestItem => {
             return mapToCheckboxesItem(data);
         case TestItemType.RadioButtonsGroup:
             return mapToRadioButtonItem(data);
+        case TestItemType.Comparison:
+            return mapToComparisonItem(data);
         default:
             throw new Error('unknown testItemType');
     }

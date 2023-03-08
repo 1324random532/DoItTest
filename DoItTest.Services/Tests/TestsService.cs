@@ -72,7 +72,7 @@ namespace DoItTest.Services.Tests
             {
 				if (testItem.AnswerOptions.Length < 2) return Result.Fail($"Укажите хотябы два ответа у вопроса {testItemNumber}");
 
-				foreach(AnswerOpttionBlank answerOpttion in testItem.AnswerOptions)
+				foreach(AnswerOptionBlank answerOpttion in testItem.AnswerOptions)
                 {
 					if(String.IsNullOrEmpty(answerOpttion.Title)) return Result.Fail($"Не все ответы имеют заголовок у вопроса {testItemNumber}");
 
@@ -80,10 +80,10 @@ namespace DoItTest.Services.Tests
 					if (answerOpttion.TestItemId is null) answerOpttion.TestItemId = testItem.Id;
 				}
 
-				AnswerOpttionBlank[] nullableAnswerOpttions = testItem.AnswerOptions.Where(a => a.IsTrue is null).ToArray();
+				AnswerOptionBlank[] nullableAnswerOpttions = testItem.AnswerOptions.Where(a => a.IsTrue is null).ToArray();
 				if (nullableAnswerOpttions.Length != 0) throw new Exception("У вариантов ответа не может быть isTrue == null");
 
-				AnswerOpttionBlank[] trueAnswerOpttions = testItem.AnswerOptions.Where(a => a.IsTrue!.Value).ToArray();
+				AnswerOptionBlank[] trueAnswerOpttions = testItem.AnswerOptions.Where(a => a.IsTrue!.Value).ToArray();
 				if (testItem.Type == TestItemType.RadioButtonsGroup)
                 {
 					if (trueAnswerOpttions.Length != 1) return Result.Fail($"Вопрос {testItemNumber} должен иметь 1 верный ответ");
@@ -91,8 +91,42 @@ namespace DoItTest.Services.Tests
 
                 if (testItem.Type == TestItemType.CheckboxesGroup)
                 {
-					if (trueAnswerOpttions.Length < 1) return Result.Fail($"Вопрос {testItemNumber} должен иметь 1 хотябы верный ответ");
+					if (trueAnswerOpttions.Length < 1) return Result.Fail($"Вопрос {testItemNumber} должен иметь 1 хотя бы верный ответ");
                 }
+			}
+
+			if(testItem.Type == TestItemType.Comparison)
+            {
+				if(testItem.AnswerOptionGroups.Length == 0) return Result.Fail($"Вопрос {testItemNumber} должен иметь хотя бы 2 группы");
+
+				List<AnswerOptionBlank> answerOptionBlanks = new();
+				foreach (AnswerOptionGroupBlank answerOptionGroupBlank in testItem.AnswerOptionGroups)
+				{
+					if(String.IsNullOrEmpty(answerOptionGroupBlank.Name)) return Result.Fail($"Вопрос {testItemNumber} должен иметь название у всех групп");
+					if(answerOptionGroupBlank.AnswerOptions.Length == 0) return Result.Fail($"У вопрос {testItemNumber} не у всех групп имеется элемент");
+
+					if (answerOptionGroupBlank.Id is null) answerOptionGroupBlank.Id = Guid.NewGuid();
+
+					List<AnswerOptionBlank> answerOptionBlanksFromGroup = new();
+					
+					foreach(AnswerOptionBlank answerOptionBlank in answerOptionGroupBlank.AnswerOptions)
+                    {
+						if(String.IsNullOrEmpty(answerOptionBlank.Title)) return Result.Fail($"У вопрос {testItemNumber} не у всех элеменов групп имеются заголовки");
+						answerOptionBlanksFromGroup.Add(
+							new AnswerOptionBlank()
+							{
+								Id = answerOptionBlank.Id ?? Guid.NewGuid(),
+								TestItemId = answerOptionBlank.TestItemId ?? testItem.Id,
+								Type = answerOptionBlank.Type,
+								GroupId = answerOptionGroupBlank.Id,
+								GroupName = answerOptionGroupBlank.Name,
+								Title = answerOptionBlank.Title
+							});
+					}
+
+					answerOptionBlanks.AddRange(answerOptionBlanksFromGroup);
+				}
+				testItem.AnswerOptions = answerOptionBlanks.ToArray();
 			}
 
 			return Result.Success();

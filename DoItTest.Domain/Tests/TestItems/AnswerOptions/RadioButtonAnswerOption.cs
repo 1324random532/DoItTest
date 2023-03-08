@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace DoItTest.Domain.Tests.TestItems.AnswerOptions
 {
-    public class RadioButtonAnserOption : AnswerOption
+    public class RadioButtonAnswerOption : AnswerOption
     {
         public String Title { get; }
         public Boolean IsTrue { get; }
 
-        public RadioButtonAnserOption(Guid id, Guid testItemId, String title, Boolean isTrue) : base(id, testItemId)
+        public RadioButtonAnswerOption(Guid id, Guid testItemId, TestItemType type, String title, Boolean isTrue) : base(id, testItemId, type)
         {
             Title = title;
             IsTrue = isTrue;

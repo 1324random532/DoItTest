@@ -8,11 +8,13 @@ namespace DoItTest.Domain.Tests.TestItems.AnswerOptions
     {
         public Guid Id { get; }
         public Guid TestItemId { get; }
+        public TestItemType Type { get; }
 
-        public AnswerOption(Guid id, Guid testItemId)
+        public AnswerOption(Guid id, Guid testItemId, TestItemType type)
         {
             Id = id;
             TestItemId = testItemId;
+            Type = type;
         }
     }
 }

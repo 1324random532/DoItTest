@@ -1,13 +1,14 @@
 const path = require('path');
 
 module.exports = {
+
 	context: __dirname,
 	entry: {
 		app: './src/main.tsx',
 	},
 	resolve: {
 		extensions: ['.ts', '.tsx', '.js', '.json', '.css', '.scss', '.svg'],
-		modules:  [ path.join(__dirname, './src'), path.join(__dirname, './node_modules') ]
+		modules: [path.join(__dirname, './src'), path.join(__dirname, './node_modules')]
 	},
 	output: {
 		path: path.join(__dirname, '../wwwroot/js'),
@@ -15,16 +16,26 @@ module.exports = {
 	},
 	module: {
 		rules: [
-			{ test: /\.css$/, use: [
-				'style-loader',
-				'css-loader'
-			]},
-			{ test: /\.tsx?$/, exclude: /node_modules/, use: [
-				{ loader: 'ts-loader', options: { transpileOnly: true } },
-			]},
-			{ test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+			{
+				test: /\.js$/,
+				enforce: "pre",
+				use: ["source-map-loader"],
+			},
+			{
+				test: /\.css$/, use: [
+					'style-loader',
+					'css-loader'
+				]
+			},
+			{
+				test: /\.tsx?$/, exclude: /node_modules/, use: [
+					{ loader: 'ts-loader', options: { transpileOnly: true } },
+				]
+			},
+			{
+				test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
 				type: 'asset/resource',
-				generator: { filename: 'fonts/[name][ext]'},
+				generator: { filename: 'fonts/[name][ext]' },
 			}
 		]
 	},

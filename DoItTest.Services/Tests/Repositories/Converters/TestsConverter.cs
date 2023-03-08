@@ -19,7 +19,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
             return new Test(db.Id, db.UserId, db.Title);
         }
 
-        public static TestItem[] ToTestItems(this IEnumerable<TestItemDb> dbs, AnserOptionDb[] allAnswerOptionDbs)
+        public static TestItem[] ToTestItems(this IEnumerable<TestItemDb> dbs, AnswerOptionDb[] allAnswerOptionDbs)
         {
             List<TestItem> testItems = new();
             var answerOptionDbsGroups = allAnswerOptionDbs.GroupBy(db => db.TestItemId).ToArray();
@@ -35,16 +35,16 @@ namespace DoItTest.Services.Tests.Repositories.Converters
             return testItems.ToArray();
         }
 
-        public static TestItem ToTestItem(this TestItemDb db, AnserOptionDb[] answerOptionDbs)
+        public static TestItem ToTestItem(this TestItemDb db, AnswerOptionDb[] answerOptionDbs)
         {
             switch (db.Type)
             {
                 case TestItemType.CheckboxesGroup:
                     {
                         List<CheckboxesAnswerOption> answerOptions = new();
-                        foreach (AnserOptionDb anserOptionDb in answerOptionDbs)
+                        foreach (AnswerOptionDb answerOptionDb in answerOptionDbs)
                         {
-                            CheckboxesAnswerOption answerOption = new(anserOptionDb.Id, anserOptionDb.TestItemId, anserOptionDb.Title!, anserOptionDb.IsTrue!.Value);
+                            CheckboxesAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.Title!, answerOptionDb.IsTrue!.Value);
                             answerOptions.Add(answerOption);
                         }
 
@@ -53,10 +53,10 @@ namespace DoItTest.Services.Tests.Repositories.Converters
 
                 case TestItemType.RadioButtonsGroup:
                     {
-                        List<RadioButtonAnserOption> answerOptions = new();
-                        foreach (AnserOptionDb anserOptionDb in answerOptionDbs)
+                        List<RadioButtonAnswerOption> answerOptions = new();
+                        foreach (AnswerOptionDb answerOptionDb in answerOptionDbs)
                         {
-                            RadioButtonAnserOption answerOption = new(anserOptionDb.Id, anserOptionDb.TestItemId, anserOptionDb.Title!, anserOptionDb.IsTrue!.Value);
+                            RadioButtonAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.Title!, answerOptionDb.IsTrue!.Value);
                             answerOptions.Add(answerOption);
                         }
 
@@ -65,19 +65,42 @@ namespace DoItTest.Services.Tests.Repositories.Converters
 
                 case TestItemType.TextField:
                     {
-                        AnserOptionDb answerOptionDb = answerOptionDbs[0];
+                        AnswerOptionDb answerOptionDb = answerOptionDbs[0];
 
-                        TextFildAnserOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.StringAnswer!);
+                        TextFildAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.StringAnswer!);
                         return new TextFieldItem(db.Id, db.TestId, db.Type, db.Question, answerOption);
                     }
 
                 case TestItemType.NumericField:
                     {
-                        AnserOptionDb answerOptionDb = answerOptionDbs[0];
+                        AnswerOptionDb answerOptionDb = answerOptionDbs[0];
 
-                        NumberAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.NumberAnswer!.Value);
+                        NumberAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.NumberAnswer!.Value);
                         return new NumberFieldItem(db.Id, db.TestId, db.Type, db.Question, answerOption);
                     }
+
+                case TestItemType.Comparison:
+                    {
+                        List<ComparisonAnswerOption> answerOptions = new();
+                        List<AnswerOptionGroup> answerOptionGroups = new();
+                        foreach (AnswerOptionDb answerOptionDb in answerOptionDbs)
+                        {
+                            ComparisonAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.GroupId!.Value, answerOptionDb.GroupName!, answerOptionDb.Title!);
+                            answerOptions.Add(answerOption);
+                        }
+
+                        var groupAnswerOptions = answerOptions.GroupBy(o => o.GroupId).ToArray();
+
+                        foreach (var groupAnswerOption in groupAnswerOptions)
+                        {
+                            ComparisonAnswerOption firstAnswerOption = groupAnswerOption.First();
+                            AnswerOptionGroup answerOptionGroup = new(groupAnswerOption.Key, firstAnswerOption.TestItemId, firstAnswerOption.Type, firstAnswerOption.GroupName, groupAnswerOption.ToArray());
+                            answerOptionGroups.Add(answerOptionGroup);
+                        }
+
+                        return new ComparisonItem(db.Id, db.TestId, db.Type, db.Question, answerOptionGroups.ToArray());
+                    }
+
                 default: throw new Exception("Неизвестный тип вопроса");
             }
         }

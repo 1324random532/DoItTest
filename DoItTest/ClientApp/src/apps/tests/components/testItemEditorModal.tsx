@@ -26,7 +26,7 @@ export interface TestItemEditorModalProps {
 
 export default function TestItemEditorModal(props: TestItemEditorModalProps) {
 
-    const [item, setItem] = useState<TestItemBlank>(props.testItem)
+    const [itemBlank, setItem] = useState<TestItemBlank>(props.testItem)
 
     const { showError } = useNotification()
 
@@ -38,12 +38,15 @@ export default function TestItemEditorModal(props: TestItemEditorModalProps) {
     const title = props.testItem.isCreated ? "Изменение вопроса" : "Добаление вопроса"
 
     function saveItem() {
-        const validateResult = ValidateTestItem(item)
+        const validateResult = ValidateTestItem(itemBlank)
         if (!validateResult.isSuccess) return showError(validateResult.errors[0].message)
 
-        item.isCreated = true
-        props.changeTestItemBlank(item)
+        itemBlank.isCreated = true
+        props.changeTestItemBlank(itemBlank)
     }
+
+    console.log(testItemTypes)
+    console.log(itemBlank)
 
     return (
         <Dialog
@@ -66,20 +69,20 @@ export default function TestItemEditorModal(props: TestItemEditorModalProps) {
                 <Input
                     type="select"
                     label="Тип вопроса"
-                    value={item.type}
+                    value={itemBlank.type}
                     options={testItemTypes}
                     getOptionLabel={TestItemType.getDisplayName}
-                    onChange={type => setItem({ ...item, type, answerOptions: [], answerOption: null })}
+                    onChange={type => setItem({ ...itemBlank, type, answerOptions: [], answerOption: null, answerOptionGroups: [] })}
                 />
                 <Input
                     type='text'
                     label="Вопрос"
-                    value={item.question ?? ""}
-                    onChange={question => setItem({ ...item, question })}
+                    value={itemBlank.question ?? ""}
+                    onChange={question => setItem({ ...itemBlank, question })}
                     multiline
                 />
 
-                <TestItemEditor item={item} changeItem={setItem} />
+                <TestItemEditor item={itemBlank} changeItem={setItem} />
             </Box>
         </Dialog >
     );
@@ -99,7 +102,7 @@ export function ValidateTestItem(testItem: TestItemBlank): Result {
     }
 
     if (testItem.type == TestItemType.RadioButtonsGroup || testItem.type == TestItemType.CheckboxesGroup) {
-        if (testItem.answerOptions.length < 2) errors.push(new ResultError(null, "Создайте хотябы 2 варианта ответа"));
+        if (testItem.answerOptions.length < 2) errors.push(new ResultError(null, "Создайте хотя бы 2 варианта ответа"));
 
         const trueAnswerOptions = testItem.answerOptions.filter(o => o.isTrue)
         if (testItem.type == TestItemType.RadioButtonsGroup && trueAnswerOptions.length == 0) errors.push(new ResultError(null, "Укажите правильный ответ"));
@@ -107,6 +110,19 @@ export function ValidateTestItem(testItem: TestItemBlank): Result {
 
         const withoutTitleAnswers = testItem.answerOptions.filter(o => String.isNullOrEmpty(o.title))
         if (withoutTitleAnswers.length != 0) errors.push(new ResultError(null, "Все ответы должны иметь заголовок"));
+    }
+
+    if (testItem.type == TestItemType.Comparison) {
+        if (testItem.answerOptionGroups.length < 2) errors.push(new ResultError(null, "Содайте хотябы 2 группы"))
+
+        testItem.answerOptionGroups.forEach(group => {
+            if (String.isNullOrEmpty(group.name)) errors.push(new ResultError(null, "Все группы должны иметь название"))
+
+            if (group.answerOptions.length < 1) errors.push(new ResultError(null, "В каждой группе должен быть хотябы один элемент"))
+
+            const withoutTitleAnswers = group.answerOptions.filter(o => String.isNullOrEmpty(o.title))
+            if (withoutTitleAnswers.length != 0) errors.push(new ResultError(null, "У каждого элемента группы должен быть заголовок"))
+        });
     }
 
     return new Result(errors)

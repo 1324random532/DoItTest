@@ -63,10 +63,10 @@ namespace DoItTest.Services.Tests.Repositories
                     $"question) " +
                     $"VALUES(@Id, @TestId, @Type, @Question) ";
 
-                    String saveTestItemAnswerOptionQuery = $"INSERT INTO testitemansweroptions(id, testitemid," +
-                    $"stringanswer, numberanswer, title, istrue) " +
-                    $"VALUES(@Id, @TestItemId, @StringAnswer, @NumberAnswer, @Title, " +
-                    $"@IsTrue) ";
+                    String saveTestItemAnswerOptionQuery = $"INSERT INTO testitemansweroptions(id, testitemid, type," +
+                    $"stringanswer, numberanswer, title, istrue, groupid, groupname) " +
+                    $"VALUES(@Id, @TestItemId, @Type, @StringAnswer, @NumberAnswer, @Title, " +
+                    $"@IsTrue, @GroupId, @GroupName) ";
 
                     db.Execute(deleteTestQuery, deleteTestParameters, transaction: transaction);
                     db.Execute(deleteTestItemsQuery, deleteTestParameters, transaction: transaction);
@@ -92,24 +92,30 @@ namespace DoItTest.Services.Tests.Repositories
                             {
                                 testItem.AnswerOption.Id,
                                 testItem.AnswerOption.TestItemId,
+                                testItem.AnswerOption.Type,
                                 testItem.AnswerOption.StringAnswer,
                                 testItem.AnswerOption.NumberAnswer,
                                 testItem.AnswerOption.Title,
-                                testItem.AnswerOption.IsTrue
+                                testItem.AnswerOption.IsTrue,
+                                testItem.AnswerOption.GroupId,
+                                testItem.AnswerOption.GroupName
                             };
                             db.Execute(saveTestItemAnswerOptionQuery, saveTestItemAnswerParameters, transaction: transaction);
                         }
 
-                        foreach (AnswerOpttionBlank answerOpttion in testItem.AnswerOptions)
+                        foreach (AnswerOptionBlank answerOpttion in testItem.AnswerOptions)
                         {
                             var saveTestItemAnswerParameters = new
                             {
                                 answerOpttion.Id,
                                 answerOpttion.TestItemId,
+                                answerOpttion.Type,
                                 answerOpttion.StringAnswer,
                                 answerOpttion.NumberAnswer,
                                 answerOpttion.Title,
-                                answerOpttion.IsTrue
+                                answerOpttion.IsTrue,
+                                answerOpttion.GroupId,
+                                answerOpttion.GroupName
                             };
 
                             db.Execute(saveTestItemAnswerOptionQuery, saveTestItemAnswerParameters, transaction: transaction);
@@ -219,7 +225,7 @@ namespace DoItTest.Services.Tests.Repositories
                         TestId = testId
                     };
 
-                    String selectAnserOptionsQuery = $"SELECT * " +
+                    String selectAnswerOptionsQuery = $"SELECT * " +
                     $"FROM testitemansweroptions " +
                     $"WHERE testitemid = ANY(@TestItemId) " +
                     $"  AND NOT isremoved;";
@@ -227,14 +233,14 @@ namespace DoItTest.Services.Tests.Repositories
                     TestItemDb[] testItemDbs = db.Query<TestItemDb>(selectTestItemsQuery, selectTestItemsParameters, transaction: transaction).ToArray();
                     Guid[] testItemsDbIds = testItemDbs.Select(db => db.Id).ToArray();
 
-                    var selectAnserOptionsParameters = new
+                    var selectAnswerOptionsParameters = new
                     {
                         TestItemId = testItemsDbIds
                     };
 
-                    AnserOptionDb[] anserOptionDbs = db.Query<AnserOptionDb>(selectAnserOptionsQuery, selectAnserOptionsParameters, transaction: transaction).ToArray();
+                    AnswerOptionDb[] answerOptionDbs = db.Query<AnswerOptionDb>(selectAnswerOptionsQuery, selectAnswerOptionsParameters, transaction: transaction).ToArray();
 
-                    return testItemDbs.ToTestItems(anserOptionDbs); // расконвертить обратно
+                    return testItemDbs.ToTestItems(answerOptionDbs);
                 }
             }
         }

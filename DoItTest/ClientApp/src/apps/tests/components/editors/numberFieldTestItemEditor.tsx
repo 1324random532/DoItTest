@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@mui/material";
 import { Box } from "@mui/system";
-import { AnserOptionBlank } from "domain/tests/anserOptionBlank";
+import { AnswerOptionBlank } from "domain/tests/answerOptionBlank";
 import { TestItemType } from "domain/tests/items/testItemType";
 import { TestItemBlank } from "domain/tests/testItemBlank";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ export interface NumberFieldTestItemEditorProps {
 
 export function NumberFieldTestItemEditor({ item, changeItem }: NumberFieldTestItemEditorProps) {
 
-    const [answerOption, setAnswerOption] = useState<AnserOptionBlank>(item.answerOption ?? AnserOptionBlank.getDefault())
+    const [answerOption, setAnswerOption] = useState<AnswerOptionBlank>(item.answerOption ?? AnswerOptionBlank.getDefault(item.type!))
 
     useEffect(() => changeItem({ ...item, answerOption }), [answerOption])
 

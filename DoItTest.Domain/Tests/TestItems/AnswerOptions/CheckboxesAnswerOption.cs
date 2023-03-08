@@ -11,7 +11,7 @@ namespace DoItTest.Domain.Tests.TestItems.AnswerOptions
         public String Title { get; }
         public Boolean IsTrue { get; }
 
-        public CheckboxesAnswerOption(Guid id, Guid testItemId, String title, Boolean isTrue) : base(id, testItemId)
+        public CheckboxesAnswerOption(Guid id, Guid testItemId, TestItemType type, String title, Boolean isTrue) : base(id, testItemId, type)
         {
             Title = title;
             IsTrue = isTrue;

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { Box } from "@mui/system";
-import { AnserOptionBlank } from "domain/tests/anserOptionBlank";
+import { AnswerOptionBlank } from "domain/tests/answerOptionBlank";
 import { TestItemBlank } from "domain/tests/testItemBlank";
 import { useEffect, useState } from "react";
 import { Button } from "sharedComponents/buttons/button";
@@ -17,7 +17,7 @@ export interface RadioButtonsItemEditorProps {
 
 
 export function RadioButtonsItemEditor({ item, changeItem }: RadioButtonsItemEditorProps) {
-    const [answerOptions, setAnswerOptions] = useState<AnserOptionBlank[]>(item.answerOptions)
+    const [answerOptions, setAnswerOptions] = useState<AnswerOptionBlank[]>(item.answerOptions)
 
     useEffect(() => changeItem({ ...item, answerOptions }), [answerOptions])
     const confirmDialog = useDialog(ConfirmDialogAsync)
@@ -71,12 +71,8 @@ export function RadioButtonsItemEditor({ item, changeItem }: RadioButtonsItemEdi
             >
                 {
                     answerOptions.map(o =>
-                        <Box sx={{ display: "flex" }} key={o.key}>
-                            <Radio value={o.key}
-                                sx={{
-                                    flexBasis: 50
-                                }}
-                            />
+                        <Box display="flex" alignItems="center" key={o.key}>
+                            <Radio value={o.key} />
                             <Input
                                 type="text"
                                 label="Вариант ответа"
@@ -89,8 +85,7 @@ export function RadioButtonsItemEditor({ item, changeItem }: RadioButtonsItemEdi
                             <IconButton
                                 icon='delete'
                                 onClick={() => remove(o.key)}
-                                title='Удалить тест'
-                                sx={{ flexBasis: 50 }} />
+                                title='Удалить тест' />
                         </Box>
                     )
                 }
@@ -101,7 +96,7 @@ export function RadioButtonsItemEditor({ item, changeItem }: RadioButtonsItemEdi
                 onClick={() => {
                     setAnswerOptions(prev => {
                         const answerOptions = [...prev]
-                        answerOptions.push(AnserOptionBlank.getDefault())
+                        answerOptions.push(AnswerOptionBlank.getDefault(item.type!, false))
                         return answerOptions
                     })
                 }}

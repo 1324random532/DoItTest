@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, Checkbox, FormControlLabel, FormGroup, Radio, RadioGroup } from "@mui/material";
 import { Box } from "@mui/system";
-import { AnserOptionBlank } from "domain/tests/anserOptionBlank";
+import { AnswerOptionBlank } from "domain/tests/answerOptionBlank";
 import { TestItemType } from "domain/tests/items/testItemType";
 import { TestItemBlank } from "domain/tests/testItemBlank";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ export interface CheckBoxesItemEditorProps {
 
 export function CheckBoxesItemEditor({ item, changeItem }: CheckBoxesItemEditorProps) {
 
-    const [answerOptions, setAnswerOptions] = useState<AnserOptionBlank[]>(item.answerOptions)
+    const [answerOptions, setAnswerOptions] = useState<AnswerOptionBlank[]>(item.answerOptions)
     const confirmDialog = useDialog(ConfirmDialogAsync)
 
 
@@ -63,26 +63,21 @@ export function CheckBoxesItemEditor({ item, changeItem }: CheckBoxesItemEditorP
             <FormGroup sx={{ gap: 2 }}>
                 {
                     answerOptions.map(o =>
-                        <Box sx={{ display: "flex" }} key={o.key}>
+                        <Box display="flex" alignItems="center" key={o.key}>
                             <Checkbox
                                 onChange={(_, checked) => { changeChecked(o.key, checked) }}
                                 checked={o.isTrue ?? false}
-                                sx={{ flexBasis: 50 }}
                             />
                             <Input
                                 type="text"
                                 label="Вариант ответа"
                                 value={o.title}
                                 onChange={value => changeTitle(o.key, value)}
-                                sx={{
-                                    flexBasis: "100%"
-                                }}
                             />
                             <IconButton
                                 icon='delete'
                                 onClick={() => remove(o.key)}
-                                title='Удалить тест'
-                                sx={{ flexBasis: 50 }} />
+                                title='Удалить тест' />
                         </Box>
                     )
                 }
@@ -92,7 +87,7 @@ export function CheckBoxesItemEditor({ item, changeItem }: CheckBoxesItemEditorP
                 onClick={() => {
                     setAnswerOptions(prev => {
                         const answerOptions = [...prev]
-                        answerOptions.push(AnserOptionBlank.getDefault(false))
+                        answerOptions.push(AnswerOptionBlank.getDefault(item.type!, false))
                         return answerOptions
                     })
                 }}

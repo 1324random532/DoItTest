@@ -8,7 +8,8 @@ namespace DoItTest.Domain.Tests.TestItems
         public Guid? TestId { get; set; }
         public TestItemType? Type { get; set; }
         public String? Question { get; set; }
-        public AnswerOpttionBlank[] AnswerOptions { get; set; }
-        public AnswerOpttionBlank? AnswerOption { get; set; }
+        public AnswerOptionBlank[] AnswerOptions { get; set; }
+        public AnswerOptionBlank? AnswerOption { get; set; }
+        public AnswerOptionGroupBlank[] AnswerOptionGroups { get; set; }
     }
 }

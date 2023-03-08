@@ -10,7 +10,7 @@ namespace DoItTest.Domain.Tests.TestItems.AnswerOptions
     {
         public Decimal Answer { get; }
 
-        public NumberAnswerOption(Guid id, Guid testItemId, Decimal answer) : base(id, testItemId)
+        public NumberAnswerOption(Guid id, Guid testItemId, TestItemType type, Decimal answer) : base(id, testItemId, type)
         {
             Answer = answer;
         }

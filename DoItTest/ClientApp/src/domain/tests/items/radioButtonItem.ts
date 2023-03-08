@@ -1,4 +1,4 @@
-import { mapRadioButtonAnserOptions, RadioButtonAnserOption } from "./anserOption/radioButtonAnserOption";
+import { mapRadioButtonAnswerOptions, RadioButtonAnswerOption } from "./answerOption/radioButtonAnswerOption";
 import { TestItem } from "./testItem";
 import { TestItemType } from "./testItemType";
 
@@ -8,14 +8,14 @@ export class RadioButtonItem extends TestItem {
         public testId: string,
         public type: TestItemType,
         public question: string,
-        public answerOptions: RadioButtonAnserOption[],
+        public answerOptions: RadioButtonAnswerOption[],
     ) {
         super(id, testId, type, question)
     }
 }
 
 export function mapToRadioButtonItem(value: any): RadioButtonItem {
-    const answerOptions = mapRadioButtonAnserOptions(value.answerOptions)
+    const answerOptions = mapRadioButtonAnswerOptions(value.answerOptions)
 
     return new RadioButtonItem(value.id, value.testId, value.type, value.question, answerOptions)
 }

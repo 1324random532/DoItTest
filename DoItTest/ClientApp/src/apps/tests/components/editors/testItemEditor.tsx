@@ -5,6 +5,7 @@ import { RadioButtonsItemEditor } from "./radioButtonsItemEditor";
 import { NumberFieldTestItemEditor } from "./numberFieldTestItemEditor";
 import { TextFieldTestItemEditor } from "./textFieldTestItemEditor";
 import { CheckBoxesItemEditor } from "./checkBoxesItemEditor";
+import { ComparisonItemEditor } from "./comparisonItemEditor";
 
 export interface TestItemEditorProps {
     item: TestItemBlank
@@ -22,6 +23,8 @@ export function TestItemEditor({ item, changeItem }: TestItemEditorProps): JSX.E
             return <RadioButtonsItemEditor item={item} changeItem={changeItem} />
         case TestItemType.CheckboxesGroup:
             return <CheckBoxesItemEditor item={item} changeItem={changeItem} />
+        case TestItemType.Comparison:
+            return <ComparisonItemEditor item={item} changeItem={changeItem} />
         default:
             return null;
     }
