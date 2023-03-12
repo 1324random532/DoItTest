@@ -41349,19 +41349,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ComparisonItemEditor": () => (/* binding */ ComparisonItemEditor)
 /* harmony export */ });
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Box/Box.js");
-/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/FormGroup/FormGroup.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Box/Box.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/FormGroup/FormGroup.js");
 /* harmony import */ var domain_tests_answerOptionBlank__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! domain/tests/answerOptionBlank */ "./src/domain/tests/answerOptionBlank.ts");
 /* harmony import */ var domain_tests_items_answerOption_answerOptionGroups_answerOptionGroupBlank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! domain/tests/items/answerOption/answerOptionGroups/answerOptionGroupBlank */ "./src/domain/tests/items/answerOption/answerOptionGroups/answerOptionGroupBlank.ts");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var sharedComponents_buttons_button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! sharedComponents/buttons/button */ "./src/sharedComponents/buttons/button.tsx");
 /* harmony import */ var sharedComponents_buttons_iconButton__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! sharedComponents/buttons/iconButton */ "./src/sharedComponents/buttons/iconButton.tsx");
-/* harmony import */ var sharedComponents_dialog_dialog2__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! sharedComponents/dialog/dialog2 */ "./src/sharedComponents/dialog/dialog2.tsx");
-/* harmony import */ var sharedComponents_dialog_useDialog__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! sharedComponents/dialog/useDialog */ "./src/sharedComponents/dialog/useDialog.ts");
-/* harmony import */ var sharedComponents_inputs_input__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! sharedComponents/inputs/input */ "./src/sharedComponents/inputs/input.tsx");
-
-
+/* harmony import */ var sharedComponents_inputs_input__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! sharedComponents/inputs/input */ "./src/sharedComponents/inputs/input.tsx");
 
 
 
@@ -41372,7 +41368,6 @@ __webpack_require__.r(__webpack_exports__);
 
 function ComparisonItemEditor({ item, changeItem }) {
     const [answerOptionGroups, setAnswerOptionGroups] = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(item.answerOptionGroups);
-    const confirmDialog = (0,sharedComponents_dialog_useDialog__WEBPACK_IMPORTED_MODULE_7__["default"])(sharedComponents_dialog_dialog2__WEBPACK_IMPORTED_MODULE_6__.ConfirmDialogAsync);
     (0,react__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => changeItem(Object.assign(Object.assign({}, item), { answerOptionGroups })), [answerOptionGroups]);
     function removeAnswerOptionGroup(groupKey) {
         setAnswerOptionGroups(prev => {
@@ -41421,11 +41416,11 @@ function ComparisonItemEditor({ item, changeItem }) {
             return answerOptionGroups;
         });
     }
-    return ((0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], Object.assign({ sx: {
+    return ((0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], Object.assign({ sx: {
             display: "flex",
             flexDirection: "column",
             gap: 2
-        } }, { children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], Object.assign({ sx: { gap: 2 } }, { children: answerOptionGroups.map(g => (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], Object.assign({ sx: { display: "flex" }, flexDirection: "column", gap: 2 }, { children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], Object.assign({ display: "flex", alignItems: "center" }, { children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_inputs_input__WEBPACK_IMPORTED_MODULE_8__.Input, { type: "text", label: "\u0413\u0440\u0443\u043F\u043F\u0430", value: g.name, onChange: name => changeGroupName(g.key, name) }), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], Object.assign({ ml: 1 }, { children: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_buttons_iconButton__WEBPACK_IMPORTED_MODULE_5__.IconButton, { icon: 'add', onClick: () => { addComparisonAnswerOption(g.key); }, title: '\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0432 \u0433\u0440\u0443\u043F\u043F\u0443' }) })), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], Object.assign({ mr: -1 }, { children: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_buttons_iconButton__WEBPACK_IMPORTED_MODULE_5__.IconButton, { icon: 'delete', onClick: () => removeAnswerOptionGroup(g.key), title: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u0433\u0440\u0443\u043F\u043F\u0443' }) }))] })), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], Object.assign({ sx: { display: "flex", flexDirection: "column" }, gap: 2 }, { children: g.answerOptions.map(o => (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], Object.assign({ sx: { display: "flex", paddingLeft: 5 } }, { children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_inputs_input__WEBPACK_IMPORTED_MODULE_8__.Input, { type: "text", label: "\u041E\u0442\u043D\u043E\u0441\u044F\u0449\u0438\u0439\u0441\u044F \u044D\u043B\u0435\u043C\u0435\u043D\u0442", value: o.title, onChange: title => { changeComparisonAnswerOptionTitle(title, g.key, o.key); } }), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_buttons_iconButton__WEBPACK_IMPORTED_MODULE_5__.IconButton, { icon: 'delete', onClick: () => removeComparisonAnswerOption(g.key, o.key), title: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u044D\u043B\u0435\u043C\u0435\u043D\u0442', sx: { mr: 4, ml: 1 } })] }), o.key)) }))] }), g.key)) })), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_buttons_button__WEBPACK_IMPORTED_MODULE_4__.Button, Object.assign({ title: "\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0432\u0430\u0440\u0438\u0430\u043D\u0442 \u043E\u0442\u0432\u0435\u0442\u0430", onClick: () => {
+        } }, { children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], Object.assign({ sx: { gap: 2 } }, { children: answerOptionGroups.map(g => (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], Object.assign({ sx: { display: "flex" }, flexDirection: "column", gap: 2 }, { children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], Object.assign({ display: "flex", alignItems: "center" }, { children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_inputs_input__WEBPACK_IMPORTED_MODULE_6__.Input, { type: "text", label: "\u0413\u0440\u0443\u043F\u043F\u0430", value: g.name, onChange: name => changeGroupName(g.key, name) }), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], Object.assign({ ml: 1 }, { children: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_buttons_iconButton__WEBPACK_IMPORTED_MODULE_5__.IconButton, { icon: 'add', onClick: () => { addComparisonAnswerOption(g.key); }, title: '\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0432 \u0433\u0440\u0443\u043F\u043F\u0443' }) })), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], Object.assign({ mr: -1 }, { children: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_buttons_iconButton__WEBPACK_IMPORTED_MODULE_5__.IconButton, { icon: 'delete', onClick: () => removeAnswerOptionGroup(g.key), title: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u0433\u0440\u0443\u043F\u043F\u0443' }) }))] })), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], Object.assign({ sx: { display: "flex", flexDirection: "column" }, gap: 2 }, { children: g.answerOptions.map(o => (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], Object.assign({ sx: { display: "flex", paddingLeft: 5 }, alignItems: "center" }, { children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_inputs_input__WEBPACK_IMPORTED_MODULE_6__.Input, { type: "text", label: "\u041E\u0442\u043D\u043E\u0441\u044F\u0449\u0438\u0439\u0441\u044F \u044D\u043B\u0435\u043C\u0435\u043D\u0442", value: o.title, onChange: title => { changeComparisonAnswerOptionTitle(title, g.key, o.key); } }), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], Object.assign({ sx: { mr: 4, ml: 1 } }, { children: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_buttons_iconButton__WEBPACK_IMPORTED_MODULE_5__.IconButton, { icon: 'delete', onClick: () => removeComparisonAnswerOption(g.key, o.key), title: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u044D\u043B\u0435\u043C\u0435\u043D\u0442' }) }))] }), o.key)) }))] }), g.key)) })), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_buttons_button__WEBPACK_IMPORTED_MODULE_4__.Button, Object.assign({ title: "\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0432\u0430\u0440\u0438\u0430\u043D\u0442 \u043E\u0442\u0432\u0435\u0442\u0430", onClick: () => {
                     setAnswerOptionGroups(prev => {
                         const answerOptions = [...prev];
                         answerOptions.push(domain_tests_items_answerOption_answerOptionGroups_answerOptionGroupBlank__WEBPACK_IMPORTED_MODULE_2__.AnswerOptionGroupBlank.getDefault());
@@ -41668,6 +41663,54 @@ function CheckBoxesTestItemInfo({ item, sx }) {
 
 /***/ }),
 
+/***/ "./src/apps/tests/components/info/comparisonItemInfo.tsx":
+/*!***************************************************************!*\
+  !*** ./src/apps/tests/components/info/comparisonItemInfo.tsx ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ComparisonItemInfo": () => (/* binding */ ComparisonItemInfo)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _groupInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./groupInfo */ "./src/apps/tests/components/info/groupInfo.tsx");
+/* harmony import */ var _mui_system__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/system */ "./node_modules/@mui/system/esm/Box/Box.js");
+
+
+
+function ComparisonItemInfo({ item, sx }) {
+    return ((0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_system__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({ display: 'flex', flexDirection: 'column', gap: 2, width: 1 }, { children: item.answerOptionGroups.map(o => (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_groupInfo__WEBPACK_IMPORTED_MODULE_1__.GroupInfo, { label: o.name, options: o.answerOptions })) })));
+}
+
+
+/***/ }),
+
+/***/ "./src/apps/tests/components/info/groupInfo.tsx":
+/*!******************************************************!*\
+  !*** ./src/apps/tests/components/info/groupInfo.tsx ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "GroupInfo": () => (/* binding */ GroupInfo)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Card/Card.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/CardHeader/CardHeader.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/CardContent/CardContent.js");
+/* harmony import */ var _mui_system__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/system */ "./node_modules/@mui/system/esm/Box/Box.js");
+
+
+
+function GroupInfo({ label, options, sx }) {
+    return ((0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_1__["default"], Object.assign({ sx: { backgroundColor: '#F0F0F0' } }, { children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_2__["default"], { title: label }), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_3__["default"], Object.assign({ sx: { display: 'flex', flexDirection: 'column', gap: 1 } }, { children: options.map(o => (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_mui_system__WEBPACK_IMPORTED_MODULE_4__["default"], Object.assign({ sx: { padding: 1, borderRadius: 1, backgroundColor: '#DCDCDC' } }, { children: o.title }))) }))] })));
+}
+
+
+/***/ }),
+
 /***/ "./src/apps/tests/components/info/numberFieldTestItemInfo.tsx":
 /*!********************************************************************!*\
   !*** ./src/apps/tests/components/info/numberFieldTestItemInfo.tsx ***!
@@ -41732,6 +41775,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _numberFieldTestItemInfo__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./numberFieldTestItemInfo */ "./src/apps/tests/components/info/numberFieldTestItemInfo.tsx");
 /* harmony import */ var _radioButtonsTestItemInfo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./radioButtonsTestItemInfo */ "./src/apps/tests/components/info/radioButtonsTestItemInfo.tsx");
 /* harmony import */ var _checkBoxesTestItemInfo__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./checkBoxesTestItemInfo */ "./src/apps/tests/components/info/checkBoxesTestItemInfo.tsx");
+/* harmony import */ var _comparisonItemInfo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./comparisonItemInfo */ "./src/apps/tests/components/info/comparisonItemInfo.tsx");
+
 
 
 
@@ -41748,6 +41793,8 @@ function TestItemInfo({ item, sx }) {
             return (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_radioButtonsTestItemInfo__WEBPACK_IMPORTED_MODULE_4__.RadioButtonsFieldTestItemInfo, { item: item, sx: sx });
         case domain_tests_items_testItemType__WEBPACK_IMPORTED_MODULE_1__.TestItemType.CheckboxesGroup:
             return (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_checkBoxesTestItemInfo__WEBPACK_IMPORTED_MODULE_5__.CheckBoxesTestItemInfo, { item: item, sx: sx });
+        case domain_tests_items_testItemType__WEBPACK_IMPORTED_MODULE_1__.TestItemType.Comparison:
+            return (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_comparisonItemInfo__WEBPACK_IMPORTED_MODULE_6__.ComparisonItemInfo, { item: item, sx: sx });
         default:
             return null;
     }
@@ -41861,8 +41908,6 @@ function TestItemEditorModal(props) {
         itemBlank.isCreated = true;
         props.changeTestItemBlank(itemBlank);
     }
-    console.log(testItemTypes);
-    console.log(itemBlank);
     return ((0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_dialog_dialog__WEBPACK_IMPORTED_MODULE_4__["default"], Object.assign({ isOpen: props.open, onClose: props.onClose, title: title, actionsContent: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(sharedComponents_buttons_button__WEBPACK_IMPORTED_MODULE_3__.Button, Object.assign({ title: "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C", onClick: saveItem }, { children: "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C" })) }, { children: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_11__["default"], Object.assign({ sx: {
                 width: 500,
                 display: "flex",

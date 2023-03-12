@@ -5,6 +5,7 @@ import { NumberFieldTestItemInfo } from "./numberFieldTestItemInfo";
 import { RadioButtonsFieldTestItemInfo } from "./radioButtonsTestItemInfo";
 import { CheckBoxesTestItemInfo } from "./checkBoxesTestItemInfo";
 import { Card, CardContent, CardHeader, SxProps, Theme, Typography } from "@mui/material";
+import { ComparisonItemInfo } from "./comparisonItemInfo";
 
 export interface TestItemInfoProps {
     item: TestItemBlank
@@ -22,6 +23,8 @@ export function TestItemInfo({ item, sx }: TestItemInfoProps): JSX.Element | nul
             return <RadioButtonsFieldTestItemInfo item={item} sx={sx} />;
         case TestItemType.CheckboxesGroup:
             return <CheckBoxesTestItemInfo item={item} sx={sx} />;
+        case TestItemType.Comparison:
+            return <ComparisonItemInfo item={item} sx={sx} />;
         default:
             return null;
     }

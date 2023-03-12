@@ -19,7 +19,6 @@ export interface ComparisonItemEditorProps {
 export function ComparisonItemEditor({ item, changeItem }: ComparisonItemEditorProps) {
 
     const [answerOptionGroups, setAnswerOptionGroups] = useState<AnswerOptionGroupBlank[]>(item.answerOptionGroups)
-    const confirmDialog = useDialog(ConfirmDialogAsync)
 
     useEffect(() => changeItem({ ...item, answerOptionGroups }), [answerOptionGroups])
 
@@ -85,9 +84,7 @@ export function ComparisonItemEditor({ item, changeItem }: ComparisonItemEditorP
                     answerOptionGroups.map(g =>
                         <Box sx={{ display: "flex" }} key={g.key} flexDirection="column" gap={2}>
                             <Box display="flex" alignItems="center">
-
                                 <Input
-
                                     type="text"
                                     label="Группа"
                                     value={g.name}
@@ -110,18 +107,20 @@ export function ComparisonItemEditor({ item, changeItem }: ComparisonItemEditorP
                             <Box sx={{ display: "flex", flexDirection: "column" }} gap={2}>
                                 {
                                     g.answerOptions.map(o =>
-                                        <Box sx={{ display: "flex", paddingLeft: 5 }} key={o.key}>
+                                        <Box sx={{ display: "flex", paddingLeft: 5 }} alignItems="center" key={o.key}>
                                             <Input
                                                 type="text"
                                                 label="Относящийся элемент"
                                                 value={o.title}
                                                 onChange={title => { changeComparisonAnswerOptionTitle(title, g.key, o.key) }}
                                             />
-                                            <IconButton
-                                                icon='delete'
-                                                onClick={() => removeComparisonAnswerOption(g.key, o.key)}
-                                                title='Удалить элемент'
-                                                sx={{ mr: 4, ml: 1 }} />
+                                            <Box sx={{ mr: 4, ml: 1 }}>
+                                                <IconButton
+                                                    icon='delete'
+                                                    onClick={() => removeComparisonAnswerOption(g.key, o.key)}
+                                                    title='Удалить элемент'
+                                                />
+                                            </Box>
                                         </Box>
                                     )
                                 }

@@ -45,9 +45,6 @@ export default function TestItemEditorModal(props: TestItemEditorModalProps) {
         props.changeTestItemBlank(itemBlank)
     }
 
-    console.log(testItemTypes)
-    console.log(itemBlank)
-
     return (
         <Dialog
             isOpen={props.open}
