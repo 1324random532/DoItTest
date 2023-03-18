@@ -28,7 +28,7 @@ public struct ReactApp
 
     public ReactApp WithSidebar()
     {
-        SidebarLinksTree = Sidebar.GetLinksTree();
+        if(SystemUser is not null) SidebarLinksTree = Sidebar.GetLinksTree(SystemUser.Role);
         return this;
     }
 
