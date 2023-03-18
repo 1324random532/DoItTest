@@ -132,7 +132,7 @@ export default function Sidebar(props: PropsWithChildren<{}>) {
                         title='Развернуть'
                     />
                     <Typography variant="h6" noWrap component="div">
-                        Test
+                        DoItTest
                     </Typography>
                 </Toolbar>
             </AppBar>
