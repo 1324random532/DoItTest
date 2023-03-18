@@ -14,6 +14,7 @@ export class TestItemBlank {
         public testId: string | null,
         public type: TestItemType | null,
         public question: string | null,
+        public imageBase64: string | null,
         public answerOptions: AnswerOptionBlank[],
         public answerOption: AnswerOptionBlank | null,
         public answerOptionGroups: AnswerOptionGroupBlank[],
@@ -22,7 +23,7 @@ export class TestItemBlank {
     ) { }
 
     public static getDefault(): TestItemBlank {
-        return new TestItemBlank(null, null, null, null, [], null, [], crypto.randomUUID(), false)
+        return new TestItemBlank(null, null, null, null, null, [], null, [], crypto.randomUUID(), false)
     }
 
     public static formTestItem(testItem: TestItem): TestItemBlank {
@@ -31,7 +32,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 testItem.id, testItem.testId, testItem.type,
-                testItem.question, answerOptions, null, [], crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, answerOptions, null, [], crypto.randomUUID(), true
             );
         }
         if (testItem instanceof RadioButtonItem) {
@@ -39,7 +40,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 testItem.id, testItem.testId, testItem.type,
-                testItem.question, answerOptions, null, [], crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, answerOptions, null, [], crypto.randomUUID(), true
             );
         }
         if (testItem instanceof TextFieldItem) {
@@ -47,7 +48,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 testItem.id, testItem.testId, testItem.type,
-                testItem.question, [], answerOption, [], crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, [], answerOption, [], crypto.randomUUID(), true
             );
         }
         if (testItem instanceof NumericFieldItem) {
@@ -55,7 +56,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 testItem.id, testItem.testId, testItem.type,
-                testItem.question, [], answerOption, [], crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, [], answerOption, [], crypto.randomUUID(), true
             );
         }
         if (testItem instanceof ComparisonItem) {
@@ -63,7 +64,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 testItem.id, testItem.testId, testItem.type,
-                testItem.question, [], null, answerOptionGroups, crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, [], null, answerOptionGroups, crypto.randomUUID(), true
             );
         }
 

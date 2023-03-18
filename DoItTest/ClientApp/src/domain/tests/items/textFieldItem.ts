@@ -8,14 +8,15 @@ export class TextFieldItem extends TestItem {
         public testId: string,
         public type: TestItemType,
         public question: string,
+        public imageBase64: string | null,
         public answerOption: TextFildAnswerOption
     ) {
-        super(id, testId, type, question)
+        super(id, testId, type, question, imageBase64)
     }
 }
 
 export function mapToTextFieldItem(value: any): TextFieldItem {
     const answerOption = mapTextFildAnswerOption(value.answerOption)
 
-    return new TextFieldItem(value.id, value.testId, value.type, value.question, answerOption)
+    return new TextFieldItem(value.id, value.testId, value.type, value.question, value.imageBase64, answerOption)
 }

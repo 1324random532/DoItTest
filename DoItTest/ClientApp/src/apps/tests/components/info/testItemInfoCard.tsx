@@ -28,6 +28,14 @@ export function TestItemCard({ item, index, removeItem, changeItem, sx }: TestIt
             <Typography variant="body2" sx={{ fontSize: 20, wordWrap: "break-word", marginBottom: 2 }}>
                 {item.question}
             </Typography>
+            {
+                item.imageBase64 &&
+                <Box sx={{ position: 'relative', marginTop: 1, marginBottom: 1 }}>
+                    <Box width={1} height={300} sx={{ objectFit: 'contain' }} src={item.imageBase64} component='img'>
+
+                    </Box>
+                </Box>
+            }
             <TestItemInfo item={item} sx={sx} />
         </CardContent>
     </Card>

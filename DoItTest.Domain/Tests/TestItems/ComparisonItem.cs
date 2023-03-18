@@ -7,8 +7,8 @@ namespace DoItTest.Domain.Tests.TestItems
         public AnswerOptionGroup[] AnswerOptionGroups { get; }
 
         public ComparisonItem(Guid id, Guid testId, TestItemType type,
-            String question, AnswerOptionGroup[] answerOptionGroups)
-            : base(id, testId, type, question)
+            String question, String? imageBase64, AnswerOptionGroup[] answerOptionGroups)
+            : base(id, testId, type, question,imageBase64)
         {
             AnswerOptionGroups = answerOptionGroups;
         }

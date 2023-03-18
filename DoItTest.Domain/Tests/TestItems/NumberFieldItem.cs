@@ -8,8 +8,8 @@ namespace DoItTest.Domain.Tests.TestItems
         public NumberAnswerOption AnswerOption { get; }
 
         public NumberFieldItem(Guid id, Guid testId, TestItemType type,
-            String question, NumberAnswerOption answerOption) 
-            : base(id, testId, type, question)
+            String question, String? imageBase64, NumberAnswerOption answerOption) 
+            : base(id, testId, type, question, imageBase64)
         {
             AnswerOption = answerOption;
         }

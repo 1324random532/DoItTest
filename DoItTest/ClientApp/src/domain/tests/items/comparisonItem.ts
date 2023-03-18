@@ -10,14 +10,15 @@ export class ComparisonItem extends TestItem {
         public testId: string,
         public type: TestItemType,
         public question: string,
+        public imageBase64: string | null,
         public answerOptionGroups: AnswerOptionGroup[],
     ) {
-        super(id, testId, type, question)
+        super(id, testId, type, question, imageBase64)
     }
 }
 
 export function mapToComparisonItem(value: any): ComparisonItem {
     const answerOptions = mapAnswerOptionGroups(value.answerOptionGroups)
 
-    return new ComparisonItem(value.id, value.testId, value.type, value.question, answerOptions)
+    return new ComparisonItem(value.id, value.testId, value.type, value.question, value.imageBase64, answerOptions)
 }

@@ -60,8 +60,8 @@ namespace DoItTest.Services.Tests.Repositories
                     };
 
                     String saveTestItemQuery = $"INSERT INTO testitems(id, testid, type, " +
-                    $"question) " +
-                    $"VALUES(@Id, @TestId, @Type, @Question) ";
+                    $"question, imageBase64) " +
+                    $"VALUES(@Id, @TestId, @Type, @Question, @ImageBase64) ";
 
                     String saveTestItemAnswerOptionQuery = $"INSERT INTO testitemansweroptions(id, testitemid, type," +
                     $"stringanswer, numberanswer, title, istrue, groupid, groupname) " +
@@ -81,7 +81,8 @@ namespace DoItTest.Services.Tests.Repositories
                             testItem.Id,
                             testItem.TestId,
                             testItem.Type,
-                            testItem.Question
+                            testItem.Question,
+                            testItem.ImageBase64
                         };
 
                         db.Execute(saveTestItemQuery, saveTestItemsParameters, transaction: transaction);

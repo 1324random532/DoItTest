@@ -10,13 +10,15 @@ namespace DoItTest.Domain.Tests.TestItems
         public Guid TestId { get; }
         public TestItemType Type { get; }
         public String Question { get; }
+        public String? ImageBase64 { get; }
 
-        public TestItem(Guid id, Guid testId, TestItemType type, String question)
+        public TestItem(Guid id, Guid testId, TestItemType type, String question, String? imageBase64)
         {
             Id = id;
             TestId = testId;
             Type = type;
             Question = question;
+            ImageBase64 = imageBase64;
         }
     }
 }

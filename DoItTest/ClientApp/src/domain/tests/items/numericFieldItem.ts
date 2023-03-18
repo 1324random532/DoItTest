@@ -8,14 +8,15 @@ export class NumericFieldItem extends TestItem {
         public testId: string,
         public type: TestItemType,
         public question: string,
+        public imageBase64: string | null,
         public answerOption: NumericAnswerOption
     ) {
-        super(id, testId, type, question)
+        super(id, testId, type, question, imageBase64)
     }
 }
 
 export function mapToNumericFieldItem(value: any): NumericFieldItem {
     const answerOption = mapNumericAnswerOption(value.answerOption)
 
-    return new NumericFieldItem(value.id, value.testId, value.type, value.question, answerOption)
+    return new NumericFieldItem(value.id, value.testId, value.type, value.question, value.imageBase64, answerOption)
 }

@@ -6,6 +6,7 @@ import { TestItemBlank } from "domain/tests/testItemBlank";
 import React, { useEffect } from "react";
 import { useMemo, useState } from "react";
 import { Button } from "sharedComponents/buttons/button";
+import { IconButton } from "sharedComponents/buttons/iconButton";
 import Dialog from "sharedComponents/dialog/dialog";
 import { Autocomplete } from "sharedComponents/inputs/autocomplete";
 import { Input } from "sharedComponents/inputs/input";
@@ -45,6 +46,27 @@ export default function TestItemEditorModal(props: TestItemEditorModalProps) {
         props.changeTestItemBlank(itemBlank)
     }
 
+    function changeImage(e: React.ChangeEvent<HTMLInputElement>) {
+        var reader = new FileReader()
+
+        const file = e.target.files![0]
+        if (!file.type.match('image.*')) return showError('Файл не является картинкой')
+        if (file.size > 2097152) return showError('Картинка слишком большая')
+
+        if (file) {
+            reader.readAsDataURL(file)
+            reader.onload = () => {
+                var base64 = reader.result
+                setItem({ ...itemBlank, imageBase64: base64 as string })
+            }
+
+            reader.onerror = function (error) {
+                console.log(error)
+            }
+        }
+        e.target.value = '';
+    }
+
     return (
         <Dialog
             isOpen={props.open}
@@ -78,6 +100,31 @@ export default function TestItemEditorModal(props: TestItemEditorModalProps) {
                     onChange={question => setItem({ ...itemBlank, question })}
                     multiline
                 />
+
+                {
+                    itemBlank.imageBase64 &&
+                    <Box sx={{ position: 'relative' }}>
+                        <IconButton
+                            icon='cross'
+                            onClick={() => setItem({ ...itemBlank, imageBase64: null })}
+                            title='Удалить картинку'
+                            sx={{ position: 'absolute', right: 0, top: 0, color: '#D8D7D7' }}
+                        />
+                        <Box width={1} height={300} sx={{ objectFit: 'contain' }} src={itemBlank.imageBase64} component='img'>
+
+                        </Box>
+                    </Box>
+                }
+
+                <Button onClick={() => { }}>
+                    Загрузить картинку
+                    <input
+                        accept="image/*"
+                        onChange={event => changeImage(event)}
+                        type="file"
+                        hidden
+                    />
+                </Button>
 
                 <TestItemEditor item={itemBlank} changeItem={setItem} />
             </Box>

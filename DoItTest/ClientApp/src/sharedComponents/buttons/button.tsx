@@ -18,6 +18,7 @@ export function Button(props: PropsWithChildren<Props>) {
                 variant={props.variant ?? "outlined"}
                 onClick={() => props.onClick()}
                 sx={props.sx}
+                component='label'
             />
         </Tooltip>
     )

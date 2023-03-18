@@ -48,7 +48,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                             answerOptions.Add(answerOption);
                         }
 
-                        return new CheckboxesItem(db.Id, db.TestId, db.Type, db.Question, answerOptions.ToArray());
+                        return new CheckboxesItem(db.Id, db.TestId, db.Type, db.Question, db.ImageBase64, answerOptions.ToArray());
                     }
 
                 case TestItemType.RadioButtonsGroup:
@@ -60,7 +60,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                             answerOptions.Add(answerOption);
                         }
 
-                        return new RadioButtonItem(db.Id, db.TestId, db.Type, db.Question, answerOptions.ToArray());
+                        return new RadioButtonItem(db.Id, db.TestId, db.Type, db.Question, db.ImageBase64, answerOptions.ToArray());
                     }
 
                 case TestItemType.TextField:
@@ -68,7 +68,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                         AnswerOptionDb answerOptionDb = answerOptionDbs[0];
 
                         TextFildAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.StringAnswer!);
-                        return new TextFieldItem(db.Id, db.TestId, db.Type, db.Question, answerOption);
+                        return new TextFieldItem(db.Id, db.TestId, db.Type, db.Question, db.ImageBase64, answerOption);
                     }
 
                 case TestItemType.NumericField:
@@ -76,7 +76,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                         AnswerOptionDb answerOptionDb = answerOptionDbs[0];
 
                         NumberAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.NumberAnswer!.Value);
-                        return new NumberFieldItem(db.Id, db.TestId, db.Type, db.Question, answerOption);
+                        return new NumberFieldItem(db.Id, db.TestId, db.Type, db.Question, db.ImageBase64, answerOption);
                     }
 
                 case TestItemType.Comparison:
@@ -98,7 +98,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                             answerOptionGroups.Add(answerOptionGroup);
                         }
 
-                        return new ComparisonItem(db.Id, db.TestId, db.Type, db.Question, answerOptionGroups.ToArray());
+                        return new ComparisonItem(db.Id, db.TestId, db.Type, db.Question, db.ImageBase64, answerOptionGroups.ToArray());
                     }
 
                 default: throw new Exception("Неизвестный тип вопроса");

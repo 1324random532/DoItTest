@@ -8,6 +8,7 @@ namespace DoItTest.Services.Tests.Repositories.Models
 		public Guid TestId { get; set; }
 		public TestItemType Type { get; set; }
 		public String Question { get; set; }
+		public String? ImageBase64 { get; set; }
 
 		public Boolean IsRemoved { get; set; }
 	}

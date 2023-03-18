@@ -7,8 +7,8 @@ namespace DoItTest.Domain.Tests.TestItems
         public TextFildAnswerOption AnswerOption { get; }
 
         public TextFieldItem(Guid id, Guid testId, TestItemType type,
-            String question, TextFildAnswerOption answerOption) 
-            : base(id, testId, type, question)
+            String question, String? imageBase64, TextFildAnswerOption answerOption) 
+            : base(id, testId, type, question, imageBase64)
         {
             AnswerOption = answerOption;
         }
