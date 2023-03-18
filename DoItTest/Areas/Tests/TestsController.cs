@@ -37,7 +37,7 @@ namespace DoItTest.Site.Areas.Tests
         [HttpGet("/Tests/GetPaged")]
         public PagedResult<Test> GetPagedTests(Int32 page, Int32 count)
         {
-            return _testsService.GetPagedTests(SystemUser.Id, page, count);
+            return _testsService.GetPagedTests(SystemUser.Id, page, count, SystemUser.Role);
         }
 
         [HttpPost("/Tests/Remove")]

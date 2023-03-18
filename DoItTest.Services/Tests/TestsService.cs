@@ -2,6 +2,7 @@
 using DoItTest.Domain.Tests;
 using DoItTest.Domain.Tests.TestItems;
 using DoItTest.Domain.Tests.TestItems.AnswerOptions;
+using DoItTest.Domain.Users;
 using DoItTest.Services.Tests.Repositories;
 using DoItTest.Tools.Types.Results;
 
@@ -23,7 +24,7 @@ namespace DoItTest.Services.Tests
 
 			if (test.Id is null) test.Id = Guid.NewGuid();
 
-			test.UserId = systemUserId;
+			if(test.UserId is null) test.UserId = systemUserId;
 
 			Int32 index = 1;
 			foreach (TestItemBlank testItem in testItems)
@@ -137,9 +138,9 @@ namespace DoItTest.Services.Tests
 			return _testsRepository.GetTest(id);
         }
 
-		public PagedResult<Test> GetPagedTests(Guid userId, Int32 page, Int32 count)
+		public PagedResult<Test> GetPagedTests(Guid userId, Int32 page, Int32 count, UserRole role)
 		{
-			return _testsRepository.GetPagedTests(page, count, userId);
+			return _testsRepository.GetPagedTests(page, count, role == UserRole.Super ? null: userId);
 		}
 
 		public Result RemoveTest(Guid id, Guid userId)

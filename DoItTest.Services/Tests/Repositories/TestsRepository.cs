@@ -147,14 +147,14 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
-        public PagedResult<Test> GetPagedTests(Int32 page, Int32 count, Guid userId)
+        public PagedResult<Test> GetPagedTests(Int32 page, Int32 count, Guid? userId)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
                 String query = $"SELECT *,COUNT(*) OVER() AS FullCount " +
                     $"FROM tests " +
-                    $"WHERE userid = @UserId " +
+                    $"WHERE (@UserId is null or userid = @UserId) " +
                     $"  AND NOT isremoved " +
                     $"  OFFSET @Offset " +
                     $"  LIMIT @Limit ";
