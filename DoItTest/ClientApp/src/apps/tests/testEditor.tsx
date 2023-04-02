@@ -1,3 +1,5 @@
+import { Divider, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { Box } from "@mui/system";
 import { TestBlank } from "domain/tests/testBlank";
 import { TestItemBlank } from "domain/tests/testItemBlank";
@@ -10,8 +12,10 @@ import { Content } from "sharedComponents/content/content";
 import { ConfirmDialogAsync } from "sharedComponents/dialog/dialog2";
 import useDialog from "sharedComponents/dialog/useDialog";
 import { Input } from "sharedComponents/inputs/input";
+import TimePicker from "sharedComponents/inputs/timeInput";
 import { useNotification } from "sharedComponents/notification/store/notificationStore";
 import useComponent from "tools/components/useComponent";
+import Time, { getTime } from "tools/time";
 import { TestItemCard } from "./components/info/testItemInfoCard";
 import TestItemEditorModal from "./components/testItemEditorModal";
 import { TestLinks } from "./links";
@@ -40,6 +44,7 @@ export function TestEditor() {
 
                 const test = await TestsProvider.getTest(testId);
                 setTestBlank(TestBlank.formTest(test));
+                console.log(test)
 
                 const testItems = await TestsProvider.geTestItems(test.id);
                 const testItemBlanks = TestItemBlank.formTestItems(testItems)
@@ -87,35 +92,114 @@ export function TestEditor() {
     return (
         <Content withSidebar={true}>
             <h1>{testBlank.id == null ? "Добавить" : "Изменить"}</h1>
-            <Box sx={{ display: "flex", gap: 2 }}>
-                <Button onClick={save} title='Сохранить именения' sx={{ mb: 2, width: 250, height: 56 }}>Сохранить</Button>
-                <Input
-                    type="text"
-                    label="Название теста"
-                    value={testBlank.title}
-                    onChange={title => setTestBlank({ ...testBlank, title })}
-                    sx={{ width: 250 }}
-                />
-            </Box>
-            <Button
-                title="Добавить вопрос"
-                onClick={() => { setEditItem(TestItemBlank.getDefault()) }}
-                sx={{ mb: 2, width: 250, height: 56 }}
-            >
-                Добавить вопрос
-            </Button>
-            {editItem !== null && <TestItemEditorModal
-                changeTestItemBlank={setTestItemBlank}
-                testItem={editItem}
-                open={true}
-                onClose={() => {
-                    setEditItem(null)
-                }}
-            />}
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                {testItemBlanks.map((i, index) => {
-                    return <TestItemCard item={i} index={index + 1} removeItem={removeTestItemBlank} changeItem={() => setEditItem(i)} sx={{ width: 600 }} />
-                })}
+                <Button onClick={save} title='Сохранить именения' sx={{ mb: 2, width: 250, height: 56 }}>Сохранить</Button>
+
+                <Box sx={{ display: "flex", gap: 2 }}>
+                    <Input
+                        type="text"
+                        label="Название теста"
+                        value={testBlank.title}
+                        onChange={title => setTestBlank({ ...testBlank, title })}
+                        sx={{ width: 250 }}
+                    />
+                    <Input
+                        type="time"
+                        label="Время прохождения"
+                        value={getTime(testBlank.timeToCompleteInSeconds)}
+                        onChange={timeToComplete => setTestBlank({ ...testBlank, timeToCompleteInSeconds: timeToComplete?.getTotalSeconds() ?? null })}
+                        sx={{ width: 130 }}
+                    />
+                </Box>
+                <Paper>
+                    <Box sx={{ textAlign: "center", fontSize: 20, padding: 2 }}> Количестов процентов на оценку</Box>
+                    <Divider />
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align='center'>5</TableCell>
+                                    <TableCell align='center'>4</TableCell>
+                                    <TableCell align='center'>3</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell align='center' component="th" scope="row">
+                                        <Input
+                                            type='number'
+                                            label=""
+                                            value={testBlank.numberOfPercentagesByFive}
+                                            onChange={numberOfPercentagesByFive => setTestBlank({ ...testBlank, numberOfPercentagesByFive })}
+                                            InputProps={{
+                                                endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                                            }}
+                                            sx={{ width: 100 }}
+                                            size="small"
+                                            onlyWhole
+                                            onlyPositive
+                                            maxValue={100}
+                                        />
+                                    </TableCell>
+
+                                    <TableCell align='center' component="th" scope="row">
+                                        <Input
+                                            type='number'
+                                            label=""
+                                            value={testBlank.numberOfPercentagesByFour}
+                                            onChange={numberOfPercentagesByFour => setTestBlank({ ...testBlank, numberOfPercentagesByFour })}
+                                            InputProps={{
+                                                endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                                            }}
+                                            sx={{ width: 100 }}
+                                            size="small"
+                                            onlyWhole
+                                            onlyPositive
+                                            maxValue={100}
+                                        />
+                                    </TableCell>
+
+                                    <TableCell align='center' component="th" scope="row" >
+                                        <Input
+                                            type='number'
+                                            label=""
+                                            value={testBlank.numberOfPercentagesByThree}
+                                            onChange={numberOfPercentagesByThree => setTestBlank({ ...testBlank, numberOfPercentagesByThree })}
+                                            InputProps={{
+                                                endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                                            }}
+                                            sx={{ width: 100 }}
+                                            size="small"
+                                            onlyWhole
+                                            onlyPositive
+                                            maxValue={100}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
+                <Button
+                    title="Добавить вопрос"
+                    onClick={() => { setEditItem(TestItemBlank.getDefault()) }}
+                    sx={{ mb: 2, width: 250, height: 56 }}
+                >
+                    Добавить вопрос
+                </Button>
+                {editItem !== null && <TestItemEditorModal
+                    changeTestItemBlank={setTestItemBlank}
+                    testItem={editItem}
+                    open={true}
+                    onClose={() => {
+                        setEditItem(null)
+                    }}
+                />}
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    {testItemBlanks.map((i, index) => {
+                        return <TestItemCard item={i} index={index + 1} removeItem={removeTestItemBlank} changeItem={() => setEditItem(i)} sx={{ width: 600 }} />
+                    })}
+                </Box>
             </Box>
         </Content>
     )

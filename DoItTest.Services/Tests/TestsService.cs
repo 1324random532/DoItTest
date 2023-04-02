@@ -17,10 +17,28 @@ namespace DoItTest.Services.Tests
 			_testsRepository = new TestsRepository(connectionString);
 		}
 
-		public Result SaveUser(TestBlank test, TestItemBlank[] testItems, Guid systemUserId)
+		public Result SaveTest(TestBlank test, TestItemBlank[] testItems, Guid systemUserId)
 		{
 			if (String.IsNullOrWhiteSpace(test.Title))
 				return Result.Fail("Не указано название теста");
+
+			if (test.TimeToCompleteInSeconds is null || test.TimeToCompleteInSeconds <= 0)
+				return Result.Fail("Укажите количестов времени на тест");
+
+			if (test.NumberOfPercentagesByFive is null) 
+				return Result.Fail("Укажите процент на 5");
+
+			if (test.NumberOfPercentagesByFour is null)
+				return Result.Fail("Укажите процент на 4");
+
+			if (test.NumberOfPercentagesByThree is null)
+				return Result.Fail("Укажите процент на 3");
+
+			if (test.NumberOfPercentagesByThree >= test.NumberOfPercentagesByFour || test.NumberOfPercentagesByThree >= test.NumberOfPercentagesByFive)
+				return Result.Fail("Процент на 3 должен быть меньше чем на 4 и 5");
+
+			if (test.NumberOfPercentagesByFour >= test.NumberOfPercentagesByFive)
+				return Result.Fail("Процент на 4 должен быть меньше чем на 5");
 
 			if (test.Id is null) test.Id = Guid.NewGuid();
 

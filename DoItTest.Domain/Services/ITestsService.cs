@@ -7,7 +7,7 @@ namespace DoItTest.Domain.Services
 {
     public interface ITestsService
     {
-        Result SaveUser(TestBlank test, TestItemBlank[] testItems, Guid systemUserId);
+        Result SaveTest(TestBlank test, TestItemBlank[] testItems, Guid systemUserId);
         Test? GetTest(Guid id);
         PagedResult<Test> GetPagedTests(Guid userId, Int32 page, Int32 count, UserRole role );
         Result RemoveTest(Guid id, Guid userId);

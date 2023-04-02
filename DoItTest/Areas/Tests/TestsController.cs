@@ -25,7 +25,7 @@ namespace DoItTest.Site.Areas.Tests
         [HttpPost("/Tests/Save")]
         public Result SaveTest([FromBody] SaveTestRequest request)
         {
-            return _testsService.SaveUser(request.TestBlank, request.TestItemBlanks, SystemUser.Id);
+            return _testsService.SaveTest(request.TestBlank, request.TestItemBlanks, SystemUser.Id);
         }
 
         [HttpGet("/Tests/GetTest")]

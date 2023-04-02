@@ -49,14 +49,18 @@ namespace DoItTest.Services.Tests.Repositories
                         TestItemIds = testItems.Select(i => i.Id!).ToArray()
                     };
 
-                    String saveTestQuery = $"INSERT INTO tests (id, userid, title) " +
-                    $"VALUES(@Id,@UserId,@Title);";
+                    String saveTestQuery = $"INSERT INTO tests (id, userid, title, timetocompleteinseconds, numberofpercentagesbyfive, numberofpercentagesbyfour, numberofpercentagesbythree) " +
+                    $"VALUES(@Id,@UserId,@Title,@TimeToCompleteInSeconds,@NumberOfPercentagesByFive,@NumberOfPercentagesByFour,@NumberOfPercentagesByThree);";
 
                     var saveTestparameters = new
                     {
                         test.Id,
                         test.UserId,
                         test.Title,
+                        test.TimeToCompleteInSeconds,
+                        test.NumberOfPercentagesByFive,
+                        test.NumberOfPercentagesByFour,
+                        test.NumberOfPercentagesByThree
                     };
 
                     String saveTestItemQuery = $"INSERT INTO testitems(id, testid, type, " +

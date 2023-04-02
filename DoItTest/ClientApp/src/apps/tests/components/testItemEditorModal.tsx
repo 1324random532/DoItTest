@@ -1,6 +1,4 @@
-import { VerticalAlignCenter } from "@mui/icons-material";
-import { Box, Card, CardContent, CardHeader, Modal, Typography } from "@mui/material";
-import { style } from "@mui/system";
+import { Box } from "@mui/material";
 import { TestItemType } from "domain/tests/items/testItemType";
 import { TestItemBlank } from "domain/tests/testItemBlank";
 import React, { useEffect } from "react";
@@ -8,14 +6,11 @@ import { useMemo, useState } from "react";
 import { Button } from "sharedComponents/buttons/button";
 import { IconButton } from "sharedComponents/buttons/iconButton";
 import Dialog from "sharedComponents/dialog/dialog";
-import { Autocomplete } from "sharedComponents/inputs/autocomplete";
 import { Input } from "sharedComponents/inputs/input";
 import { useNotification } from "sharedComponents/notification/store/notificationStore";
-import useComponent from "tools/components/useComponent";
 import { Enum } from "tools/enum";
 import { Result } from "tools/results/result";
 import { ResultError } from "tools/results/resultError";
-import { SetState } from "tools/setState";
 import { TestItemEditor } from "./editors/testItemEditor";
 
 export interface TestItemEditorModalProps {

@@ -4,6 +4,7 @@ using DoItTest.Domain.Tests.TestItems.AnswerOptions;
 using DoItTest.Domain.Users;
 using DoItTest.Services.Tests.Repositories.Models;
 using DoItTest.Services.Users.Repositories.Models;
+using DoItTest.Tools.Types;
 
 namespace DoItTest.Services.Tests.Repositories.Converters
 {
@@ -16,7 +17,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
 
         public static Test ToTest(this TestDb db)
         {
-            return new Test(db.Id, db.UserId, db.Title);
+            return new Test(db.Id, db.UserId, db.Title, db.TimeToCompleteInSeconds, db.NumberOfPercentagesByFive, db.NumberOfPercentagesByFour, db.NumberOfPercentagesByThree);
         }
 
         public static TestItem[] ToTestItems(this IEnumerable<TestItemDb> dbs, AnswerOptionDb[] allAnswerOptionDbs)

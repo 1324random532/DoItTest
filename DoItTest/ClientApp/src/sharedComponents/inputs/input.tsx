@@ -5,9 +5,11 @@ import { NumberInput, NumberInputProps } from "./numberInput"
 import { PasswordInput, PasswordInputProps } from './passwordInput'
 import { Switch, SwitchProps } from "./switch"
 import { TextInput, TextInputProps } from "./textInput"
+import TimePicker, { TimeInputProps } from "./timeInput"
 
 type TextInputPropsType = { type: "text" } & TextInputProps
 type NumberInputPropsType = { type: "number" } & NumberInputProps
+type TimeInputPropsType = { type: "time" } & TimeInputProps
 type SelectInputPropsType<T> = { type: "select" } & AutocompleteProps<T>
 type PasswordInputPropsType = { type: "password" } & PasswordInputProps
 type DateInputPropsType = { type: "date" } & DateInputProps
@@ -18,6 +20,7 @@ export type IProps<T> =
     (
         TextInputPropsType |
         NumberInputPropsType |
+        TimeInputPropsType |
         SelectInputPropsType<T> |
         PasswordInputPropsType |
         DateInputPropsType |
@@ -30,6 +33,7 @@ export function Input<T>(props: IProps<T>) {
     switch (props.type) {
         case "number": return <NumberInput {...props} />
         case "text": return <TextInput {...props} />
+        case "time": return <TimePicker {...props} />
         case "select": return <Autocomplete {...props} />
         case "password": return <PasswordInput {...props} />
         case "date": return <DateInput {...props} />
