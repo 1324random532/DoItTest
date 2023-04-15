@@ -1,4 +1,5 @@
 ﻿using DoItTest.Domain.Services;
+using DoItTest.Services.Students;
 using DoItTest.Services.Tests;
 using DoItTest.Services.Users;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ namespace DoItTest.Services.Configurator
 		{
 			services.AddSingleton<IUsersService>(new UsersService(ConfiguratorSettings));
 			services.AddSingleton<ITestsService>(new TestsService(ConfiguratorSettings));
+			services.AddSingleton<IStudentsService>(new StudentsService(ConfiguratorSettings));
 		}
 	}
 }
