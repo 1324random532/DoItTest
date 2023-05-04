@@ -6,10 +6,11 @@
         public String FirstName { get; set; } = null!;
         public String LastName { get; set; } = null!;
         public String? Patronymic { get; set; }
+        public String Group { get; set; }
 
-        public DateTime CreatedDateTime { get; set; }
+        public DateTime CreatedDateTimeUtc { get; set; }
         public Guid? ModifiedUserId { get; set; }
-        public DateTime? ModifiedDateTime { get; set; }
+        public DateTime? ModifiedDateTimeUtc { get; set; }
         public Boolean IsRemoved { get; set; }
     }
 }

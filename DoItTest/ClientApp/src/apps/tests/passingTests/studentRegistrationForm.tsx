@@ -1,5 +1,8 @@
 import { Box, Typography } from "@mui/material";
+import { Student } from "domain/students/student";
 import { StudentBlank } from "domain/students/studentBlank";
+import { StudentsProvider } from "domain/students/studentProvider";
+import { TestsProvider } from "domain/tests/testsProvider";
 import { useState } from "react";
 import { useBlockUi } from "sharedComponents/blockUi/blockUiContext";
 import { Button } from "sharedComponents/buttons/button";
@@ -7,36 +10,40 @@ import { ConfirmDialogAsync } from "sharedComponents/dialog/dialog2";
 import useDialog from "sharedComponents/dialog/useDialog";
 import { Input } from "sharedComponents/inputs/input";
 import { useNotification } from "sharedComponents/notification/store/notificationStore";
+import { createCookie } from "tools/Cookie";
+import { SetState } from "tools/setState";
 
 export interface StudentRegistrationFormProps {
-
+    testId: string
+    setStudent: SetState<Student | null>
 }
 
 
-export function StudentRegistrationForm() {
+export function StudentRegistrationForm({ testId, setStudent }: StudentRegistrationFormProps) {
     const { showError, showSuccess } = useNotification()
-    const confirmDialog = useDialog(ConfirmDialogAsync)
 
     const blockUi = useBlockUi();
 
     const [studentBlank, setStudentBlank] = useState<StudentBlank>(StudentBlank.getDefault)
 
-    // async function save() {
-    //     blockUi(async () => {
-    //         const result = await TestsProvider.saveTest(testBlank, testItemBlanks);
-    //         if (!result.isSuccess) {
-    //             return showError(result.errors[0].message);
-    //         }
+    async function save() {
+        blockUi(async () => {
+            const result = await TestsProvider.startTest(studentBlank, testId);
+            if (!result.isSuccess) {
+                return showError(result.errors[0].message);
+            }
 
-    //         showSuccess("Сохранение выполнено")
-    //         navigateTo(TestLinks.list, { replace: true })
-    //     })
-    // }
+            setStudent(result.data)
+            createCookie("studentId", result.data.id, 1)
+            showSuccess("Сохранение выполнено")
+        })
+    }
 
     return (
         <Box>
-            <Typography>Карточка регистрации студента</Typography>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <Typography>Введите данные чтобы начать</Typography>
+
                 <Input
                     type="text"
                     label="Имя"
@@ -65,7 +72,7 @@ export function StudentRegistrationForm() {
                     onChange={group => setStudentBlank({ ...studentBlank, group })}
                 />
 
-                <Button onClick={() => { }}>Начать</Button>
+                <Button onClick={() => { save() }}>Начать</Button>
             </Box>
         </Box>
     )

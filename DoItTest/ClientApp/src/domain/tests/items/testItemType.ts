@@ -3,7 +3,6 @@ export enum TestItemType {
     NumericField = 2,
     RadioButtonsGroup = 3,
     CheckboxesGroup = 4,
-    // Pictures = 5,
     Comparison = 6
 }
 
@@ -18,8 +17,6 @@ export namespace TestItemType {
                 return "Выбрать один вариант из списка";
             case TestItemType.CheckboxesGroup:
                 return "Выбрать несколько вариантов из списка";
-            // case TestItemType.Pictures:
-            //     return "Картинка";
             case TestItemType.Comparison:
                 return "Сопоставление";
             default:

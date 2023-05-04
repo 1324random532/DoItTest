@@ -7,7 +7,7 @@ export class CheckboxesAnswerOption extends AnswerOption {
         public testItemId: string,
         public type: TestItemType,
         public title: string,
-        public isTrue: boolean
+        public isTrue: boolean | null
     ) {
         super(id, testItemId, type)
     }

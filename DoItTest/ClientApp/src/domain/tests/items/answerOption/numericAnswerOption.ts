@@ -6,7 +6,7 @@ export class NumericAnswerOption extends AnswerOption {
         public id: string,
         public testItemId: string,
         public type: TestItemType,
-        public answer: number
+        public answer: number | null
     ) {
         super(id, testItemId, type)
     }

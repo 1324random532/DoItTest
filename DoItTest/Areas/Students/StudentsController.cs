@@ -1,8 +1,8 @@
-﻿using DoItTest.Domain.Services;
-using DoItTest.Domain.Students;
-using DoItTest.Site.Areas.Bases;
+﻿using DoItTest.Site.Areas.Bases;
 using DoItTest.Tools.Types.Results;
 using Microsoft.AspNetCore.Mvc;
+using DoItTest.Domain.Services;
+using DoItTest.Domain.Students;
 
 namespace DoItTest.Site.Areas.Students
 {
@@ -18,7 +18,15 @@ namespace DoItTest.Site.Areas.Students
         [HttpPost("/Students/Save")]
         public Result SaveStudent([FromBody] StudentBlank studentBlank)
         {
-            return _studentsService.SaveStudent(studentBlank, SystemUser.Id);
+            DataResult<Guid> result = _studentsService.SaveStudent(studentBlank, SystemUser.Id);
+
+            return result.IsSuccess ? Result.Success() : Result.Fail(result.Errors);
+        }
+
+        [HttpGet("/Students/GetStudent")]
+        public Student? GetStudent(Guid id)
+        {
+            return _studentsService.GetStudent(id);
         }
     }
 }

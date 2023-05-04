@@ -3,9 +3,9 @@
     public class StudentBlank
     {
         public Guid? Id { get; set; }
-        public String? FirstName { get; }
-        public String? LastName { get; }
-        public String? Patronymic { get; }
-        public String? Group { get; }
+        public String? FirstName { get; set; }
+        public String? LastName { get; set; }
+        public String? Patronymic { get; set; }
+        public String? Group { get; set; }
     }
 }

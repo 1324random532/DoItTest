@@ -14,20 +14,25 @@ namespace DoItTest.Services.Students
 			_studentsRepository = new StudentsRepository(connectionString);
 		}
 
-		public Result SaveStudent(StudentBlank studentBlank, Guid? userId)
+		public DataResult<Guid> SaveStudent(StudentBlank studentBlank, Guid? userId)
 		{
 			if (String.IsNullOrEmpty(studentBlank.FirstName))
-				return Result.Fail("Укажите имя");
+				return DataResult<Guid>.Failed("Укажите имя");
 
 			if (String.IsNullOrEmpty(studentBlank.LastName))
-				return Result.Fail("Укажите фамилию");
+				return DataResult<Guid>.Failed("Укажите фамилию");
 
 			if (String.IsNullOrEmpty(studentBlank.Group))
-				return Result.Fail("Укажите группу");
+				return DataResult<Guid>.Failed("Укажите группу");
 
 			if (studentBlank.Id is null) studentBlank.Id = Guid.NewGuid();
 			_studentsRepository.SaveStudent(studentBlank, userId);
-			return Result.Success();
+			return DataResult<Guid>.Success(studentBlank.Id!.Value);
 		}
+
+		public Student? GetStudent(Guid id)
+        {
+			return _studentsRepository.GetStudent(id);
+        }
 	}
 }

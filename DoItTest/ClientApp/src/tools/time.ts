@@ -37,6 +37,18 @@ export default class Time {
     public isEndOfDay(): boolean {
         return this._totalSeconds == (this._secondsInDay - 1);
     }
+
+    public takeSecond(): void {
+        this._totalSeconds = this._totalSeconds - 1
+    }
+
+    public getTimeString(): string {
+        const hoursString = this.getHours() > 9 ? this.getHours().toString() : '0' + this.getHours().toString();
+        const minutesString = this.getMinutes() > 9 ? this.getMinutes().toString() : '0' + this.getMinutes().toString();
+        const secondsString = this.getSeconds() > 9 ? this.getSeconds().toString() : '0' + this.getSeconds().toString();
+
+        return hoursString + ':' + minutesString + ':' + secondsString
+    }
 }
 
 export const hoursInDay: number = 24;

@@ -46,7 +46,7 @@ export function TestEditor() {
                 setTestBlank(TestBlank.formTest(test));
                 console.log(test)
 
-                const testItems = await TestsProvider.geTestItems(test.id);
+                const testItems = await TestsProvider.getTestItems(test.id);
                 const testItemBlanks = TestItemBlank.formTestItems(testItems)
                 setTestItemBlanks(testItemBlanks)
             })

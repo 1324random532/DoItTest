@@ -2,7 +2,7 @@ import { AnswerOptionBlank } from "./answerOptionBlank";
 import { AnswerOptionGroupBlank } from "./items/answerOption/answerOptionGroups/answerOptionGroupBlank";
 import { CheckboxesItem } from "./items/checkboxesItem";
 import { ComparisonItem } from "./items/comparisonItem";
-import { NumericFieldItem } from "./items/numericFieldItem";
+import { NumberFieldItem } from "./items/numberFieldItem";
 import { RadioButtonItem } from "./items/radioButtonItem";
 import { TestItem } from "./items/testItem";
 import { TestItemType } from "./items/testItemType";
@@ -51,7 +51,7 @@ export class TestItemBlank {
                 testItem.question, testItem.imageBase64, [], answerOption, [], crypto.randomUUID(), true
             );
         }
-        if (testItem instanceof NumericFieldItem) {
+        if (testItem instanceof NumberFieldItem) {
             const answerOption = AnswerOptionBlank.formAnswerOption(testItem.answerOption)
 
             return new TestItemBlank(

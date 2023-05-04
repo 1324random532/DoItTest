@@ -2,7 +2,7 @@ import { mapNumericAnswerOption, NumericAnswerOption } from "./answerOption/nume
 import { TestItem } from "./testItem";
 import { TestItemType } from "./testItemType";
 
-export class NumericFieldItem extends TestItem {
+export class NumberFieldItem extends TestItem {
     constructor(
         public id: string,
         public testId: string,
@@ -15,8 +15,8 @@ export class NumericFieldItem extends TestItem {
     }
 }
 
-export function mapToNumericFieldItem(value: any): NumericFieldItem {
+export function mapToNumericFieldItem(value: any): NumberFieldItem {
     const answerOption = mapNumericAnswerOption(value.answerOption)
 
-    return new NumericFieldItem(value.id, value.testId, value.type, value.question, value.imageBase64, answerOption)
+    return new NumberFieldItem(value.id, value.testId, value.type, value.question, value.imageBase64, answerOption)
 }

@@ -5,6 +5,7 @@ namespace DoItTest.Domain.Services
 {
     public interface IStudentsService
     {
-        Result SaveStudent(StudentBlank studentBlank, Guid? userId);
+        DataResult<Guid> SaveStudent(StudentBlank studentBlank, Guid? userId);
+        Student? GetStudent(Guid id);
     }
 }

@@ -212,7 +212,45 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
-        public TestItem[] GetTestItems(Guid testId)
+        public TestItem? GetTestItem(Guid id, Boolean getAnswers)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+
+                using (var transaction = db.BeginTransaction())
+                {
+                    String selectTestItemsQuery = $"SELECT * " +
+                    $"FROM testitems " +
+                    $"WHERE id = @Id " +
+                    $"  AND NOT isremoved;";
+
+                    var selectTestItemsParameters = new
+                    {
+                        Id = id
+                    };
+
+                    String selectAnswerOptionsQuery = $"SELECT * " +
+                    $"FROM testitemansweroptions " +
+                    $"WHERE testitemid = @TestItemId " +
+                    $"  AND NOT isremoved;";
+
+                    TestItemDb? testItemDb = db.Query<TestItemDb>(selectTestItemsQuery, selectTestItemsParameters, transaction: transaction).FirstOrDefault();
+                    if (testItemDb is null) return null;
+
+                    var selectAnswerOptionsParameters = new
+                    {
+                        TestItemId = testItemDb.Id
+                    };
+
+                    AnswerOptionDb[] answerOptionDbs = db.Query<AnswerOptionDb>(selectAnswerOptionsQuery, selectAnswerOptionsParameters, transaction: transaction).ToArray();
+
+                    return testItemDb.ToTestItem(answerOptionDbs, getAnswers);
+                }
+            }
+        }
+
+        public TestItem[] GetTestItems(Guid testId, Boolean getAnswers)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
@@ -245,8 +283,97 @@ namespace DoItTest.Services.Tests.Repositories
 
                     AnswerOptionDb[] answerOptionDbs = db.Query<AnswerOptionDb>(selectAnswerOptionsQuery, selectAnswerOptionsParameters, transaction: transaction).ToArray();
 
-                    return testItemDbs.ToTestItems(answerOptionDbs);
+                    return testItemDbs.ToTestItems(answerOptionDbs, getAnswers);
                 }
+            }
+        }
+
+        public TestItem[] GetNotPassedTestItems(Guid studentTestId, Boolean getAnswers)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+
+                using (var transaction = db.BeginTransaction())
+                {
+                    String selectTestItemsQuery = $"SELECT i.* " +
+                    $"FROM testitems i JOIN tests t ON i.testid = t.id AND NOT t.isremoved " +
+                    $"JOIN studenttests st ON st.testid = t.id AND NOT st.isremoved " +
+                    $"LEFT JOIN answers a ON st.id = a.studenttestid AND NOT a.isremoved " +
+                    $"WHERE st.id = @StudentTestId " +
+                    $"  AND NOT i.isremoved;";
+
+                    var selectTestItemsParameters = new
+                    {
+                        StudentTestId = studentTestId
+                    };
+
+                    String selectAnswerOptionsQuery = $"SELECT * " +
+                    $"FROM testitemansweroptions " +
+                    $"WHERE testitemid = ANY(@TestItemId) " +
+                    $"  AND NOT isremoved;";
+
+                    TestItemDb[] testItemDbs = db.Query<TestItemDb>(selectTestItemsQuery, selectTestItemsParameters, transaction: transaction).ToArray();
+                    Guid[] testItemsDbIds = testItemDbs.Select(db => db.Id).ToArray();
+
+                    var selectAnswerOptionsParameters = new
+                    {
+                        TestItemId = testItemsDbIds
+                    };
+
+                    AnswerOptionDb[] answerOptionDbs = db.Query<AnswerOptionDb>(selectAnswerOptionsQuery, selectAnswerOptionsParameters, transaction: transaction).ToArray();
+
+                    return testItemDbs.ToTestItems(answerOptionDbs, getAnswers);
+                }
+            }
+        }
+
+        public void SaveStudentTest(StudentTest studentTest, Guid? userId)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"INSERT INTO studenttests(id, testid, studentid, begindatetime, enddatetime) " +
+                    $"VALUES(@Id,@Testid,@Studentid,@BeginDateTime,@EndDateTime) " +
+                    $"ON " +
+                    $"CONFLICT(id) DO " +
+                    $"UPDATE " +
+                    $"SET id = @Id, testid = @Testid, studentid = @Studentid, begindatetime = @BeginDateTime," +
+                    $"enddatetime = @EndDateTime, modifieduserid = @ModifiedUserId, modifieddatetime = @ModifiedDateTime;";
+
+                var parameters = new
+                {
+                    Id = studentTest.Id,
+                    Testid = studentTest.TestId,
+                    Studentid = studentTest.StudentId,
+                    BeginDateTime = studentTest.BeginDateTime,
+                    EndDateTime = studentTest.EndDateTime,
+                    ModifiedUserId = userId,
+                    ModifiedDateTime= DateTime.UtcNow,
+                };
+
+                db.Execute(query, parameters);
+            }
+        }
+
+        public StudentTest? GetStudentTest(Guid testId, Guid studentId)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT * " +
+                    $"FROM studentTests " +
+                    $"WHERE testid=@TestId " +
+                    $"  AND studentid=@StudentId" +
+                    $"  AND NOT isremoved;";
+
+                var parameters = new
+                {
+                    TestId = testId,
+                    StudentId = studentId
+                };
+
+                return db.Query<StudentTestDb>(query, parameters).FirstOrDefault()?.ToStudentTest();
             }
         }
     }

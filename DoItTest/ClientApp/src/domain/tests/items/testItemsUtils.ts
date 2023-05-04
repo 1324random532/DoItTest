@@ -1,6 +1,6 @@
 import { mapToCheckboxesItem } from "./checkboxesItem";
 import { mapToComparisonItem } from "./comparisonItem";
-import { mapToNumericFieldItem } from "./numericFieldItem";
+import { mapToNumericFieldItem } from "./numberFieldItem";
 import { mapToRadioButtonItem } from "./radioButtonItem";
 import { TestItem } from "./testItem";
 import { TestItemType } from "./testItemType";

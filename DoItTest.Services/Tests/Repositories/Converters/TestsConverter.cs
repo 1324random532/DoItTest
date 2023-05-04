@@ -20,7 +20,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
             return new Test(db.Id, db.UserId, db.Title, db.TimeToCompleteInSeconds, db.NumberOfPercentagesByFive, db.NumberOfPercentagesByFour, db.NumberOfPercentagesByThree);
         }
 
-        public static TestItem[] ToTestItems(this IEnumerable<TestItemDb> dbs, AnswerOptionDb[] allAnswerOptionDbs)
+        public static TestItem[] ToTestItems(this IEnumerable<TestItemDb> dbs, AnswerOptionDb[] allAnswerOptionDbs, Boolean getAnswers)
         {
             List<TestItem> testItems = new();
             var answerOptionDbsGroups = allAnswerOptionDbs.GroupBy(db => db.TestItemId).ToArray();
@@ -29,14 +29,14 @@ namespace DoItTest.Services.Tests.Repositories.Converters
             {
                 TestItemDb testItemDb = dbs.First(db => db.Id == answerOptionDbsGroup.Key);
 
-                TestItem testItem = testItemDb.ToTestItem(answerOptionDbsGroup.ToArray());
+                TestItem testItem = testItemDb.ToTestItem(answerOptionDbsGroup.ToArray(), getAnswers);
                 testItems.Add(testItem);
             }
 
             return testItems.ToArray();
         }
 
-        public static TestItem ToTestItem(this TestItemDb db, AnswerOptionDb[] answerOptionDbs)
+        public static TestItem ToTestItem(this TestItemDb db, AnswerOptionDb[] answerOptionDbs, Boolean getAnswers)
         {
             switch (db.Type)
             {
@@ -45,7 +45,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                         List<CheckboxesAnswerOption> answerOptions = new();
                         foreach (AnswerOptionDb answerOptionDb in answerOptionDbs)
                         {
-                            CheckboxesAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.Title!, answerOptionDb.IsTrue!.Value);
+                            CheckboxesAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.Title!, getAnswers ? answerOptionDb.IsTrue!.Value : null);
                             answerOptions.Add(answerOption);
                         }
 
@@ -57,7 +57,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                         List<RadioButtonAnswerOption> answerOptions = new();
                         foreach (AnswerOptionDb answerOptionDb in answerOptionDbs)
                         {
-                            RadioButtonAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.Title!, answerOptionDb.IsTrue!.Value);
+                            RadioButtonAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.Title!, getAnswers ? answerOptionDb.IsTrue!.Value: null);
                             answerOptions.Add(answerOption);
                         }
 
@@ -68,7 +68,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                     {
                         AnswerOptionDb answerOptionDb = answerOptionDbs[0];
 
-                        TextFildAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.StringAnswer!);
+                        TextFildAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, getAnswers ? answerOptionDb.StringAnswer! : null);
                         return new TextFieldItem(db.Id, db.TestId, db.Type, db.Question, db.ImageBase64, answerOption);
                     }
 
@@ -76,7 +76,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                     {
                         AnswerOptionDb answerOptionDb = answerOptionDbs[0];
 
-                        NumberAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, answerOptionDb.NumberAnswer!.Value);
+                        NumberAnswerOption answerOption = new(answerOptionDb.Id, answerOptionDb.TestItemId, answerOptionDb.Type, getAnswers ? answerOptionDb.NumberAnswer!.Value : null);
                         return new NumberFieldItem(db.Id, db.TestId, db.Type, db.Question, db.ImageBase64, answerOption);
                     }
 
@@ -104,6 +104,23 @@ namespace DoItTest.Services.Tests.Repositories.Converters
 
                 default: throw new Exception("Неизвестный тип вопроса");
             }
+        }
+
+        public static StudentTest ToStudentTest(this StudentTestDb db)
+        {
+            StudentTestStatus status = db.GetStatus();
+            return new StudentTest(db.Id, db.TestId, db.StudentId, status, db.PercentageOfCorrectAnswers, db.Estimation, db.BeginDateTime, db.EndDateTime);
+        }
+
+        private static StudentTestStatus GetStatus(this StudentTestDb studentTestDb)
+        {
+            if (studentTestDb.IsFinish) return StudentTestStatus.Completed;
+
+            DateTime dateTimeUtc = DateTime.UtcNow;
+            if (studentTestDb.BeginDateTime > dateTimeUtc) return StudentTestStatus.Expired;
+
+            return StudentTestStatus.Passing;
+
         }
     }
 }

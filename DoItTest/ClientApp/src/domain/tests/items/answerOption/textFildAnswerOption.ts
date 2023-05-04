@@ -6,7 +6,7 @@ export class TextFildAnswerOption extends AnswerOption {
         public id: string,
         public testItemId: string,
         public type: TestItemType,
-        public answer: string
+        public answer: string | null
     ) {
         super(id, testItemId, type)
     }

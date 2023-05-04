@@ -1,4 +1,6 @@
-﻿using DoItTest.Domain.Services;
+﻿using DoItTest.Domain.Answers;
+using DoItTest.Domain.Services;
+using DoItTest.Domain.Students;
 using DoItTest.Domain.Tests;
 using DoItTest.Domain.Tests.TestItems;
 using DoItTest.Site.Areas.Bases;
@@ -18,7 +20,15 @@ namespace DoItTest.Site.Areas.Tests
         [HttpGet("Tests")]
         [HttpGet("Tests/New")]
         [HttpGet("Tests/Edit/{testId}")]
+        [HttpGet("Tests/Passing/{testId}")]
         public IActionResult App() => ReactApp();
+
+        public record StartTestRequest(StudentBlank StudentBlank, Guid TestId);
+        [HttpPost("/Test/Start")]
+        public DataResult<Student> StartTest([FromBody] StartTestRequest startTestRequest)
+        {
+            return _testsService.StartTest(startTestRequest.StudentBlank, startTestRequest.TestId);
+        }
 
         public record SaveTestRequest(TestBlank TestBlank, TestItemBlank[] TestItemBlanks);
 
@@ -46,10 +56,28 @@ namespace DoItTest.Site.Areas.Tests
             return _testsService.RemoveTest(id, SystemUser.Id);
         }
 
+        [HttpGet("/Tests/GetItemForPassing")]
+        public DataResult<TestItem?> GetItemForPassing(Guid studentId, Guid testId)
+        {
+            return _testsService.GetTestItemForPassing(studentId, testId);
+        }
+
         [HttpGet("/Tests/GetItems")]
         public TestItem[] GetTestItems(Guid testId)
         {
             return _testsService.GetTestItems(testId);
+        }
+
+        //[HttpGet("/Tests/GetStudentTest")]
+        //public StudentTest? GetStudentTest(Guid testId, Guid studentId)
+        //{
+        //    return _testsService.GetStudentTest(testId, studentId);
+        //}
+
+        [HttpGet("/Tests/GetInfo")]
+        public TestInfo? GetTestInfo(Guid testId)
+        {
+            return _testsService.GetTestInfo(testId);
         }
     }
 }

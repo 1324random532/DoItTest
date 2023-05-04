@@ -36,7 +36,7 @@ namespace DoItTest.Site.Areas.Users
         }
 
         [HttpGet("Users/GetPaged")]
-        public PagedResult<User> GetPagedUsers(int page, int count)
+        public PagedResult<User> GetPagedUsers(Int32 page, Int32 count)
         {
             return _usersService.GetPagedUsers(page, count);
         }
