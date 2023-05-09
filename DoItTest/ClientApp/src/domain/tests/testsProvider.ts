@@ -12,6 +12,7 @@ import { mapToTestInfo } from "./testInfo";
 import { StudentBlank } from "domain/students/studentBlank";
 import { Student, mapToStudent } from "domain/students/student";
 import { AnswerBlank } from "domain/answers/answerBlank";
+import { StartTestResponse, mapToStartTestResponse } from "./startTestResponse";
 
 export class TestsProvider {
 
@@ -22,11 +23,11 @@ export class TestsProvider {
         return DataResult.get(result, mapToTestItem);
     }
 
-    public static async startTest(studentBlank: StudentBlank, testId: string): Promise<DataResult<Student>> {
+    public static async startTest(studentBlank: StudentBlank, testId: string): Promise<DataResult<StartTestResponse>> {
         const result = await HttpRequest.post("/Tests/Start").withBody({ studentBlank, testId }).asAny()
         if (!result.isSuccess) return mapToDataResult(result)
 
-        return DataResult.get(result, mapToStudent);
+        return DataResult.get(result, mapToStartTestResponse);
     }
 
     public static async finishTest(studentId: string, testId: string) {

@@ -22,7 +22,7 @@ namespace DoItTest.Domain.Services
 
         #region PaasingTest
         DataResult<TestItem?> AnswerQuestion(AnswerBlank answerBlank);
-        DataResult<Student> StartTest(StudentBlank studentBlank, Guid testId);
+        DataResult<StartTestResponse> StartTest(StudentBlank studentBlank, Guid testId);
         Result FinishTest(Guid testId, Guid studentId);
         DataResult<TestItem?> GetTestItemForPassing(Guid studentId, Guid testId);
         TestInfo? GetTestInfo(Guid testId);

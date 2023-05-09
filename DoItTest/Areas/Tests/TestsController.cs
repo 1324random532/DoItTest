@@ -31,7 +31,7 @@ namespace DoItTest.Site.Areas.Tests
 
         public record StartTestRequest(StudentBlank StudentBlank, Guid TestId);
         [HttpPost("/Tests/Start")]
-        public DataResult<Student> StartTest([FromBody] StartTestRequest startTestRequest)
+        public DataResult<StartTestResponse> StartTest([FromBody] StartTestRequest startTestRequest)
         {
             return _testsService.StartTest(startTestRequest.StudentBlank, startTestRequest.TestId);
         }

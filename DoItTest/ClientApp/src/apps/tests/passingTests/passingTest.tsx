@@ -16,12 +16,14 @@ import { TestsProvider } from "domain/tests/testsProvider";
 import Timer from "sharedComponents/timer/timer";
 import { getCookie } from "tools/Cookie";
 import { StudentsProvider } from "domain/students/studentProvider";
+import { TestItem } from "domain/tests/items/testItem";
 
 class State {
     constructor
         (
             public student: Student | null = null,
             public testInfo: TestInfo | null = null,
+            public testItem: TestItem | null = null,
             public remainingTimeInSeconds: number | null = null,
             public startTimer: boolean = false,
             public pauseTimer: boolean = false,
@@ -51,6 +53,9 @@ export function PassingTest() {
 
                 const student = await StudentsProvider.getStudent(studentId);
 
+                const result = await TestsProvider.getItemForPassing(testInfo.testId, student.id);
+                if (!result.isSuccess) return setState(prevState => ({ ...prevState, loading: false, errorss: result.errors.map(e => e.message) }))
+
                 const beginDateTime = await TestsProvider.getStartTestBeginDateTime(testInfo.testId, student.id)
                 if (beginDateTime == null) return setState(prevState => ({ ...prevState, loading: false, errorMessage: "Не удалось загрузить время прохождения" }))
 
@@ -58,7 +63,7 @@ export function PassingTest() {
                 const passageTimeInSeconds = (currentDateTime.getTime() - beginDateTime.getTime()) / 1000
                 const remainingTimeInSeconds = testInfo.timeToCompleteInSeconds - passageTimeInSeconds
 
-                setState(prevState => ({ ...prevState, testInfo, student, remainingTimeInSeconds: remainingTimeInSeconds > 0 ? remainingTimeInSeconds : 0, startTimer: true, loading: false }))
+                setState(prevState => ({ ...prevState, testInfo, student, testItem: result.data, remainingTimeInSeconds: remainingTimeInSeconds > 0 ? remainingTimeInSeconds : 0, startTimer: true, loading: false }))
             })
         }
     })
@@ -67,15 +72,19 @@ export function PassingTest() {
         const result = await TestsProvider.finishTest(studentId, testId)
         if (!result.isSuccess) return showError(result.errors[0].message)
 
-        setState(prevState => ({ ...prevState, startTimer: false }))
+        setState(prevState => ({ ...prevState, startTimer: false, testItem: null }))
     }
 
-    function setStudent(student: Student) {
-        setState(prevState => ({ ...prevState, student }))
+    function startTest(student: Student, testItem: TestItem) {
+        setState(prevState => ({ ...prevState, student, testItem, startTimer: true }))
     }
 
     function setStartTimer(startTimer: boolean) {
         setState(prevState => ({ ...prevState, startTimer }))
+    }
+
+    function setTestItem(testItem: TestItem | null) {
+        setState(prevState => ({ ...prevState, testItem }))
     }
 
     return (
@@ -94,9 +103,9 @@ export function PassingTest() {
                                 <CardContent>
                                     {
                                         state.student != null ?
-                                            <PassingTestForm student={state.student} testId={state.testInfo.testId} finishTest={finishTest} setStartTimer={setStartTimer} />
+                                            <PassingTestForm student={state.student} testId={state.testInfo.testId} testItem={state.testItem} setTestItem={setTestItem} finishTest={finishTest} setStartTimer={setStartTimer} />
                                             :
-                                            <StudentRegistrationForm testId={state.testInfo.testId} setStudent={setStudent} setStartTimer={setStartTimer} />
+                                            <StudentRegistrationForm testId={state.testInfo.testId} startTest={startTest} />
                                     }
                                 </CardContent>
                             </Card>

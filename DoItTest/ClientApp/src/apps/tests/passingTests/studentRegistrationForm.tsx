@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { Student } from "domain/students/student";
 import { StudentBlank } from "domain/students/studentBlank";
 import { StudentsProvider } from "domain/students/studentProvider";
+import { TestItem } from "domain/tests/items/testItem";
 import { TestsProvider } from "domain/tests/testsProvider";
 import { useState } from "react";
 import { useBlockUi } from "sharedComponents/blockUi/blockUiContext";
@@ -15,12 +16,11 @@ import { SetState } from "tools/setState";
 
 export interface StudentRegistrationFormProps {
     testId: string
-    setStudent: (student: Student) => void
-    setStartTimer: (startTimer: boolean) => void
+    startTest: (student: Student, testItem: TestItem) => void
 }
 
 
-export function StudentRegistrationForm({ testId, setStudent, setStartTimer }: StudentRegistrationFormProps) {
+export function StudentRegistrationForm({ testId, startTest }: StudentRegistrationFormProps) {
     const { showError, showSuccess } = useNotification()
 
     const blockUi = useBlockUi();
@@ -34,9 +34,8 @@ export function StudentRegistrationForm({ testId, setStudent, setStartTimer }: S
                 return showError(result.errors[0].message);
             }
 
-            setStudent(result.data)
-            createCookie("studentId", result.data.id, 1)
-            setStartTimer(true)
+            createCookie("studentId", result.data.student.id, 1)
+            startTest(result.data.student, result.data.testItem)
             showSuccess("Тест начат")
         })
     }

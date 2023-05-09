@@ -22,12 +22,11 @@ const Timer = (props: TimerProps) => {
             time.takeSecond()
             setTime(time)
             setStringTime(time.getTimeString())
+            if (time.getTotalSeconds() == 0) {
+                window.clearInterval(timer)
+                props.finish && props.finish()
+            }
         }, 1000)
-
-        if (time.getTotalSeconds() == 0) {
-            window.clearInterval(timer)
-            props.finish && props.finish()
-        }
 
         return () => {
             window.clearInterval(timer)

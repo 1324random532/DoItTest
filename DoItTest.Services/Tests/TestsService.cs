@@ -323,19 +323,23 @@ namespace DoItTest.Services.Tests
 			}
 		}
 
-		public DataResult<Student> StartTest(StudentBlank studentBlank, Guid testId)
+		public DataResult<StartTestResponse> StartTest(StudentBlank studentBlank, Guid testId)
 		{
 			Test? test = GetTest(testId);
-			if (test is null) return DataResult<Student>.Failed("Тест не существует");
+			if (test is null) return DataResult<StartTestResponse>.Failed("Тест не существует");
 
 			DataResult<Guid> result = _studetnsService.SaveStudent(studentBlank, null);
-			if (!result.IsSuccess) return DataResult<Student>.Failed(result.Errors);
+			if (!result.IsSuccess) return DataResult<StartTestResponse>.Failed(result.Errors);
 			Student student = new(result.Data, studentBlank.FirstName!, studentBlank.LastName!, studentBlank.Patronymic, studentBlank.Group!);
 
 			StudentTest studentTest = new(Guid.NewGuid(), test.Id, student.Id, 0, 2, DateTime.UtcNow, null, false);
 			SaveStudentTest(studentTest, null);
 
-			return DataResult<Student>.Success(student);
+			DataResult<TestItem?> getTestItemForPassingResult = GetTestItemForPassing(studentTest.StudentId, studentTest.TestId);
+			if (!getTestItemForPassingResult.IsSuccess) return DataResult<StartTestResponse>.Failed(getTestItemForPassingResult.Errors);
+
+			StartTestResponse startTestResponse = new(student, getTestItemForPassingResult.Data);
+			return DataResult<StartTestResponse>.Success(startTestResponse);
 		}
 
 		public Result FinishTest(Guid testId, Guid studentId)
