@@ -77,6 +77,11 @@ export class TestsProvider {
         return mapToTestInfo(result)
     }
 
+    public static async getActiveTestId(studentId: string): Promise<string | null> {
+        const result = await HttpRequest.get("/Tests/GetActiveTestId").withQueryParams({ studentId }).asAny()
+        return result
+    }
+
     public static async getStartTestBeginDateTime(testId: string, studentId: string): Promise<Date | null> {
         const result = await HttpRequest.get("/Tests/GetStartTestBeginDateTime").withQueryParams({ testId, studentId }).asAny()
         return result != null ? new Date(result) : null;

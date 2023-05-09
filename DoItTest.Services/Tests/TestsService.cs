@@ -190,9 +190,9 @@ namespace DoItTest.Services.Tests
 			_testsRepository.SaveStudentTest(studentTest, userId);
 		}
 
-		public StudentTest? GetStudentTest(Guid testId, Guid studentId)
+		public StudentTest? GetStudentTest(Guid studentId, Guid? testId = null)
 		{
-			return _testsRepository.GetStudentTest(testId, studentId);
+			return _testsRepository.GetStudentTest(studentId, testId );
 		}
 
 		#region PassingTest
@@ -205,7 +205,7 @@ namespace DoItTest.Services.Tests
 			Test? test = GetTest(answerBlank.TestId);
 			if (test is null) return DataResult<TestItem?>.Failed("Тест не найден");
 
-			StudentTest? studentTest = GetStudentTest(test.Id, student.Id);
+			StudentTest? studentTest = GetStudentTest(student.Id, test.Id);
 			if (studentTest is null) throw new Exception("Не существует модели прохождения студента");
 
 			if (studentTest.GetStatus(test) != StudentTestStatus.Passing) return DataResult<TestItem?>.Failed("Тест завершен");
@@ -344,7 +344,7 @@ namespace DoItTest.Services.Tests
 
 		public Result FinishTest(Guid testId, Guid studentId)
 		{
-			StudentTest? studentTest = GetStudentTest(testId, studentId);
+			StudentTest? studentTest = GetStudentTest(studentId, testId);
 			if (studentTest is null) return Result.Fail("Тест не найдет");
 
 			studentTest.Finish();
@@ -360,7 +360,7 @@ namespace DoItTest.Services.Tests
 			Test? test = GetTest(testId);
 			if (test is null) return DataResult<TestItem?>.Failed("Тест не найден");
 
-			StudentTest? studentTest = GetStudentTest(test.Id, student.Id);
+			StudentTest? studentTest = GetStudentTest(student.Id, test.Id);
 			if (studentTest is null) throw new Exception("Не существует модели прохождения студента");
 
 			TestItem[] testItems = GetNotPassedTestItems(studentTest.Id);
@@ -410,9 +410,20 @@ namespace DoItTest.Services.Tests
 			return new TestInfo(test.Id, test.Title, test.TimeToCompleteInSeconds);
 		}
 
+		public Guid? GetActiveTestId(Guid studentId)
+        {
+			StudentTest? studentTest = GetStudentTest(studentId);
+			if (studentTest is null) return null;
+
+			Test? test = GetTest(studentTest.TestId);
+			if (test is null) return null;
+
+			return test.Id;
+        }
+
 		public DateTime? GetStartTestBeginDateTime(Guid testId, Guid studentId)
 		{
-			StudentTest? studentTest = GetStudentTest(testId, studentId);
+			StudentTest? studentTest = GetStudentTest(studentId, testId);
 			return studentTest?.BeginDateTime;
 		}
 

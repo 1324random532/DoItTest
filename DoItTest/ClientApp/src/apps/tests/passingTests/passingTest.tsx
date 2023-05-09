@@ -14,7 +14,7 @@ import { Box, Card, CardContent, CardHeader } from "@mui/material";
 import { TestInfo } from "domain/tests/testInfo";
 import { TestsProvider } from "domain/tests/testsProvider";
 import Timer from "sharedComponents/timer/timer";
-import { getCookie } from "tools/Cookie";
+import { getCookie, removeCookie } from "tools/Cookie";
 import { StudentsProvider } from "domain/students/studentProvider";
 import { TestItem } from "domain/tests/items/testItem";
 
@@ -26,7 +26,6 @@ class State {
             public testItem: TestItem | null = null,
             public remainingTimeInSeconds: number | null = null,
             public startTimer: boolean = false,
-            public pauseTimer: boolean = false,
             public errorMessage: String | null = null,
             public loading: boolean = true,
         ) { }
@@ -51,6 +50,12 @@ export function PassingTest() {
                 const studentId = getCookie("studentId")
                 if (String.isNullOrWhitespace(studentId)) return setState(prevState => ({ ...prevState, testInfo, loading: false }));
 
+                const activeTestId = await TestsProvider.getActiveTestId(studentId)
+                if (activeTestId == null || (activeTestId != null && activeTestId != testInfo.testId)) {
+                    removeCookie("studentId")
+                    return setState(prevState => ({ ...prevState, testInfo, loading: false }));
+                }
+
                 const student = await StudentsProvider.getStudent(studentId);
 
                 const result = await TestsProvider.getItemForPassing(testInfo.testId, student.id);
@@ -62,8 +67,9 @@ export function PassingTest() {
                 const currentDateTime = new Date();
                 const passageTimeInSeconds = (currentDateTime.getTime() - beginDateTime.getTime()) / 1000
                 const remainingTimeInSeconds = testInfo.timeToCompleteInSeconds - passageTimeInSeconds
+                const timeIsUp = remainingTimeInSeconds <= 0
 
-                setState(prevState => ({ ...prevState, testInfo, student, testItem: result.data, remainingTimeInSeconds: remainingTimeInSeconds > 0 ? remainingTimeInSeconds : 0, startTimer: true, loading: false }))
+                setState(prevState => ({ ...prevState, testInfo, student, testItem: timeIsUp ? null : result.data, remainingTimeInSeconds: timeIsUp ? 0 : remainingTimeInSeconds, startTimer: !timeIsUp, loading: false }))
             })
         }
     })

@@ -356,14 +356,14 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
-        public StudentTest? GetStudentTest(Guid testId, Guid studentId)
+        public StudentTest? GetStudentTest(Guid studentId, Guid? testId)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
                 String query = $"SELECT * " +
                     $"FROM studentTests " +
-                    $"WHERE testid=@TestId " +
+                    $"WHERE (@TestId is null or testid=@TestId) " +
                     $"  AND studentid=@StudentId" +
                     $"  AND NOT isremoved;";
 

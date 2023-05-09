@@ -93,6 +93,12 @@ namespace DoItTest.Site.Areas.Tests
             return _testsService.GetTestInfo(testId);
         }
 
+        [HttpGet("/Tests/GetActiveTestId")]
+        public Guid? GetActiveTestId(Guid studentId)
+        {
+            return _testsService.GetActiveTestId(studentId);
+        }
+
         [HttpGet("/Tests/GetStartTestBeginDateTime")]
         public DateTime? GetStartTestBeginDateTime(Guid studentId, Guid testId)
         {

@@ -16,7 +16,7 @@ namespace DoItTest.Domain.Services
 
         TestItem[] GetTestItems(Guid testId, Boolean getAnswers = true);
 
-        StudentTest? GetStudentTest(Guid testId, Guid studentId);
+        StudentTest? GetStudentTest(Guid studentId, Guid? testId = null);
 
 
 
@@ -26,6 +26,7 @@ namespace DoItTest.Domain.Services
         Result FinishTest(Guid testId, Guid studentId);
         DataResult<TestItem?> GetTestItemForPassing(Guid studentId, Guid testId);
         TestInfo? GetTestInfo(Guid testId);
+        Guid? GetActiveTestId(Guid studentId);
         DateTime? GetStartTestBeginDateTime(Guid testId, Guid studentId);
 
         #endregion PassingTest

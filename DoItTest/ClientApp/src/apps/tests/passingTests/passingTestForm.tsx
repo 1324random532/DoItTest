@@ -74,7 +74,7 @@ export function PassingTestForm({ testId, student, testItem, setTestItem, finish
                     </Box>
                     :
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                        <Typography>Тест пройден</Typography>
+                        <Typography>Тест завершен</Typography>
                         <Box display="flex">
                             <Button onClick={() => {
                                 removeCookie("studentId")

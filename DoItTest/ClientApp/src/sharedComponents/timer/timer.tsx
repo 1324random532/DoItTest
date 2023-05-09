@@ -23,7 +23,7 @@ const Timer = (props: TimerProps) => {
             setTime(time)
             setStringTime(time.getTimeString())
             if (time.getTotalSeconds() == 0) {
-                window.clearInterval(timer)
+                clearInterval(timer)
                 props.finish && props.finish()
             }
         }, 1000)
