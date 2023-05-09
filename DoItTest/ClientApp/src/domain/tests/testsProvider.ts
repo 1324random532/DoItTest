@@ -12,13 +12,26 @@ import { mapToTestInfo } from "./testInfo";
 import { StudentBlank } from "domain/students/studentBlank";
 import { Student, mapToStudent } from "domain/students/student";
 import { AnswerBlank } from "domain/answers/answerBlank";
-import { TestItemAndAnswerBundle, mapToTestItemAndAnswerBundle } from "./testItemAndAnswerBundle";
 
 export class TestsProvider {
 
+    public static async answerQuestion(answerBlank: AnswerBlank): Promise<DataResult<TestItem | null>> {
+        const result = await HttpRequest.post("/Tests/AnswerQuestion").withBody(answerBlank).asAny()
+        if (!result.isSuccess || result.data == null) return mapToDataResult(result)
+
+        return DataResult.get(result, mapToTestItem);
+    }
+
     public static async startTest(studentBlank: StudentBlank, testId: string): Promise<DataResult<Student>> {
-        const result = await HttpRequest.post("/Test/Start").withBody({ studentBlank, testId }).asAny()
+        const result = await HttpRequest.post("/Tests/Start").withBody({ studentBlank, testId }).asAny()
+        if (!result.isSuccess) return mapToDataResult(result)
+
         return DataResult.get(result, mapToStudent);
+    }
+
+    public static async finishTest(studentId: string, testId: string) {
+        const result = await HttpRequest.post("/Tests/Finish").withBody({ studentId, testId }).asResult()
+        return result;
     }
 
     public static async saveTest(testBlank: TestBlank, testItemBlanks: TestItemBlank[]) {
@@ -61,5 +74,10 @@ export class TestsProvider {
     public static async getTestInfo(testId: string) {
         const result = await HttpRequest.get("/Tests/GetInfo").withQueryParams({ testId }).asAny()
         return mapToTestInfo(result)
+    }
+
+    public static async getStartTestBeginDateTime(testId: string, studentId: string): Promise<Date | null> {
+        const result = await HttpRequest.get("/Tests/GetStartTestBeginDateTime").withQueryParams({ testId, studentId }).asAny()
+        return result != null ? new Date(result) : null;
     }
 }

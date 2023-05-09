@@ -15,8 +15,3 @@ export class AnswerBlank {
     }
 }
 
-export function mapToAnswerBlank(value: any): AnswerBlank {
-
-    return new AnswerBlank(value.id, value.studentTestId, value.testItemId, value.stringAnswer, value.numberAnswer, value.answerOptionId, value.answerOptionIds)
-}
-

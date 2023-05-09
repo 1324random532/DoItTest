@@ -11,7 +11,7 @@ namespace DoItTest.Services.Tests.Repositories.Models
 		public DateTime? EndDateTime { get; set; }
 		public Int32 PercentageOfCorrectAnswers { get; }
 		public Int32 Estimation { get; }
-		public Boolean IsFinish { get; set; }
+		public Boolean IsExpired { get; set; }
 
 		public Guid? ModifiedUserId { get; set; }
 		public DateTime? ModifiedDateTime { get; set; }

@@ -23,11 +23,24 @@ namespace DoItTest.Site.Areas.Tests
         [HttpGet("Tests/Passing/{testId}")]
         public IActionResult App() => ReactApp();
 
+        [HttpPost("/Tests/AnswerQuestion")]
+        public DataResult<TestItem?> AnswerQuestion([FromBody] AnswerBlank answerBlank)
+        {
+            return _testsService.AnswerQuestion(answerBlank);
+        }
+
         public record StartTestRequest(StudentBlank StudentBlank, Guid TestId);
-        [HttpPost("/Test/Start")]
+        [HttpPost("/Tests/Start")]
         public DataResult<Student> StartTest([FromBody] StartTestRequest startTestRequest)
         {
             return _testsService.StartTest(startTestRequest.StudentBlank, startTestRequest.TestId);
+        }
+
+        public record FinishTestRequest(Guid StudentId, Guid TestId);
+        [HttpPost("/Tests/Finish")]
+        public Result FinishTest([FromBody] FinishTestRequest request)
+        {
+            return _testsService.FinishTest(request.TestId, request.StudentId);
         }
 
         public record SaveTestRequest(TestBlank TestBlank, TestItemBlank[] TestItemBlanks);
@@ -78,6 +91,12 @@ namespace DoItTest.Site.Areas.Tests
         public TestInfo? GetTestInfo(Guid testId)
         {
             return _testsService.GetTestInfo(testId);
+        }
+
+        [HttpGet("/Tests/GetStartTestBeginDateTime")]
+        public DateTime? GetStartTestBeginDateTime(Guid studentId, Guid testId)
+        {
+            return _testsService.GetStartTestBeginDateTime(testId, studentId);
         }
     }
 }

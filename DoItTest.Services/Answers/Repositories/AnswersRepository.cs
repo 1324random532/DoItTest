@@ -52,7 +52,7 @@ namespace DoItTest.Services.Answers.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"SELECT * " +
+                String query = $"SELECT a.* " +
                     $"FROM answers a JOIN studenttests t ON a.studenttestid = t.id AND NOT t.isremoved " +
                     $"WHERE t.id=@StudentTestId " +
                     $"  AND a.isactive " +

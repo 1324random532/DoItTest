@@ -6,7 +6,6 @@ namespace DoItTest.Services.Answers.Repositories.Models
     {
         public Guid Id { get; set; }
         public Guid StudentTestId { get; set; }
-        public TestItemType Type { get; set; }
         public Guid TestItemId { get; set; } 
         public String? StringAnswer { get; set; }
         public Decimal? NumberAnswer { get; set; }

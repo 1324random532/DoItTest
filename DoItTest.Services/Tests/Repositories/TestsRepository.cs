@@ -288,7 +288,7 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
-        public TestItem[] GetNotPassedTestItems(Guid studentTestId, Boolean getAnswers)
+        public TestItem[] GetTestItemsByStudentTestId(Guid studentTestId, Boolean getAnswers)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
@@ -298,8 +298,7 @@ namespace DoItTest.Services.Tests.Repositories
                 {
                     String selectTestItemsQuery = $"SELECT i.* " +
                     $"FROM testitems i JOIN tests t ON i.testid = t.id AND NOT t.isremoved " +
-                    $"JOIN studenttests st ON st.testid = t.id AND NOT st.isremoved " +
-                    $"LEFT JOIN answers a ON st.id = a.studenttestid AND NOT a.isremoved " +
+                    $"LEFT JOIN studenttests st ON st.testid = t.id AND NOT st.isremoved " +
                     $"WHERE st.id = @StudentTestId " +
                     $"  AND NOT i.isremoved;";
 
@@ -333,13 +332,13 @@ namespace DoItTest.Services.Tests.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"INSERT INTO studenttests(id, testid, studentid, begindatetime, enddatetime) " +
-                    $"VALUES(@Id,@Testid,@Studentid,@BeginDateTime,@EndDateTime) " +
+                String query = $"INSERT INTO studenttests(id, testid, studentid, begindatetime, enddatetime, percentageofcorrectanswers) " +
+                    $"VALUES(@Id,@Testid,@Studentid,@BeginDateTime,@EndDateTime, @PercentageOfCorrectAnswers) " +
                     $"ON " +
                     $"CONFLICT(id) DO " +
                     $"UPDATE " +
                     $"SET id = @Id, testid = @Testid, studentid = @Studentid, begindatetime = @BeginDateTime," +
-                    $"enddatetime = @EndDateTime, modifieduserid = @ModifiedUserId, modifieddatetime = @ModifiedDateTime;";
+                    $"enddatetime = @EndDateTime, percentageofcorrectanswers = @PercentageOfCorrectAnswers, modifieduserid = @ModifiedUserId, modifieddatetime = @ModifiedDateTime;";
 
                 var parameters = new
                 {
@@ -348,8 +347,9 @@ namespace DoItTest.Services.Tests.Repositories
                     Studentid = studentTest.StudentId,
                     BeginDateTime = studentTest.BeginDateTime,
                     EndDateTime = studentTest.EndDateTime,
+                    PercentageOfCorrectAnswers = studentTest.PercentageOfCorrectAnswers,
                     ModifiedUserId = userId,
-                    ModifiedDateTime= DateTime.UtcNow,
+                    ModifiedDateTime= DateTime.UtcNow
                 };
 
                 db.Execute(query, parameters);

@@ -108,19 +108,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
 
         public static StudentTest ToStudentTest(this StudentTestDb db)
         {
-            StudentTestStatus status = db.GetStatus();
-            return new StudentTest(db.Id, db.TestId, db.StudentId, status, db.PercentageOfCorrectAnswers, db.Estimation, db.BeginDateTime, db.EndDateTime);
-        }
-
-        private static StudentTestStatus GetStatus(this StudentTestDb studentTestDb)
-        {
-            if (studentTestDb.IsFinish) return StudentTestStatus.Completed;
-
-            DateTime dateTimeUtc = DateTime.UtcNow;
-            if (studentTestDb.BeginDateTime > dateTimeUtc) return StudentTestStatus.Expired;
-
-            return StudentTestStatus.Passing;
-
+            return new StudentTest(db.Id, db.TestId, db.StudentId, db.PercentageOfCorrectAnswers, db.Estimation, db.BeginDateTime, db.EndDateTime,  db.IsExpired);
         }
     }
 }

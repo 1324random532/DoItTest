@@ -16,7 +16,7 @@ const Timer = (props: TimerProps) => {
     const [stringTime, setStringTime] = useState<string>(time.getTimeString())
 
     useEffect(() => {
-        if (!props.start) return
+        if (!props.start) return;
 
         const timer = window.setInterval(() => {
             time.takeSecond()
@@ -24,10 +24,13 @@ const Timer = (props: TimerProps) => {
             setStringTime(time.getTimeString())
         }, 1000)
 
-
         if (time.getTotalSeconds() == 0) {
             window.clearInterval(timer)
             props.finish && props.finish()
+        }
+
+        return () => {
+            window.clearInterval(timer)
         }
     }, [props.start])
 

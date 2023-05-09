@@ -16,8 +16,7 @@ export function PassingRadioButtonsItem({ item, answer, changeAnswer, sx }: pass
         <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
-            value={item.answerOptions.find(o => o.isTrue)}
-            onChange={(e, answerOptionId) => changeAnswer({ ...answer, answerOptionId })}
+            value={item.answerOptions.find(o => o.id == answer.answerOptionId)}
             sx={{ gap: 2 }}
         >
             {
@@ -25,6 +24,7 @@ export function PassingRadioButtonsItem({ item, answer, changeAnswer, sx }: pass
                     <FormControlLabel
                         key={o.id}
                         control={<Radio checked={answer.answerOptionId == o.id} />}
+                        onChange={() => changeAnswer({ ...answer, answerOptionId: o.id })}
                         label={o.title} />
                 )
             }

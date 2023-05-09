@@ -9,6 +9,7 @@
         public Decimal? NumberAnswer { get; private set; }
         public Guid? AnswerOptionId { get; private set; }
         public Guid[] AnswerOptionIds { get; private set; }
+        public Boolean IsAnswered => !String.IsNullOrWhiteSpace(StringAnswer) || NumberAnswer is not null || AnswerOptionId is not null || AnswerOptionIds.Length != 0;
 
         public Answer(Guid id, Guid studentTestId, Guid testItemId, String? stringAnswer, Decimal? numberAnswer, Guid? answerOptionId, Guid[] answerOptionIds)
         {

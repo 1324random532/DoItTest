@@ -8,8 +8,6 @@ import useDialog from "sharedComponents/dialog/useDialog";
 import { useNotification } from "sharedComponents/notification/store/notificationStore";
 import useComponent from "tools/components/useComponent";
 import { StudentRegistrationForm } from "./studentRegistrationForm";
-import { AnswerBlank } from "domain/answers/answerBlank";
-import { PassingTestItemCard } from "./passingTsetItems/passingTestItemCard";
 import { PassingTestForm } from "./passingTestForm";
 import { Student } from "domain/students/student";
 import { Box, Card, CardContent, CardHeader } from "@mui/material";
@@ -19,56 +17,93 @@ import Timer from "sharedComponents/timer/timer";
 import { getCookie } from "tools/Cookie";
 import { StudentsProvider } from "domain/students/studentProvider";
 
+class State {
+    constructor
+        (
+            public student: Student | null = null,
+            public testInfo: TestInfo | null = null,
+            public remainingTimeInSeconds: number | null = null,
+            public startTimer: boolean = false,
+            public pauseTimer: boolean = false,
+            public errorMessage: String | null = null,
+            public loading: boolean = true,
+        ) { }
+}
 
 export function PassingTest() {
 
     const routeParams = useParams();
 
-    const { showError, showSuccess } = useNotification()
+    const { showError } = useNotification()
 
     const blockUi = useBlockUi();
 
-    const [student, setStudent] = useState<Student | null>(null)
-    const [testInfo, setTestInfo] = useState<TestInfo | null>(null)
+    const [state, setState] = useState<State>(new State())
 
     useComponent({
         didMount: async () => {
             blockUi(async () => {
                 const testInfo = await TestsProvider.getTestInfo(routeParams.testId!)
-                if (testInfo == null) return showError("Информация по тесту отсутсвует")
-
-                setTestInfo(testInfo)
+                if (testInfo == null) return setState(prevState => ({ ...prevState, loading: false, errorMessage: "Информация по тесту отсутствует" }))
 
                 const studentId = getCookie("studentId")
-                if (String.isNullOrWhitespace(studentId)) return;
+                if (String.isNullOrWhitespace(studentId)) return setState(prevState => ({ ...prevState, testInfo, loading: false }));
 
                 const student = await StudentsProvider.getStudent(studentId);
-                setStudent(student)
+
+                const beginDateTime = await TestsProvider.getStartTestBeginDateTime(testInfo.testId, student.id)
+                if (beginDateTime == null) return setState(prevState => ({ ...prevState, loading: false, errorMessage: "Не удалось загрузить время прохождения" }))
+
+                const currentDateTime = new Date();
+                const passageTimeInSeconds = (currentDateTime.getTime() - beginDateTime.getTime()) / 1000
+                const remainingTimeInSeconds = testInfo.timeToCompleteInSeconds - passageTimeInSeconds
+
+                setState(prevState => ({ ...prevState, testInfo, student, remainingTimeInSeconds: remainingTimeInSeconds > 0 ? remainingTimeInSeconds : 0, startTimer: true, loading: false }))
             })
         }
     })
 
+    async function finishTest(studentId: string, testId: string) {
+        const result = await TestsProvider.finishTest(studentId, testId)
+        if (!result.isSuccess) return showError(result.errors[0].message)
+
+        setState(prevState => ({ ...prevState, startTimer: false }))
+    }
+
+    function setStudent(student: Student) {
+        setState(prevState => ({ ...prevState, student }))
+    }
+
+    function setStartTimer(startTimer: boolean) {
+        setState(prevState => ({ ...prevState, startTimer }))
+    }
 
     return (
         <Content withSidebar={false}>
-            <Box sx={{ paddingTop: "5%" }}>
-                {
-                    testInfo != null ?
-                        <Card sx={{ width: "600px" }}>
-                            <CardHeader title={testInfo.title} sx={{ color: "white", backgroundColor: "#2196f3" }} action={<Timer seconds={testInfo!.timeToCompleteInSeconds} start={false} sx={{ fontSize: 25 }} />} />
-                            <CardContent>
-                                {
-                                    student != null ?
-                                        <PassingTestForm student={student} testId={testInfo.testId} />
-                                        :
-                                        <StudentRegistrationForm testId={testInfo.testId} setStudent={setStudent} />
-                                }
-
-                            </CardContent>
-                        </Card>
-                        : <>Тест не найден, проверте ссылку</>
-                }
-            </Box>
+            {
+                !state.loading &&
+                <Box sx={{ paddingTop: "5%" }}>
+                    {
+                        state.errorMessage == null && state.testInfo != null ?
+                            <Card sx={{ width: "600px" }}>
+                                <CardHeader title={state.testInfo.title} sx={{ color: "white", backgroundColor: "#2196f3" }}
+                                    action={<Timer seconds={state.remainingTimeInSeconds ?? state.testInfo.timeToCompleteInSeconds}
+                                        start={state.startTimer}
+                                        sx={{ fontSize: 25 }}
+                                        finish={() => state.student != null && finishTest(state.student.id, state.testInfo!.testId)} />} />
+                                <CardContent>
+                                    {
+                                        state.student != null ?
+                                            <PassingTestForm student={state.student} testId={state.testInfo.testId} finishTest={finishTest} setStartTimer={setStartTimer} />
+                                            :
+                                            <StudentRegistrationForm testId={state.testInfo.testId} setStudent={setStudent} setStartTimer={setStartTimer} />
+                                    }
+                                </CardContent>
+                            </Card>
+                            : <>{state.errorMessage}</>
+                    }
+                </Box>
+            }
         </Content >
     )
 }

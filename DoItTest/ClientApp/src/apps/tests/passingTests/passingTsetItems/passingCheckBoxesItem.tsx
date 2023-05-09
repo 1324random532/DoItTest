@@ -14,13 +14,13 @@ export interface passingCheckBoxesItemProps {
 
 export function PassingCheckBoxesItem({ item, answer, changeAnswer, sx }: passingCheckBoxesItemProps) {
 
-    function replaceAnswer(e: React.ChangeEvent<HTMLInputElement>, isChecked: boolean) {
+    function replaceAnswer(e: React.ChangeEvent<HTMLInputElement>, value: string, isChecked: boolean) {
         let answerOptionIds = answer.answerOptionIds
         if (isChecked) {
-            answerOptionIds.push(e.target.value)
+            answerOptionIds.push(value)
         }
         else {
-            answerOptionIds = answerOptionIds.filter(i => i != e.target.value)
+            answerOptionIds = answerOptionIds.filter(i => i != value)
         }
         changeAnswer({ ...answer, answerOptionIds })
     }
@@ -34,7 +34,7 @@ export function PassingCheckBoxesItem({ item, answer, changeAnswer, sx }: passin
                         control={
                             <Checkbox
                                 checked={answer.answerOptionIds.includes(o.id)}
-                                onChange={replaceAnswer}
+                                onChange={(e, isChecked) => replaceAnswer(e, o.id, isChecked)}
                             />
                         }
                         label={o.title} />

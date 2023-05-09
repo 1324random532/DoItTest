@@ -15,11 +15,12 @@ import { SetState } from "tools/setState";
 
 export interface StudentRegistrationFormProps {
     testId: string
-    setStudent: SetState<Student | null>
+    setStudent: (student: Student) => void
+    setStartTimer: (startTimer: boolean) => void
 }
 
 
-export function StudentRegistrationForm({ testId, setStudent }: StudentRegistrationFormProps) {
+export function StudentRegistrationForm({ testId, setStudent, setStartTimer }: StudentRegistrationFormProps) {
     const { showError, showSuccess } = useNotification()
 
     const blockUi = useBlockUi();
@@ -35,7 +36,8 @@ export function StudentRegistrationForm({ testId, setStudent }: StudentRegistrat
 
             setStudent(result.data)
             createCookie("studentId", result.data.id, 1)
-            showSuccess("Сохранение выполнено")
+            setStartTimer(true)
+            showSuccess("Тест начат")
         })
     }
 
