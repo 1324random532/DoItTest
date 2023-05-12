@@ -9,9 +9,9 @@ namespace DoItTest.Services.Tests.Repositories.Models
 		public Guid StudentId { get; set; }
 		public DateTime BeginDateTime { get; set; }
 		public DateTime? EndDateTime { get; set; }
+		public DateTime MaxEndDateTime { get; set; }
 		public Int32 PercentageOfCorrectAnswers { get; }
-		public Int32 Estimation { get; }
-		public Boolean IsExpired { get; set; }
+		public Int32 Estimation { get; set; }
 
 		public Guid? ModifiedUserId { get; set; }
 		public DateTime? ModifiedDateTime { get; set; }

@@ -34,5 +34,10 @@ namespace DoItTest.Services.Students
         {
 			return _studentsRepository.GetStudent(id);
         }
+
+		public Student[] GetStudents(Guid[] ids)
+		{
+			return _studentsRepository.GetStudents(ids);
+		}
 	}
 }

@@ -7,5 +7,6 @@ namespace DoItTest.Domain.Services
     {
         DataResult<Guid> SaveStudent(StudentBlank studentBlank, Guid? userId);
         Student? GetStudent(Guid id);
+        Student[] GetStudents(Guid[] ids);
     }
 }

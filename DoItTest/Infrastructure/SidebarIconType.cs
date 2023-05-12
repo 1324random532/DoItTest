@@ -4,6 +4,7 @@
     {
         Home = 1,
         Users = 2,
-        Tests = 3
+        Tests = 3,
+        StudentTests = 4
     }
 }

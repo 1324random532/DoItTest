@@ -108,7 +108,12 @@ namespace DoItTest.Services.Tests.Repositories.Converters
 
         public static StudentTest ToStudentTest(this StudentTestDb db)
         {
-            return new StudentTest(db.Id, db.TestId, db.StudentId, db.PercentageOfCorrectAnswers, db.Estimation, db.BeginDateTime, db.EndDateTime,  db.IsExpired);
+            return new StudentTest(db.Id, db.TestId, db.StudentId, db.PercentageOfCorrectAnswers, db.Estimation, db.BeginDateTime, db.EndDateTime, db.MaxEndDateTime);
+        }
+
+        public static StudentTest[] ToStudentTests(this StudentTestDb[] dbs)
+        {
+            return dbs.Select(db => db.ToStudentTest()).ToArray();
         }
     }
 }

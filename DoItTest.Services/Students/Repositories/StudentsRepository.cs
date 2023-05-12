@@ -21,12 +21,12 @@ namespace DoItTest.Services.Students.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"INSERT INTO students(id, firstname, lastname, patronymic, \"group\", createddatetimeutc) " +
-                    $"VALUES(@Id, @FirstName, @LastName, @Patronymic, @Group, @DateTime) " +
+                String query = $"INSERT INTO students(id, firstname, lastname, patronymic, fullname, \"group\", createddatetimeutc) " +
+                    $"VALUES(@Id, @FirstName, @LastName, @Patronymic, @FullName, @Group, @DateTime) " +
                     $"ON " +
                     $"CONFLICT(id) DO " +
                     $"UPDATE " +
-                    $"SET id = @Id, firstname = @FirstName, lastname = @LastName, patronymic = @Patronymic, \"group\" = @Group, " +
+                    $"SET id = @Id, firstname = @FirstName, lastname = @LastName, patronymic = @Patronymic, fullname = @FullName, \"group\" = @Group, " +
                     $"modifieduserid = @Userid, modifieddatetimeutc = @Datetime;";
 
                 var parameters = new
@@ -35,6 +35,7 @@ namespace DoItTest.Services.Students.Repositories
                     FirstName = studentBlank.FirstName,
                     LastName = studentBlank.LastName,
                     Patronymic = studentBlank.Patronymic,
+                    FullName = studentBlank.FullName,
                     Group = studentBlank.Group,
                     Userid = userId,
                     Datetime = DateTime.UtcNow
@@ -60,6 +61,25 @@ namespace DoItTest.Services.Students.Repositories
                 };
 
                 return db.Query<StudentDb>(query, parameters).FirstOrDefault()?.ToStudent();
+            }
+        }
+
+        public Student[] GetStudents(Guid[] ids)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT * " +
+                    $"FROM students " +
+                    $"WHERE id = ANY(@Ids) " +
+                    $"  AND NOT isremoved;";
+
+                var parameters = new
+                {
+                    Ids = ids
+                };
+
+                return db.Query<StudentDb>(query, parameters).ToArray().ToStudents();
             }
         }
     }

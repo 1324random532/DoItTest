@@ -1,7 +1,7 @@
 import { HttpRequest } from "tools/httpClient/httpClient";
 import { StudentBlank } from "./studentBlank";
 import { DataResult, mapToDataResult } from "tools/results/dataResult";
-import { Student, mapToStudent } from "./student";
+import { Student, mapToStudent, mapToStudents } from "./student";
 
 export class StudentsProvider {
 
@@ -13,5 +13,10 @@ export class StudentsProvider {
     public static async getStudent(id: string): Promise<Student> {
         const result = await HttpRequest.get("/Students/GetStudent").withQueryParams({ id }).asAny()
         return mapToStudent(result)
+    }
+
+    public static async getStudents(ids: string[]): Promise<Student[]> {
+        const result = await HttpRequest.get("/Students/GetStudents").withQueryParams({ ids }).asAny()
+        return mapToStudents(result)
     }
 }

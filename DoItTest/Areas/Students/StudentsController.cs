@@ -28,5 +28,11 @@ namespace DoItTest.Site.Areas.Students
         {
             return _studentsService.GetStudent(id);
         }
+
+        [HttpGet("/Students/GetStudents")]
+        public Student[] GetStudents(Guid[] ids)
+        {
+            return _studentsService.GetStudents(ids);
+        }
     }
 }

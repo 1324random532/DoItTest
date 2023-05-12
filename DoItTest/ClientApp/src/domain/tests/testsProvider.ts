@@ -6,13 +6,15 @@ import { mapToTestItem, mapToTestItems } from "./items/testItemsUtils";
 import { mapToTest, mapToTests, Test } from "./test";
 import { TestBlank } from "./testBlank";
 import { TestItemBlank } from "./testItemBlank";
-import { mapToStudentTest } from "./studentTest";
+import { StudentTest, mapToStudentTest } from "./studentTest";
 import { DataResult, mapToDataResult } from "tools/results/dataResult";
 import { mapToTestInfo } from "./testInfo";
 import { StudentBlank } from "domain/students/studentBlank";
 import { Student, mapToStudent } from "domain/students/student";
 import { AnswerBlank } from "domain/answers/answerBlank";
 import { StartTestResponse, mapToStartTestResponse } from "./startTestResponse";
+import IStudentTestFilter from "./studentTestFilter";
+import ITestsFilter from "./ITestsFilter";
 
 export class TestsProvider {
 
@@ -45,8 +47,18 @@ export class TestsProvider {
         return mapToTest(result)
     }
 
-    public static async getPagedTests(page: number, count: number): Promise<PagedResult<Test>> {
-        const result = await HttpRequest.get("/Tests/GetPaged").withQueryParams({ page, count }).asAny()
+    public static async getTests(ids: string[]): Promise<Test[]> {
+        const result = await HttpRequest.get("/Tests/GetTests").withQueryParams({ ids }).asAny()
+        return mapToTests(result)
+    }
+
+    public static async getTestsBySearchText(searchText: string | null): Promise<Test[]> {
+        const result = await HttpRequest.get("/Tests/GetTestsBySearchText").withQueryParams({ searchText }).asAny()
+        return mapToTests(result)
+    }
+
+    public static async getPagedTests(filter: ITestsFilter): Promise<PagedResult<Test>> {
+        const result = await HttpRequest.post("/Tests/GetPaged").withBody(filter).asAny()
         return PagedResult.convert(result, mapToTest);
     }
 
@@ -67,10 +79,10 @@ export class TestsProvider {
         return mapToTestItems(result)
     }
 
-    // public static async getStudentTest(testId: string, studentId: string) {
-    //     const result = await HttpRequest.get("/Tests/GetStudentTest").withQueryParams({ testId, studentId }).asAny()
-    //     return mapToStudentTest(result)
-    // }
+    public static async getPagedStudentTest(studentTestFilter: IStudentTestFilter): Promise<PagedResult<StudentTest>> {
+        const result = await HttpRequest.post("/StudentTests/GetPaged").withBody(studentTestFilter).asAny()
+        return PagedResult.convert(result, mapToStudentTest);
+    }
 
     public static async getTestInfo(testId: string) {
         const result = await HttpRequest.get("/Tests/GetInfo").withQueryParams({ testId }).asAny()

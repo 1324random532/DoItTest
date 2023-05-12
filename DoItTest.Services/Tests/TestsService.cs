@@ -164,9 +164,19 @@ namespace DoItTest.Services.Tests
 			return _testsRepository.GetTest(id);
 		}
 
-		public PagedResult<Test> GetPagedTests(Guid userId, Int32 page, Int32 count, UserRole role)
+		public Test[] GetTests(Guid[] ids)
+        {
+			return _testsRepository.GetTests(ids);
+        }
+
+		public Test[] GetTests(String? searchText, Guid? userId)
 		{
-			return _testsRepository.GetPagedTests(page, count, role == UserRole.Super ? null : userId);
+			return _testsRepository.GetTests(searchText, userId);
+		}
+
+		public PagedResult<Test> GetPagedTests(TestsFilter filter)
+		{
+			return _testsRepository.GetPagedTests(filter);
 		}
 
 		public Result RemoveTest(Guid id, Guid userId)
@@ -195,6 +205,11 @@ namespace DoItTest.Services.Tests
 			return _testsRepository.GetStudentTest(studentId, testId );
 		}
 
+		public PagedResult<StudentTest> GetPagedStudentTests(StudentTestFilter filter)
+		{
+			return _testsRepository.GetPagedStudentTests(filter);
+		}
+
 		#region PassingTest
 
 		public DataResult<TestItem?> AnswerQuestion(AnswerBlank answerBlank)
@@ -208,7 +223,7 @@ namespace DoItTest.Services.Tests
 			StudentTest? studentTest = GetStudentTest(student.Id, test.Id);
 			if (studentTest is null) throw new Exception("Не существует модели прохождения студента");
 
-			if (studentTest.GetStatus(test) != StudentTestStatus.Passing) return DataResult<TestItem?>.Failed("Тест завершен");
+			if (studentTest.Status != StudentTestStatus.Passing) return DataResult<TestItem?>.Failed("Тест завершен");
 
 			Answer? activeAnswer = _answersService.GetActive(studentTest.Id);
 			if (activeAnswer is not null)
@@ -332,7 +347,10 @@ namespace DoItTest.Services.Tests
 			if (!result.IsSuccess) return DataResult<StartTestResponse>.Failed(result.Errors);
 			Student student = new(result.Data, studentBlank.FirstName!, studentBlank.LastName!, studentBlank.Patronymic, studentBlank.Group!);
 
-			StudentTest studentTest = new(Guid.NewGuid(), test.Id, student.Id, 0, 2, DateTime.UtcNow, null, false);
+			DateTime beginDateTimeUtc = DateTime.UtcNow;
+			DateTime maxEndDateTimeUtc = beginDateTimeUtc.AddSeconds(test.TimeToCompleteInSeconds);
+
+			StudentTest studentTest = new(Guid.NewGuid(), test.Id, student.Id, 0, 2, beginDateTimeUtc, null, maxEndDateTimeUtc);
 			SaveStudentTest(studentTest, null);
 
 			DataResult<TestItem?> getTestItemForPassingResult = GetTestItemForPassing(studentTest.StudentId, studentTest.TestId);
@@ -427,6 +445,6 @@ namespace DoItTest.Services.Tests
 			return studentTest?.BeginDateTime;
 		}
 
-		#endregion PassingTest
-	}
+        #endregion PassingTest
+    }
 }

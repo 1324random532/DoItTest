@@ -151,7 +151,47 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
-        public PagedResult<Test> GetPagedTests(Int32 page, Int32 count, Guid? userId)
+        public Test[] GetTests(Guid[] ids)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT * " +
+                    $"FROM tests " +
+                    $"WHERE id = ANY(@Ids) " +
+                    $"  AND NOT isremoved;";
+
+                var parameters = new
+                {
+                    Ids = ids
+                };
+
+                return db.Query<TestDb>(query, parameters).ToTests();
+            }
+        }
+
+        public Test[] GetTests(String? searchText, Guid? userId)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT * " +
+                    $"FROM tests " +
+                    $"WHERE (@UserId is null or userid = @UserId)" +
+                    $"  AND (@SearchText is null or @SearchText = '' or title ilike '%' || @SearchText || '%') " +
+                    $"  AND NOT isremoved;";
+
+                var parameters = new
+                {
+                    SearchText = searchText,
+                    UserId = userId
+                };
+
+                return db.Query<TestDb>(query, parameters).ToTests();
+            }
+        }
+
+        public PagedResult<Test> GetPagedTests(TestsFilter filter)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
@@ -160,14 +200,16 @@ namespace DoItTest.Services.Tests.Repositories
                     $"FROM tests " +
                     $"WHERE (@UserId is null or userid = @UserId) " +
                     $"  AND NOT isremoved " +
+                    $"  AND (@Title is null or @Title = '' or title ilike '%' || @Title || '%')" +
                     $"  OFFSET @Offset " +
                     $"  LIMIT @Limit ";
 
                 var parameters = new
                 {
-                    UserId = userId,
-                    Offset = Math.Max((page - 1) * count, 0),
-                    Limit = Math.Max(count, 0)
+                    UserId = filter.UserId,
+                    Title = filter.Title,
+                    Offset = Math.Max((filter.Page - 1) * filter.PageSize, 0),
+                    Limit = Math.Max(filter.PageSize, 0)
                 };
 
                 TestDb[] testDbs = db.Query<TestDb>(query, parameters).ToArray();
@@ -332,13 +374,13 @@ namespace DoItTest.Services.Tests.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"INSERT INTO studenttests(id, testid, studentid, begindatetime, enddatetime, percentageofcorrectanswers) " +
-                    $"VALUES(@Id,@Testid,@Studentid,@BeginDateTime,@EndDateTime, @PercentageOfCorrectAnswers) " +
+                String query = $"INSERT INTO studenttests(id, testid, studentid, begindatetime, enddatetime, maxenddatetime, percentageofcorrectanswers, estimation) " +
+                    $"VALUES(@Id,@Testid,@Studentid,@BeginDateTime,@EndDateTime, @MaxEndDateTime, @PercentageOfCorrectAnswers, @Estimation) " +
                     $"ON " +
                     $"CONFLICT(id) DO " +
                     $"UPDATE " +
                     $"SET id = @Id, testid = @Testid, studentid = @Studentid, begindatetime = @BeginDateTime," +
-                    $"enddatetime = @EndDateTime, percentageofcorrectanswers = @PercentageOfCorrectAnswers, modifieduserid = @ModifiedUserId, modifieddatetime = @ModifiedDateTime;";
+                    $"enddatetime = @EndDateTime, percentageofcorrectanswers = @PercentageOfCorrectAnswers, estimation = @Estimation, modifieduserid = @ModifiedUserId, modifieddatetime = @ModifiedDateTime;";
 
                 var parameters = new
                 {
@@ -348,6 +390,8 @@ namespace DoItTest.Services.Tests.Repositories
                     BeginDateTime = studentTest.BeginDateTime,
                     EndDateTime = studentTest.EndDateTime,
                     PercentageOfCorrectAnswers = studentTest.PercentageOfCorrectAnswers,
+                    Estimation = studentTest.Estimation,
+                    MaxEndDateTime = studentTest.MaxEndDateTime,
                     ModifiedUserId = userId,
                     ModifiedDateTime= DateTime.UtcNow
                 };
@@ -374,6 +418,41 @@ namespace DoItTest.Services.Tests.Repositories
                 };
 
                 return db.Query<StudentTestDb>(query, parameters).FirstOrDefault()?.ToStudentTest();
+            }
+        }
+
+        public PagedResult<StudentTest> GetPagedStudentTests(StudentTestFilter filter)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT *,COUNT(*) OVER() AS FullCount " +
+                    $"FROM studenttests st JOIN tests t ON st.testid = t.id AND NOT t.isremoved " +
+                    $"JOIN users u ON t.userid = u.id AND NOT u.isremoved " +
+                    $"JOIN students s ON s.id = st.studentid AND NOT s.isremoved " +
+                    $"WHERE NOT st.isremoved " +
+                    $"  AND (@UserId IS NULL OR u.id = @UserId)" +
+                    $"  AND (@TestId IS NULL OR st.testid = @TestId)" +
+                    $"  AND (@Group IS NULL OR @Group = '' OR s.group ilike '%' || @Group || '%')" +
+                    $"  AND (@StudentFIO IS NULL OR @StudentFIO = '' OR s.fullname ilike '%' || @StudentFIO || '%')" +
+                    $"  OFFSET @Offset " +
+                    $"  LIMIT @Limit ";
+
+                var parameters = new
+                {
+                    TestId = filter.TestId,
+                    UserId = filter.UserId,
+                    Group = filter.Group,
+                    StudentFIO = filter.studentFIO,
+                    Offset = Math.Max((filter.Page - 1) * filter.PageSize, 0),
+                    Limit = Math.Max(filter.PageSize, 0)
+                };
+
+                StudentTestDb[] studentTestDbs = db.Query<StudentTestDb>(query, parameters).ToArray();
+                Int32 totalRows = studentTestDbs.FirstOrDefault()?.FullCount ?? 0;
+                StudentTest[] studentTests = studentTestDbs.ToStudentTests();
+
+                return new PagedResult<StudentTest>(studentTests, totalRows);
             }
         }
     }

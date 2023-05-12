@@ -1,7 +1,6 @@
 import { Box, Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { Student } from "domain/students/student";
 import { TestItem } from "domain/tests/items/testItem";
-import { StudentTest } from "domain/tests/studentTest";
 import { TestsProvider } from "domain/tests/testsProvider";
 import { useState } from "react";
 import { useBlockUi } from "sharedComponents/blockUi/blockUiContext";

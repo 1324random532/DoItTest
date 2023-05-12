@@ -9,13 +9,15 @@ namespace DoItTest.Site.Infrastructure
     {
         private static readonly SidebarItem[] TestCreatorLinkItems =
         {
-            ListItem("Тесты", nameof(TestsController.App), SidebarIconType.Tests)
+            ListItem("Тесты", nameof(TestsController.App), SidebarIconType.Tests),
+            ListItem("Тесты студентов", nameof(StudentTestsController.App), SidebarIconType.StudentTests)
         };
 
         private static readonly SidebarItem[] SuperLinkItems =
         {
             ListItem("Пользователи", nameof(UsersController.App), SidebarIconType.Users),
-            ListItem("Тесты", nameof(TestsController.App), SidebarIconType.Tests)
+            ListItem("Тесты", nameof(TestsController.App), SidebarIconType.Tests),
+            ListItem("Тесты студентов", nameof(StudentTestsController.App), SidebarIconType.StudentTests)
         };
 
         public static SidebarItem[] GetLinksTree(UserRole role)

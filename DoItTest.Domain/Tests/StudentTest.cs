@@ -9,9 +9,19 @@
         public Int32 Estimation { get; private set; }
         public DateTime BeginDateTime { get; }
         public DateTime? EndDateTime { get; private set; }
-        public Boolean IsExpired { get; private set; }
+        public DateTime MaxEndDateTime { get; }
+        public StudentTestStatus Status
+        {
+            get
+            {
+                if (EndDateTime is not null) return StudentTestStatus.Completed;
+                if (DateTime.UtcNow > MaxEndDateTime) return StudentTestStatus.Expired;
 
-        public StudentTest(Guid id, Guid testId, Guid studentId, Int32 percentageOfCorrectAnswers, Int32 estimation, DateTime beginDateTime, DateTime? endDateTime, Boolean isExpired)
+                return StudentTestStatus.Passing;
+            }
+        }
+
+        public StudentTest(Guid id, Guid testId, Guid studentId, Int32 percentageOfCorrectAnswers, Int32 estimation, DateTime beginDateTime, DateTime? endDateTime, DateTime maxEndDateTime)
         {
             Id = id;
             TestId = testId;
@@ -20,7 +30,7 @@
             Estimation = estimation;
             BeginDateTime = beginDateTime;
             EndDateTime = endDateTime;
-            IsExpired = isExpired;
+            MaxEndDateTime = maxEndDateTime;
         }
 
         public void Finish()
@@ -31,28 +41,16 @@
         public void Prepare(Test test, Int32 correctAnswersCount, Int32 testItemsCount)
         {
             Int32 percentageOfCorrectAnswers = (correctAnswersCount * 100) / testItemsCount;
-            Int32 estimation = GetEstimation(percentageOfCorrectAnswers, test);
-
             PercentageOfCorrectAnswers = percentageOfCorrectAnswers;
-            Estimation = estimation;
+            Estimation = GetEstimation(test);
         }
 
-        public Int32 GetEstimation(Int32 percentageOfCorrectAnswers, Test test)
+        public Int32 GetEstimation(Test test)
         {
-            if (percentageOfCorrectAnswers >= test.NumberOfPercentagesByFive) return 5;
-            if (percentageOfCorrectAnswers >= test.NumberOfPercentagesByFive) return 4;
-            if (percentageOfCorrectAnswers >= test.NumberOfPercentagesByThree) return 3;
+            if (PercentageOfCorrectAnswers >= test.NumberOfPercentagesByFive) return 5;
+            if (PercentageOfCorrectAnswers >= test.NumberOfPercentagesByFive) return 4;
+            if (PercentageOfCorrectAnswers >= test.NumberOfPercentagesByThree) return 3;
             return 2;
-        }
-
-        public StudentTestStatus GetStatus(Test test)
-        {
-            if (EndDateTime is not null) return StudentTestStatus.Completed;
-            DateTime endDateTime = BeginDateTime.AddSeconds(test.TimeToCompleteInSeconds);
-            if (DateTime.UtcNow > endDateTime) return StudentTestStatus.Expired;
-
-
-            return StudentTestStatus.Passing;
         }
     }
 }

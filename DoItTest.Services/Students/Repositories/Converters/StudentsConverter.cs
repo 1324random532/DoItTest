@@ -10,5 +10,10 @@ namespace DoItTest.Services.Students.Repositories.Converters
         {
             return new Student(db.Id, db.FirstName, db.LastName, db.Patronymic, db.Group);
         }
+
+        public static Student[] ToStudents(this StudentDb[] dbs)
+        {
+            return dbs.Select(db => db.ToStudent()).ToArray();
+        }
     }
 }

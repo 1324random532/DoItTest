@@ -6,12 +6,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import PeopleIcon from '@mui/icons-material/People';
 import WestIcon from '@mui/icons-material/West';
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { IconButton as MaterialIconButton, SxProps, Theme } from '@mui/material';
 import { Tooltip } from 'sharedComponents/tooltip/tooltip';
 import { NeverUnreachable } from 'tools/errors/neverUnreachable';
 import CloseIcon from '@mui/icons-material/Close';
 
-type IconType = 'delete' | 'create' | 'add' | 'home' | 'users' | 'exit' | 'menu' | 'chevronLeft' | 'door' | 'tests' | 'cross'
+type IconType = 'delete' | 'create' | 'add' | 'home' | 'users' | 'exit' | 'menu' | 'chevronLeft' | 'door' | 'tests' | 'cross' | 'studentTests' | 'copy'
 interface IconProps {
     icon: IconType
     onClick?: () => void
@@ -42,6 +44,8 @@ export function Icon(props: { type: IconType }) {
         case 'door': return <MeetingRoomIcon />
         case 'tests': return <AssignmentLateIcon />
         case 'cross': return <CloseIcon />
+        case 'studentTests': return <AssignmentTurnedInIcon />
+        case 'copy': return <ContentCopyIcon />
         default: throw new NeverUnreachable(props.type);
     }
 }

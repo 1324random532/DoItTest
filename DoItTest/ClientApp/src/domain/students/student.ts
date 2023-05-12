@@ -6,6 +6,10 @@ export class Student {
         public readonly patronymic: string | null,
         public readonly group: string
     ) { }
+
+    public get fullName(): string {
+        return this.lastName + " " + this.firstName + " " + (this.patronymic ?? "")
+    }
 }
 
 export function mapToStudent(value: any): Student {

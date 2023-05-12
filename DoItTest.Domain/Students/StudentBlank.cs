@@ -7,5 +7,12 @@
         public String? LastName { get; set; }
         public String? Patronymic { get; set; }
         public String? Group { get; set; }
+
+        public String FullName { get
+            {
+                String?[] fullName = new String?[] { LastName, FirstName, Patronymic };
+                return String.Join(" ", fullName);
+            } 
+        }
     }
 }

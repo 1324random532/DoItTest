@@ -7,7 +7,8 @@ export enum SidebarIconType {
    Home = 1,
    Users = 2,
    Tests = 3,
-   Exit = 4,
+   StudentTests = 4,
+   Exit = 5,
 }
 
 interface SidebarProps {
@@ -18,6 +19,7 @@ export function SidebarIcon(props: SidebarProps) {
       case SidebarIconType.Home: return <Icon type='home' />
       case SidebarIconType.Users: return <Icon type='users' />
       case SidebarIconType.Tests: return <Icon type='tests' />
+      case SidebarIconType.StudentTests: return <Icon type='studentTests' />
       case SidebarIconType.Exit: return <Icon type='exit' />
       default: throw new NeverUnreachable(props.icon);
    }

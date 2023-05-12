@@ -3,6 +3,7 @@ using DoItTest.Domain.Services;
 using DoItTest.Domain.Students;
 using DoItTest.Domain.Tests;
 using DoItTest.Domain.Tests.TestItems;
+using DoItTest.Domain.Users;
 using DoItTest.Site.Areas.Bases;
 using DoItTest.Tools.Types.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -57,10 +58,24 @@ namespace DoItTest.Site.Areas.Tests
             return _testsService.GetTest(id);
         }
 
-        [HttpGet("/Tests/GetPaged")]
-        public PagedResult<Test> GetPagedTests(Int32 page, Int32 count)
+        [HttpGet("/Tests/GetTests")]
+        public Test[] GetTests(Guid[] ids)
         {
-            return _testsService.GetPagedTests(SystemUser.Id, page, count, SystemUser.Role);
+            return _testsService.GetTests(ids);
+        }
+
+        [HttpGet("/Tests/GetTestsBySearchText")]
+        public Test[] GetTests(String? serchText)
+        {
+            Guid? userId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
+            return _testsService.GetTests(serchText, userId);
+        }
+
+        [HttpPost("/Tests/GetPaged")]
+        public PagedResult<Test> GetPagedTests([FromBody] TestsFilter filter)
+        {
+            filter.UserId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
+            return _testsService.GetPagedTests(filter);
         }
 
         [HttpPost("/Tests/Remove")]

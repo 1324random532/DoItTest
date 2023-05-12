@@ -1,4 +1,4 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Box } from "@mui/material";
 import { screenSize } from "content/screenSize";
 import { Test } from "domain/tests/test";
 import { TestsProvider } from "domain/tests/testsProvider";
@@ -15,11 +15,20 @@ import { Pagination, PaginationState } from "sharedComponents/pagination/paginat
 import { ActionTableCell } from "sharedComponents/table/actionTableCell";
 import useComponent from "tools/components/useComponent";
 import { TestLinks } from "./links";
+import ITestsFilter, { makeTestsFilter } from "domain/tests/ITestsFilter";
+import useFilter from "hooks/useFilter";
+import { Input } from "sharedComponents/inputs/input";
 
-interface ILoadTestsPageParams {
-    page?: number;
-    pageSize?: number;
+
+class State {
+    constructor
+        (
+            public tests: Test[] = [],
+            public totalRows: number = 0
+        ) { }
 }
+
+const defaultFilter = makeTestsFilter({});
 
 export function TestsList() {
 
@@ -29,8 +38,7 @@ export function TestsList() {
     const blockUi = useBlockUi();
     const confirmDialog = useDialog(ConfirmDialogAsync)
 
-    const [pagination, setPagination] = useState<PaginationState>({ pageSize: 10, page: 1, totalRows: 0 })
-    const [tests, setTests] = useState<Test[]>([])
+    const [state, setState] = useState<State>(new State())
 
     const tableSize = {
         width: '70%',
@@ -39,24 +47,24 @@ export function TestsList() {
         }
     }
 
+    const [filter, setFilter] = useFilter(defaultFilter, (filter: ITestsFilter) => {
+        loadTestsPage(filter);
+    })
+
     useComponent({
         didMount: async () => {
             blockUi(async () => {
-                await loadTestsPage(pagination);
+                await loadTestsPage(filter);
             })
         }
     })
 
-    async function loadTestsPage({
-        page = pagination.page,
-        pageSize = pagination.pageSize
-    }: ILoadTestsPageParams) {
+    async function loadTestsPage(filter: ITestsFilter) {
         blockUi(async () => {
 
-            const testsPage = await TestsProvider.getPagedTests(page, pageSize);
+            const testsPage = await TestsProvider.getPagedTests(filter);
 
-            setTests(testsPage.values)
-            setPagination(pagination => ({ ...pagination, page, pageSize, totalRows: testsPage.totalRows }))
+            setState({ ...state, tests: testsPage.values, totalRows: testsPage.totalRows })
         })
     }
 
@@ -69,23 +77,23 @@ export function TestsList() {
             if (!result.isSuccess) {
                 return showError(result.errors[0].message);
             }
-            await loadTestsPage(pagination)
+            await loadTestsPage(filter)
             showSuccess("Проект удален")
         })
-    }
-
-    async function changePageSize(pageSize: number) {
-        await loadTestsPage({ pageSize });
-    }
-
-    async function changePage(page: number) {
-        await loadTestsPage({ page });
     }
 
     return (
         <Content withSidebar={true}>
             <h1>Тесты</h1>
             <LinkButton href={TestLinks.add} title='Добавить тест' sx={{ mb: 2 }}><Icon type='add' /> Добавить</LinkButton>
+            <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
+                <Input
+                    type="text"
+                    label="Название"
+                    value={filter.title}
+                    onChange={title => setFilter({ ...filter, title })}
+                />
+            </Box>
             <TableContainer sx={tableSize} component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>
@@ -95,13 +103,20 @@ export function TestsList() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {tests.map((t) => (
+                        {state.tests.map((t) => (
                             <TableRow
                                 key={t.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell align='left' component="th" scope="row" >{t.title}</TableCell>
                                 <ActionTableCell>
+                                    <IconButton
+                                        icon='copy'
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(`${location.origin}${TestLinks.passing(t.id)}`)
+                                        }}
+                                        title="Скопировать ссылку"
+                                    />
                                     <IconButton icon='create' onClick={() => navigateTo(TestLinks.edit(t.id))} title='Изменить тест' />
                                     <IconButton icon='delete' onClick={() => remove(t.id)} title='Удалить тест' />
                                 </ActionTableCell>
@@ -111,11 +126,11 @@ export function TestsList() {
                 </Table>
             </TableContainer>
             <Pagination
-                totalRows={pagination.totalRows}
-                page={pagination.page}
-                pageSize={pagination.pageSize}
-                onChangePage={changePage}
-                onChangePageSize={changePageSize}
+                totalRows={state.totalRows}
+                page={filter.page}
+                pageSize={filter.pageSize}
+                onChangePage={page => setFilter({ ...filter, page })}
+                onChangePageSize={pageSize => setFilter({ ...filter, pageSize })}
             />
         </Content>
     )
