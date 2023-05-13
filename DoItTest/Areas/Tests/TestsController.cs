@@ -52,10 +52,17 @@ namespace DoItTest.Site.Areas.Tests
             return _testsService.SaveTest(request.TestBlank, request.TestItemBlanks, SystemUser.Id);
         }
 
+        [HttpPost("/Tests/Copy")]
+        public DataResult<Guid> CopyTest([FromBody] Guid testId)
+        {
+            return _testsService.CopyTest(testId, SystemUser.Id);
+        }
+
         [HttpGet("/Tests/GetTest")]
         public Test? GetTest(Guid id)
         {
-            return _testsService.GetTest(id);
+            Guid? userId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
+            return _testsService.GetTest(id, userId);
         }
 
         [HttpGet("/Tests/GetTests")]

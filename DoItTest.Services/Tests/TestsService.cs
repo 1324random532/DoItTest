@@ -8,6 +8,7 @@ using DoItTest.Domain.Users;
 using DoItTest.Services.Answers;
 using DoItTest.Services.Students;
 using DoItTest.Services.Tests.Repositories;
+using DoItTest.Services.Tests.Repositories.Converters;
 using DoItTest.Tools.Types.Results;
 
 namespace DoItTest.Services.Tests
@@ -48,7 +49,15 @@ namespace DoItTest.Services.Tests
 			if (test.NumberOfPercentagesByFour >= test.NumberOfPercentagesByFive)
 				return Result.Fail("Процент на 4 должен быть меньше чем на 5");
 
-			if (test.Id is null) test.Id = Guid.NewGuid();
+			if (test.Id is null)
+			{
+				test.Id = Guid.NewGuid();
+			}
+			else
+			{
+				StudentTest[] studentTests = GetStudentTests(test.Id.Value);
+				if (studentTests.Length != 0) return Result.Fail("Этот тест уже имеет прохождения. Создайте новый или удалите сущетсвующие прохождения.");
+			}
 
 			if (test.UserId is null) test.UserId = systemUserId;
 
@@ -159,9 +168,67 @@ namespace DoItTest.Services.Tests
 			return Result.Success();
 		}
 
-		public Test? GetTest(Guid id)
+		public DataResult<Guid> CopyTest(Guid testId, Guid userId)
+        {
+			Test? test = GetTest(testId, userId);
+			if (test is null) return DataResult<Guid>.Failed("Тест не найден или удален");
+
+			TestItem[] testItems = GetTestItems(test.Id);
+
+			TestBlank testBlank = test.ToBlank();
+			TestItemBlank[] testItemBlanks = testItems.ToBlanks();
+
+			testBlank.Id = Guid.NewGuid();
+			testBlank.Title = "Копия " + testBlank.Title;
+
+			foreach (TestItemBlank testItemBlank in testItemBlanks)
+            {
+				testItemBlank.TestId = testBlank.Id;
+				testItemBlank.Id = Guid.NewGuid();
+
+				switch (testItemBlank.Type)
+                {
+					case TestItemType.NumericField:
+					case TestItemType.TextField:
+                        {
+							testItemBlank.AnswerOption!.TestItemId = testItemBlank.Id;
+							testItemBlank.AnswerOption.Id = Guid.NewGuid();
+							break;
+                        }
+					case TestItemType.RadioButtonsGroup:
+					case TestItemType.CheckboxesGroup:
+                        {
+                            foreach (AnswerOptionBlank answerOptionBlank in testItemBlank.AnswerOptions)
+                            {
+								answerOptionBlank.TestItemId = testItemBlank.Id;
+								answerOptionBlank.Id = Guid.NewGuid();
+                            }
+							break;
+                        }
+					case TestItemType.Comparison:
+                        {
+							foreach(AnswerOptionGroupBlank answerOptionGroupBlank in testItemBlank.AnswerOptionGroups)
+                            {
+								foreach (AnswerOptionBlank answerOptionBlank in answerOptionGroupBlank.AnswerOptions)
+								{
+									answerOptionBlank.TestItemId = testItemBlank.Id;
+									answerOptionBlank.Id = Guid.NewGuid();
+								}
+							}
+							break;
+                        }
+				}
+            }
+
+			Result result = SaveTest(testBlank, testItemBlanks, userId);
+			if (!result.IsSuccess) return DataResult<Guid>.Failed(result.Errors);
+
+			return DataResult<Guid>.Success(testBlank.Id.Value);
+		}
+
+		public Test? GetTest(Guid id, Guid? userId)
 		{
-			return _testsRepository.GetTest(id);
+			return _testsRepository.GetTest(id, userId);
 		}
 
 		public Test[] GetTests(Guid[] ids)
@@ -181,6 +248,9 @@ namespace DoItTest.Services.Tests
 
 		public Result RemoveTest(Guid id, Guid userId)
 		{
+			Test? test = GetTest(id, userId);
+			if (test is null) return Result.Fail("Тест не найден");
+
 			_testsRepository.RemoveTest(id, userId);
 			return Result.Success();
 		}
@@ -205,6 +275,11 @@ namespace DoItTest.Services.Tests
 			return _testsRepository.GetStudentTest(studentId, testId );
 		}
 
+		public StudentTest[] GetStudentTests(Guid testId)
+        {
+			return _testsRepository.GetStudentTests(testId);
+        }
+
 		public PagedResult<StudentTest> GetPagedStudentTests(StudentTestFilter filter)
 		{
 			return _testsRepository.GetPagedStudentTests(filter);
@@ -217,7 +292,7 @@ namespace DoItTest.Services.Tests
 			Student? student = _studetnsService.GetStudent(answerBlank.StudentId);
 			if (student is null) return DataResult<TestItem?>.Failed("Студент не найден");
 
-			Test? test = GetTest(answerBlank.TestId);
+			Test? test = GetTest(answerBlank.TestId, null);
 			if (test is null) return DataResult<TestItem?>.Failed("Тест не найден");
 
 			StudentTest? studentTest = GetStudentTest(student.Id, test.Id);
@@ -340,7 +415,7 @@ namespace DoItTest.Services.Tests
 
 		public DataResult<StartTestResponse> StartTest(StudentBlank studentBlank, Guid testId)
 		{
-			Test? test = GetTest(testId);
+			Test? test = GetTest(testId, null);
 			if (test is null) return DataResult<StartTestResponse>.Failed("Тест не существует");
 
 			DataResult<Guid> result = _studetnsService.SaveStudent(studentBlank, null);
@@ -375,7 +450,7 @@ namespace DoItTest.Services.Tests
 			Student? student = _studetnsService.GetStudent(studentId);
 			if (student is null) return DataResult<TestItem?>.Failed("Студент не найден");
 
-			Test? test = GetTest(testId);
+			Test? test = GetTest(testId, null);
 			if (test is null) return DataResult<TestItem?>.Failed("Тест не найден");
 
 			StudentTest? studentTest = GetStudentTest(student.Id, test.Id);
@@ -422,7 +497,7 @@ namespace DoItTest.Services.Tests
 
 		public TestInfo? GetTestInfo(Guid testId)
 		{
-			Test? test = _testsRepository.GetTest(testId);
+			Test? test = _testsRepository.GetTest(testId, null);
 			if (test is null) return null;
 
 			return new TestInfo(test.Id, test.Title, test.TimeToCompleteInSeconds);
@@ -433,7 +508,7 @@ namespace DoItTest.Services.Tests
 			StudentTest? studentTest = GetStudentTest(studentId);
 			if (studentTest is null) return null;
 
-			Test? test = GetTest(studentTest.TestId);
+			Test? test = GetTest(studentTest.TestId, null);
 			if (test is null) return null;
 
 			return test.Id;

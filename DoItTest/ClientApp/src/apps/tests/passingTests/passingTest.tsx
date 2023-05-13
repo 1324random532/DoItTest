@@ -10,7 +10,7 @@ import useComponent from "tools/components/useComponent";
 import { StudentRegistrationForm } from "./studentRegistrationForm";
 import { PassingTestForm } from "./passingTestForm";
 import { Student } from "domain/students/student";
-import { Box, Card, CardContent, CardHeader } from "@mui/material";
+import { Box, Card, CardContent, CardHeader, Paper } from "@mui/material";
 import { TestInfo } from "domain/tests/testInfo";
 import { TestsProvider } from "domain/tests/testsProvider";
 import Timer from "sharedComponents/timer/timer";
@@ -45,7 +45,7 @@ export function PassingTest() {
         didMount: async () => {
             blockUi(async () => {
                 const testInfo = await TestsProvider.getTestInfo(routeParams.testId!)
-                if (testInfo == null) return setState(prevState => ({ ...prevState, loading: false, errorMessage: "Информация по тесту отсутствует" }))
+                if (testInfo == null) return setState(prevState => ({ ...prevState, loading: false, errorMessage: "Тест не найден" }))
 
                 const studentId = getCookie("studentId")
                 if (String.isNullOrWhitespace(studentId)) return setState(prevState => ({ ...prevState, testInfo, loading: false }));
@@ -115,7 +115,12 @@ export function PassingTest() {
                                     }
                                 </CardContent>
                             </Card>
-                            : <>{state.errorMessage}</>
+                            : <Paper
+                                elevation={3}
+                                sx={{ minWidth: 200, minHeight: 100, backgroundColor: "#ffa199", display: "flex", justifyContent: "center", alignItems: "center", padding: 3 }}
+                            >
+                                {state.errorMessage}
+                            </Paper>
                     }
                 </Box>
             }

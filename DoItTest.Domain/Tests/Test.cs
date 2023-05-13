@@ -20,5 +20,19 @@
             NumberOfPercentagesByFour = numberOfPercentagesByFour;
             NumberOfPercentagesByThree = numberOfPercentagesByThree;
         }
+
+        public TestBlank ToBlank()
+        {
+            return new TestBlank
+            {
+                Id = Id,
+                UserId = UserId,
+                Title = Title,
+                TimeToCompleteInSeconds = TimeToCompleteInSeconds,
+                NumberOfPercentagesByFive = NumberOfPercentagesByFive,
+                NumberOfPercentagesByFour = NumberOfPercentagesByFour,
+                NumberOfPercentagesByThree = NumberOfPercentagesByThree
+            };
+        }
     }
 }

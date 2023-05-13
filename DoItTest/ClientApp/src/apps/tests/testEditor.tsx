@@ -89,11 +89,32 @@ export function TestEditor() {
         })
     }
 
+    async function copyTest(testId: string) {
+        blockUi(async () => {
+            const result = await TestsProvider.copyTest(testId);
+            if (!result.isSuccess) {
+                return showError(result.errors[0].message);
+            }
+
+            showSuccess("Копирование выполнено")
+            window.open(TestLinks.edit(result.data))
+        })
+    }
+
     return (
         <Content withSidebar={true}>
             <h1>{testBlank.id == null ? "Добавить" : "Изменить"}</h1>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <Button onClick={save} title='Сохранить именения' sx={{ mb: 2, width: 250, height: 56 }}>Сохранить</Button>
+
+                <Box sx={{ display: "flex", gap: 2 }}>
+                    <Button onClick={save} title='Сохранить именения' sx={{ mb: 2, width: 250, height: 56 }}>Сохранить</Button>
+
+                    {
+                        testBlank.id != null &&
+                        <Button onClick={() => { copyTest(testBlank.id!) }} title='Создать копию' sx={{ mb: 2, width: 250, height: 56 }}>Создать копию</Button>
+                    }
+
+                </Box>
 
                 <Box sx={{ display: "flex", gap: 2 }}>
                     <Input

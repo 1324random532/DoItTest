@@ -10,7 +10,8 @@ namespace DoItTest.Domain.Services
     public interface ITestsService
     {
         Result SaveTest(TestBlank test, TestItemBlank[] testItems, Guid systemUserId);
-        Test? GetTest(Guid id);
+        DataResult<Guid> CopyTest(Guid testId, Guid userId);
+        Test? GetTest(Guid id, Guid? userId);
         Test[] GetTests(Guid[] ids);
         Test[] GetTests(String? searchText, Guid? userId);
         PagedResult<Test> GetPagedTests(TestsFilter testsFilter);

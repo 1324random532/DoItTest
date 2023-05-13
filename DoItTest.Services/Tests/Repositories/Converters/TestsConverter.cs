@@ -106,6 +106,114 @@ namespace DoItTest.Services.Tests.Repositories.Converters
             }
         }
 
+        public static TestItemBlank[] ToBlanks(this TestItem[] items)
+        {
+            return items.Select(i => i.ToBlank()).ToArray();
+        }
+
+        public static TestItemBlank ToBlank(this TestItem item)
+        {
+            TestItemBlank testItemBlank = new()
+            {
+                Id = item.Id,
+                TestId = item.TestId,
+                Type = item.Type,
+                Question = item.Question,
+                ImageBase64 = item.ImageBase64
+            };
+
+
+            switch (item)
+            {
+                case TextFieldItem textFieldItem:
+                    {
+                        testItemBlank.AnswerOption = textFieldItem.AnswerOption.ToBlank();
+                        break;
+                    }
+                case NumberFieldItem numberFieldItem:
+                    {
+                        testItemBlank.AnswerOption = numberFieldItem.AnswerOption.ToBlank();
+                        break;
+                    }
+                case RadioButtonItem radioButtonItem:
+                    {
+                        testItemBlank.AnswerOptions = radioButtonItem.AnswerOptions.ToBlanks();
+                        break;
+                    }
+                case CheckboxesItem checkboxesItem:
+                    {
+                        testItemBlank.AnswerOptions = checkboxesItem.AnswerOptions.ToBlanks();
+                        break;
+                    }
+                case ComparisonItem comparisonItem:
+                    {
+                        testItemBlank.AnswerOptionGroups = comparisonItem.AnswerOptionGroups.Select(g => 
+                        new AnswerOptionGroupBlank()
+                        {
+                            Id = g.Id,
+                            Name = g.Name,
+                            AnswerOptions = g.AnswerOptions.ToBlanks()
+                        }
+                        ).ToArray();
+                        break;
+                    }
+            }
+
+            return testItemBlank;
+        }
+
+        public static AnswerOptionBlank[] ToBlanks(this AnswerOption[] answerOptions)
+        {
+            return answerOptions.Select(o => o.ToBlank()).ToArray();
+        }
+
+        public static AnswerOptionBlank ToBlank(this AnswerOption answerOption)
+        {
+            AnswerOptionBlank answerOptionBlank = new()
+            {
+                Id = answerOption.Id,
+                TestItemId = answerOption.TestItemId,
+                Type = answerOption.Type,
+            };
+
+            switch (answerOption)
+            {
+                case TextFildAnswerOption textFildAnswerOption:
+                    {
+                        answerOptionBlank.StringAnswer = textFildAnswerOption.Answer;
+                        break;
+                    }
+                case NumberAnswerOption numberAnswerOption:
+                        {
+                        answerOptionBlank.NumberAnswer = numberAnswerOption.Answer;
+                        break;
+                    }
+                case RadioButtonAnswerOption radioButtonAnswerOption:
+                    {
+                        answerOptionBlank.Title = radioButtonAnswerOption.Title;
+                        answerOptionBlank.IsTrue = radioButtonAnswerOption.IsTrue;
+                        break;
+                    }
+                case CheckboxesAnswerOption checkboxesAnswerOption:
+                    {
+                        answerOptionBlank.Title = checkboxesAnswerOption.Title;
+                        answerOptionBlank.IsTrue = checkboxesAnswerOption.IsTrue;
+                        break;
+                    }
+                case ComparisonAnswerOption comparisonAnswerOption:
+                    {
+                        answerOptionBlank.Title = comparisonAnswerOption.Title;
+                        answerOptionBlank.GroupId = comparisonAnswerOption.GroupId;
+                        answerOptionBlank.GroupName = comparisonAnswerOption.GroupName;
+                        break;
+                    }
+                case AnswerOptionGroup: break;
+                default: throw new Exception("Неизвестный тип");
+            }
+
+            return answerOptionBlank;
+        }
+
         public static StudentTest ToStudentTest(this StudentTestDb db)
         {
             return new StudentTest(db.Id, db.TestId, db.StudentId, db.PercentageOfCorrectAnswers, db.Estimation, db.BeginDateTime, db.EndDateTime, db.MaxEndDateTime);

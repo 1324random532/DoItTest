@@ -132,7 +132,7 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
-        public Test? GetTest(Guid id)
+        public Test? GetTest(Guid id, Guid? userId)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
@@ -140,11 +140,13 @@ namespace DoItTest.Services.Tests.Repositories
                 String query = $"SELECT * " +
                     $"FROM tests " +
                     $"WHERE id=@Id " +
+                    $"  AND (@UserId is null or userid = @UserId)" +
                     $"  AND NOT isremoved;";
 
                 var parameters = new
                 {
-                    Id = id
+                    Id = id,
+                    UserId = userId
                 };
 
                 return db.Query<TestDb>(query, parameters).FirstOrDefault()?.ToTest();
@@ -239,6 +241,19 @@ namespace DoItTest.Services.Tests.Repositories
                     $"from t " +
                     $"where testid = t.id " +
                     $"returning testitems.id " +
+                    $")," +
+                    $"st as( " +
+                    $"update studenttests " +
+                    $"set isremoved = true " +
+                    $"from t " +
+                    $"where testid = t.id " +
+                    $"returning studenttests.id " +
+                    $")," +
+                    $"a as(" +
+                    $"update answers a " +
+                    $"set isremoved = true " +
+                    $"from st " +
+                    $"where st.id = a.studenttestid " +
                     $") " +
                     $"update testitemansweroptions " +
                     $"set isremoved = true " +
@@ -418,6 +433,25 @@ namespace DoItTest.Services.Tests.Repositories
                 };
 
                 return db.Query<StudentTestDb>(query, parameters).FirstOrDefault()?.ToStudentTest();
+            }
+        }
+
+        public StudentTest[] GetStudentTests(Guid testId)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT * " +
+                    $"FROM studenttests " +
+                    $"WHERE testid = @TestId " +
+                    $"  AND NOT isremoved;";
+
+                var parameters = new
+                {
+                    TestId = testId
+                };
+
+                return db.Query<StudentTestDb>(query, parameters).ToArray().ToStudentTests();
             }
         }
 

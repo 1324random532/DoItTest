@@ -42,6 +42,11 @@ export class TestsProvider {
         return result;
     }
 
+    public static async copyTest(testId: string) {
+        const result = await HttpRequest.post("/Tests/Copy").withBody(testId).asAny()
+        return mapToDataResult(result)
+    }
+
     public static async getTest(id: string): Promise<Test> {
         const result = await HttpRequest.get("/Tests/GetTest").withQueryParams({ id }).asAny()
         return mapToTest(result)
@@ -86,7 +91,7 @@ export class TestsProvider {
 
     public static async getTestInfo(testId: string) {
         const result = await HttpRequest.get("/Tests/GetInfo").withQueryParams({ testId }).asAny()
-        return mapToTestInfo(result)
+        return result == null ? null : mapToTestInfo(result)
     }
 
     public static async getActiveTestId(studentId: string): Promise<string | null> {
