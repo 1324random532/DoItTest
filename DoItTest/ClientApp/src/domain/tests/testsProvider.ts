@@ -99,6 +99,11 @@ export class TestsProvider {
         return result
     }
 
+    public static async getStudentTest(id: string): Promise<StudentTest | null> {
+        const result = await HttpRequest.get("/Tests/GetStudentTest").withQueryParams({ id }).asAny()
+        return result
+    }
+
     public static async getStartTestBeginDateTime(testId: string, studentId: string): Promise<Date | null> {
         const result = await HttpRequest.get("/Tests/GetStartTestBeginDateTime").withQueryParams({ testId, studentId }).asAny()
         return result != null ? new Date(result) : null;

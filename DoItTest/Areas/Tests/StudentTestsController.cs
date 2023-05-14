@@ -16,7 +16,15 @@ namespace DoItTest.Site.Areas.Tests
         }
 
         [HttpGet("/StudentTests")]
+        [HttpGet("/StudentTests/Info/{studentTestId}")]
         public IActionResult App() => ReactApp();
+
+        [HttpGet("/StudentTests/GetStudentTest")]
+        public StudentTest? GetStudentTest(Guid id)
+        {
+            Guid? userId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
+            return _testsService.GetStudentTestById(id, userId);
+        }
 
         [HttpPost("/StudentTests/GetPaged")]
         public PagedResult<StudentTest> GetPagedStudentTests([FromBody]StudentTestFilter filter)

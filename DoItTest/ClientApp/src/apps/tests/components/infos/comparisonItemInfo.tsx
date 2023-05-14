@@ -9,7 +9,7 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { Box } from "@mui/system";
 
 export interface ComparisonItemInfoProps {
-    item: TestItemBlank
+    item: TestItemBlank,
     sx?: SxProps<Theme>;
 }
 

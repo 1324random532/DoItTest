@@ -1,3 +1,4 @@
+import Time from "tools/time";
 import { StudentTestStatus } from "./studentTestStatus";
 import { Test } from "./test";
 
@@ -11,6 +12,13 @@ export class StudentTest {
         public readonly beginDateTime: Date,
         public readonly endDateTime: Date | null,
     ) { }
+
+    public get spentTime() {
+        if (this.endDateTime == null) return null;
+
+        const spentTimeInSeconds = this.endDateTime.getTime() - this.beginDateTime.getTime()
+        return new Time(spentTimeInSeconds)
+    }
 }
 
 export function mapToStudentTest(value: any): StudentTest {

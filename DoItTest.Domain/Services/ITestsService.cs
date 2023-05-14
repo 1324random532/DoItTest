@@ -19,6 +19,7 @@ namespace DoItTest.Domain.Services
 
         TestItem[] GetTestItems(Guid testId, Boolean getAnswers = true);
 
+        StudentTest? GetStudentTestById(Guid id, Guid? userId);
         StudentTest? GetStudentTest(Guid studentId, Guid? testId = null);
         PagedResult<StudentTest> GetPagedStudentTests(StudentTestFilter filter);
 

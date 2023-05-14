@@ -21,13 +21,13 @@ namespace DoItTest.Services.Answers.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"INSERT INTO answers(id, studenttestid, testitemid, stringanswer, numberanswer, answeroptionid, answeroptionids, isactive, createddatetimeutc) " +
-                    $"VALUES(@Id, @StudentTestId, @TestItemId, @StringAnswer, @NumberAnswer, @AnswerOptionId, @AnswerOptionIds, @IsActive, @DateTime) " +
+                String query = $"INSERT INTO answers(id, studenttestid, testitemid, stringanswer, numberanswer, answeroptionid, answeroptionids, isactive, istrue, createddatetimeutc) " +
+                    $"VALUES(@Id, @StudentTestId, @TestItemId, @StringAnswer, @NumberAnswer, @AnswerOptionId, @AnswerOptionIds, @IsActive, @IsTrue, @DateTime) " +
                     $"ON " +
                     $"CONFLICT(id) DO " +
                     $"UPDATE " +
                     $"SET id = @Id, studenttestid = @StudentTestId, testitemid = @TestItemId, stringanswer = @StringAnswer, numberanswer = @NumberAnswer, " +
-                    $"answeroptionid = @AnswerOptionId, answeroptionids = @AnswerOptionIds, isactive = @IsActive, modifieduserid = @Userid, modifieddatetimeutc = @Datetime;";
+                    $"answeroptionid = @AnswerOptionId, answeroptionids = @AnswerOptionIds, isactive = @IsActive, istrue = @IsTrue, modifieduserid = @Userid, modifieddatetimeutc = @Datetime;";
 
                 var parameters = new
                 {
@@ -39,6 +39,7 @@ namespace DoItTest.Services.Answers.Repositories
                     AnswerOptionId = answer.AnswerOptionId,
                     AnswerOptionIds = answer.AnswerOptionIds,
                     IsActive = isActive,
+                    IsTrue = answer.IsTrue,
                     Userid = userId,
                     Datetime = DateTime.UtcNow
                 };
@@ -67,7 +68,7 @@ namespace DoItTest.Services.Answers.Repositories
             }
         }
 
-        public Answer[] GetAnswers(Guid studentTestId)
+        public Answer[] GetAnswers(Guid studentTestId, Guid? userId)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
@@ -75,15 +76,19 @@ namespace DoItTest.Services.Answers.Repositories
 
                 using (var transaction = db.BeginTransaction())
                 {
-                    String query = $"SELECT * " +
-                    $"FROM answers " +              
-                    $"WHERE studenttestid = @StudentTestId " +
-                    $"  AND NOT isactive" +
-                    $"  AND NOT isremoved;";
+                    String query = $"SELECT a.* " +
+                    $"FROM answers a JOIN studenttests st ON st.id = a.studenttestid AND NOT st.isremoved " +
+                    $"JOIN tests t ON t.id = st.testid AND NOT t.isremoved " +
+                    $"JOIN users u ON u.id = t.userid AND NOT u.isremoved " +              
+                    $"WHERE a.studenttestid = @StudentTestId " +
+                    $"  AND (@UserId IS NULL OR u.id = @UserId)" +
+                    $"  AND NOT a.isactive" +
+                    $"  AND NOT a.isremoved;";
 
                     var parameters = new
                     {
-                        StudentTestId = studentTestId
+                        StudentTestId = studentTestId,
+                        UserId = userId
                     };                   
 
                     return db.Query<AnswerDb>(query, parameters).ToArray().ToDomains();

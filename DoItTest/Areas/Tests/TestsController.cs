@@ -103,12 +103,6 @@ namespace DoItTest.Site.Areas.Tests
             return _testsService.GetTestItems(testId);
         }
 
-        //[HttpGet("/Tests/GetStudentTest")]
-        //public StudentTest? GetStudentTest(Guid testId, Guid studentId)
-        //{
-        //    return _testsService.GetStudentTest(testId, studentId);
-        //}
-
         [HttpGet("/Tests/GetInfo")]
         public TestInfo? GetTestInfo(Guid testId)
         {

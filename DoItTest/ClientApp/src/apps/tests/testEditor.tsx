@@ -16,7 +16,7 @@ import TimePicker from "sharedComponents/inputs/timeInput";
 import { useNotification } from "sharedComponents/notification/store/notificationStore";
 import useComponent from "tools/components/useComponent";
 import Time, { getTime } from "tools/time";
-import { TestItemCard } from "./components/info/testItemInfoCard";
+import { TestItemCard } from "./components/infos/testItemInfoCard";
 import TestItemEditorModal from "./components/testItemEditorModal";
 import { TestLinks } from "./links";
 
@@ -44,7 +44,6 @@ export function TestEditor() {
 
                 const test = await TestsProvider.getTest(testId);
                 setTestBlank(TestBlank.formTest(test));
-                console.log(test)
 
                 const testItems = await TestsProvider.getTestItems(test.id);
                 const testItemBlanks = TestItemBlank.formTestItems(testItems)

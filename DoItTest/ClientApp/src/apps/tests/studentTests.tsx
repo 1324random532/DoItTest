@@ -22,6 +22,8 @@ import { ActionTableCell } from "sharedComponents/table/actionTableCell";
 import { formatFullDateTime } from "tools/DateTime";
 import useComponent from "tools/components/useComponent";
 import { distinct } from "tools/utils";
+import { TestLinks } from "./links";
+import { StudentTestsProvider } from "domain/tests/studentTestsProvider";
 
 
 
@@ -42,7 +44,6 @@ export function StudentTestsList() {
     const navigateTo = useNavigate();
     const { showError, showSuccess } = useNotification()
     const blockUi = useBlockUi();
-    const confirmDialog = useDialog(ConfirmDialogAsync)
     const [state, setState] = useState<State>(new State())
 
     const tableSize = {
@@ -67,7 +68,7 @@ export function StudentTestsList() {
     async function loadStudentTestsPage(filter: IStudentTestFilter) {
         blockUi(async () => {
 
-            const studentTestsPage = await TestsProvider.getPagedStudentTest(filter);
+            const studentTestsPage = await StudentTestsProvider.getPagedStudentTest(filter);
 
             const testIds = distinct(studentTestsPage.values.map(v => v.testId))
             const studentIds = distinct(studentTestsPage.values.map(v => v.studentId))
@@ -137,7 +138,7 @@ export function StudentTestsList() {
                             <TableCell align='center'>Оценка</TableCell>
                             <TableCell align='center'>Дата начала</TableCell>
                             <TableCell align='center'>Дата окончания</TableCell>
-                            {/* <TableCell align='left' className='compact'></TableCell> */}
+                            <TableCell align='left' className='compact'></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -156,10 +157,10 @@ export function StudentTestsList() {
                                 <TableCell align='center'>{st.estimation}</TableCell>
                                 <TableCell align='center'>{formatFullDateTime(st.beginDateTime)}</TableCell>
                                 <TableCell align='center'>{formatFullDateTime(st.endDateTime, "Не закончен")}</TableCell>
-                                {/* <ActionTableCell>
-                                     <IconButton icon='create' onClick={() => navigateTo(TestLinks.edit(t.id))} title='Изменить тест' />
-                                    <IconButton icon='delete' onClick={() => remove(t.id)} title='Удалить тест' /> 
-                                </ActionTableCell> */}
+                                <ActionTableCell>
+                                    <IconButton icon='info' onClick={() => navigateTo(TestLinks.info(st.id))} title='Детализация' />
+                                    {/* <IconButton icon='delete' onClick={() => remove(t.id)} title='Удалить тест' />  */}
+                                </ActionTableCell>
                             </TableRow>
                         })}
                     </TableBody>

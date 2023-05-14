@@ -169,7 +169,7 @@ namespace DoItTest.Services.Tests
 		}
 
 		public DataResult<Guid> CopyTest(Guid testId, Guid userId)
-        {
+		{
 			Test? test = GetTest(testId, userId);
 			if (test is null) return DataResult<Guid>.Failed("Тест не найден или удален");
 
@@ -182,33 +182,33 @@ namespace DoItTest.Services.Tests
 			testBlank.Title = "Копия " + testBlank.Title;
 
 			foreach (TestItemBlank testItemBlank in testItemBlanks)
-            {
+			{
 				testItemBlank.TestId = testBlank.Id;
 				testItemBlank.Id = Guid.NewGuid();
 
 				switch (testItemBlank.Type)
-                {
+				{
 					case TestItemType.NumericField:
 					case TestItemType.TextField:
-                        {
+						{
 							testItemBlank.AnswerOption!.TestItemId = testItemBlank.Id;
 							testItemBlank.AnswerOption.Id = Guid.NewGuid();
 							break;
-                        }
+						}
 					case TestItemType.RadioButtonsGroup:
 					case TestItemType.CheckboxesGroup:
-                        {
-                            foreach (AnswerOptionBlank answerOptionBlank in testItemBlank.AnswerOptions)
-                            {
+						{
+							foreach (AnswerOptionBlank answerOptionBlank in testItemBlank.AnswerOptions)
+							{
 								answerOptionBlank.TestItemId = testItemBlank.Id;
 								answerOptionBlank.Id = Guid.NewGuid();
-                            }
+							}
 							break;
-                        }
+						}
 					case TestItemType.Comparison:
-                        {
-							foreach(AnswerOptionGroupBlank answerOptionGroupBlank in testItemBlank.AnswerOptionGroups)
-                            {
+						{
+							foreach (AnswerOptionGroupBlank answerOptionGroupBlank in testItemBlank.AnswerOptionGroups)
+							{
 								foreach (AnswerOptionBlank answerOptionBlank in answerOptionGroupBlank.AnswerOptions)
 								{
 									answerOptionBlank.TestItemId = testItemBlank.Id;
@@ -216,9 +216,9 @@ namespace DoItTest.Services.Tests
 								}
 							}
 							break;
-                        }
+						}
 				}
-            }
+			}
 
 			Result result = SaveTest(testBlank, testItemBlanks, userId);
 			if (!result.IsSuccess) return DataResult<Guid>.Failed(result.Errors);
@@ -232,9 +232,9 @@ namespace DoItTest.Services.Tests
 		}
 
 		public Test[] GetTests(Guid[] ids)
-        {
+		{
 			return _testsRepository.GetTests(ids);
-        }
+		}
 
 		public Test[] GetTests(String? searchText, Guid? userId)
 		{
@@ -256,9 +256,9 @@ namespace DoItTest.Services.Tests
 		}
 
 		public TestItem? GetTestItem(Guid? id)
-        {
-			return id is null ? null : _testsRepository.GetTestItem(id.Value, false);
-        }
+		{
+			return id is null ? null : _testsRepository.GetTestItem(id.Value, true);
+		}
 
 		public TestItem[] GetTestItems(Guid testId, Boolean getAnswers = true)
 		{
@@ -266,19 +266,24 @@ namespace DoItTest.Services.Tests
 		}
 
 		public void SaveStudentTest(StudentTest studentTest, Guid? userId)
-        {
+		{
 			_testsRepository.SaveStudentTest(studentTest, userId);
+		}
+
+		public StudentTest? GetStudentTestById(Guid id, Guid? userId)
+		{
+			return _testsRepository.GetStudentTestById(id, userId);
 		}
 
 		public StudentTest? GetStudentTest(Guid studentId, Guid? testId = null)
 		{
-			return _testsRepository.GetStudentTest(studentId, testId );
+			return _testsRepository.GetStudentTest(studentId, testId);
 		}
 
 		public StudentTest[] GetStudentTests(Guid testId)
-        {
+		{
 			return _testsRepository.GetStudentTests(testId);
-        }
+		}
 
 		public PagedResult<StudentTest> GetPagedStudentTests(StudentTestFilter filter)
 		{
@@ -309,12 +314,63 @@ namespace DoItTest.Services.Tests
 				Result validateResult = ValidateAndSetAnswer(activeAnswer, answerBlank, activeTestItem.Type);
 				if (!validateResult.IsSuccess) return DataResult<TestItem?>.Failed(validateResult.Errors);
 
+				Boolean answerIsTrue = CheckIsCorrectAnswer(activeAnswer, activeTestItem);
+				activeAnswer.SetIstrue(answerIsTrue);
+
 				_answersService.SaveAnswer(activeAnswer);
 			}
 
 			PrepareStudentTest(studentTest, test);
 
 			return GetTestItemForPassing(student.Id, test.Id);
+		}
+
+		private Boolean CheckIsCorrectAnswer(Answer answer, TestItem testItem)
+		{
+			switch (testItem.Type)
+			{
+				case TestItemType.TextField:
+					{
+						if (testItem is TextFieldItem textFieldItem)
+						{
+							if (textFieldItem.AnswerOption.Answer!.ToLower() == answer.StringAnswer.ToLower()) return true;
+						}
+						else throw new Exception("Вопрос и ответ должны быть текстовыми");
+						break;
+					}
+				case TestItemType.NumericField:
+					{
+						if (testItem is NumberFieldItem numberFieldItem)
+						{
+							if (numberFieldItem.AnswerOption.Answer == answer.NumberAnswer) return true;
+						}
+						else throw new Exception("Вопрос и ответ должны быть числовыми");
+						break;
+					}
+				case TestItemType.RadioButtonsGroup:
+					{
+						if (testItem is RadioButtonItem radioGroupItem)
+						{
+							if (radioGroupItem.AnswerOptions.First(o => o.IsTrue!.Value).Id == answer.AnswerOptionId) return true;
+						}
+						else throw new Exception("Вопрос и ответ должны быть \"Один из сиска\"");
+						break;
+					}
+				case TestItemType.CheckboxesGroup:
+					{
+						if (testItem is CheckboxesItem checkboxesItem)
+						{
+							Guid[] truecheckboxesItemIds = checkboxesItem.AnswerOptions.Where(o => o.IsTrue!.Value).Select(o => o.Id).ToArray();
+							Boolean isAnswerTrue = truecheckboxesItemIds.SequenceEqual(answer.AnswerOptionIds);
+							if (isAnswerTrue) return true;
+
+						}
+						else throw new Exception("Вопрос и ответ должны быть \"Несколько из списка\"");
+						break;
+					}
+				default: throw new Exception("Неизвестный тип enam");
+			}
+			return false;
 		}
 
 		private Result ValidateAndSetAnswer(Answer answer, AnswerBlank answerBlank, TestItemType type)
@@ -354,64 +410,15 @@ namespace DoItTest.Services.Tests
 		private void PrepareStudentTest(StudentTest studentTest, Test test)
 		{
 			TestItem[] testItems = GetTestItems(test.Id);
-			Answer[] answers = _answersService.GetAnswers(studentTest.Id);
+			Answer[] answers = _answersService.GetAnswers(studentTest.Id, null);
 
-			List<Answer> correctAnswers = new();
-			foreach (TestItem testItem in testItems)
-			{
-				Answer? answer = answers.FirstOrDefault(a => a.TestItemId == testItem.Id);
-				if (answer is null) continue;
+			studentTest.Prepare(test, answers.Where(a => a.IsTrue).ToArray().Length, testItems.Count());
+			if (testItems.Count() == answers.Count()) studentTest.Finish();
 
-				switch (testItem.Type)
-				{
-					case TestItemType.TextField:
-						{
-							if (testItem is TextFieldItem textFieldItem)
-							{
-								if (textFieldItem.AnswerOption.Answer!.ToLower() == answer.StringAnswer.ToLower()) correctAnswers.Add(answer);
-							}
-							else throw new Exception("Вопрос и ответ должны быть текстовыми");
-							break;
-						}
-					case TestItemType.NumericField:
-						{
-							if (testItem is NumberFieldItem numberFieldItem)
-							{
-								if (numberFieldItem.AnswerOption.Answer == answer.NumberAnswer) correctAnswers.Add(answer);
-							}
-							else throw new Exception("Вопрос и ответ должны быть числовыми");
-							break;
-						}
-					case TestItemType.RadioButtonsGroup:
-						{
-							if (testItem is RadioButtonItem radioGroupItem)
-							{
-								if (radioGroupItem.AnswerOptions.First(o => o.IsTrue!.Value).Id == answer.AnswerOptionId) correctAnswers.Add(answer);
-							}
-							else throw new Exception("Вопрос и ответ должны быть \"Один из сиска\"");
-							break;
-						}
-					case TestItemType.CheckboxesGroup:
-						{
-							if (testItem is CheckboxesItem checkboxesItem)
-							{
-								Guid[] truecheckboxesItemIds = checkboxesItem.AnswerOptions.Where(o => o.IsTrue!.Value).Select(o => o.Id).ToArray();
-								Boolean isAnswerTrue = truecheckboxesItemIds.SequenceEqual(answer.AnswerOptionIds);
-								if (isAnswerTrue) correctAnswers.Add(answer);
-
-							}
-							else throw new Exception("Вопрос и ответ должны быть \"Несколько из списка\"");
-							break;
-						}
-					default: throw new Exception("Неизвестный тип enam");
-				}
-
-				studentTest.Prepare(test, correctAnswers.Count, testItems.Count());
-				if (testItems.Count() == answers.Count()) studentTest.Finish();
-
-				SaveStudentTest(studentTest, null);
-			}
+			SaveStudentTest(studentTest, null);
 		}
+
+		
 
 		public DataResult<StartTestResponse> StartTest(StudentBlank studentBlank, Guid testId)
 		{
@@ -480,7 +487,7 @@ namespace DoItTest.Services.Tests
 		private TestItem[] GetNotPassedTestItems(Guid studentTestId)
 		{
 			TestItem[] testItems = _testsRepository.GetTestItemsByStudentTestId(studentTestId, false);
-			Answer[] answers = _answersService.GetAnswers(studentTestId);
+			Answer[] answers = _answersService.GetAnswers(studentTestId, null);
 			List<TestItem> notPassedTestItems = new();
 
 			foreach (TestItem testItem in testItems)

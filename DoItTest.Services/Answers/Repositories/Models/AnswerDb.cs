@@ -12,6 +12,7 @@ namespace DoItTest.Services.Answers.Repositories.Models
         public Guid? AnswerOptionId { get; set; }
         public Guid[] AnswerOptionIds { get; set; }
         public Boolean IsActive { get; set; }
+        public Boolean IsTrue { get; set; }
 
         public DateTime CreatedDateTimeUtc { get; set; }
         public Guid? ModifiedUserId { get; set; }

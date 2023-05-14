@@ -415,6 +415,28 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
+        public StudentTest? GetStudentTestById(Guid id, Guid? userId)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"SELECT st.* " +
+                    $"FROM studentTests st JOIN tests t ON t.id = st.testid AND NOT t.isremoved " +
+                    $"JOIN users u ON u.id = t.userid AND NOT u.isremoved " +
+                    $"WHERE st.id = @Id " +
+                    $"  AND (@UserId IS NULL OR u.id = @UserId) " +
+                    $"  AND NOT st.isremoved;";
+
+                var parameters = new
+                {
+                    Id = id,
+                    UserId = userId
+                };
+
+                return db.Query<StudentTestDb>(query, parameters).FirstOrDefault()?.ToStudentTest();
+            }
+        }
+
         public StudentTest? GetStudentTest(Guid studentId, Guid? testId)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
@@ -460,7 +482,7 @@ namespace DoItTest.Services.Tests.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"SELECT *,COUNT(*) OVER() AS FullCount " +
+                String query = $"SELECT st.*,COUNT(*) OVER() AS FullCount " +
                     $"FROM studenttests st JOIN tests t ON st.testid = t.id AND NOT t.isremoved " +
                     $"JOIN users u ON t.userid = u.id AND NOT u.isremoved " +
                     $"JOIN students s ON s.id = st.studentid AND NOT s.isremoved " +

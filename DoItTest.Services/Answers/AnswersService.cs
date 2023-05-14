@@ -18,7 +18,7 @@ namespace DoItTest.Services.Answers
 
 		public void CreateAnswer(StudentTest studentTest, TestItem testItem)
         {
-			Answer answer = new(Guid.NewGuid(), studentTest.Id, testItem.Id, null, null, null, new Guid[] { });
+			Answer answer = new(Guid.NewGuid(), studentTest.Id, testItem.Id, null, null, null, new Guid[] { }, false);
 
 			_answersRepository.SaveAnswer(answer, true, null);
 		}
@@ -33,9 +33,9 @@ namespace DoItTest.Services.Answers
 			return _answersRepository.GetActive(studentTestId);
         }
 
-		public Answer[] GetAnswers(Guid studentTestId)
+		public Answer[] GetAnswers(Guid studentTestId, Guid? userId)
 		{
-			return _answersRepository.GetAnswers(studentTestId);
+			return _answersRepository.GetAnswers(studentTestId, userId);
 		}
 	}
 }

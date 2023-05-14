@@ -6,4 +6,6 @@ export class TestLinks {
     static passingTemplate = "/Tests/Passing/:testId"
     static passing = (testId: string) => `/Tests/Passing/${testId}`
     static studentTests = "/StudentTests"
+    static studentTestInfo = "/StudentTests/Info/:studentTestId";
+    static info = (studentTestId: string) => `/StudentTests/Info/${studentTestId}`
 }

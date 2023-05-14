@@ -9,6 +9,6 @@ namespace DoItTest.Domain.Services
         void CreateAnswer(StudentTest studentTest, TestItem testItem);
         void SaveAnswer(Answer answer);
         Answer? GetActive(Guid studentTestId);
-        Answer[] GetAnswers(Guid studentTestId);
+        Answer[] GetAnswers(Guid studentTestId, Guid? userId);
     }
 }
