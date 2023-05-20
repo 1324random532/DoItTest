@@ -37,6 +37,7 @@ export function PassingTestForm({ testId, student, testItem, setTestItem, finish
         const answerQuestionResult = await TestsProvider.answerQuestion(answerBlank)
         if (!answerQuestionResult.isSuccess) return showError(answerQuestionResult.errors[0].message);
 
+        setAnswer(AnswerBlank.getDefault(student.id, testId))
         setTestItem(answerQuestionResult.data)
 
         if (answerQuestionResult.data == null) {

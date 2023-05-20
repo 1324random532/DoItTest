@@ -8,7 +8,7 @@ import { Draggable } from "react-beautiful-dnd";
 import { SetState } from "tools/setState";
 import useComponent from "tools/components/useComponent";
 import { AnswerGroup } from "domain/answers/answerGroup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnswerOptionGroup } from "domain/tests/items/answerOption/answerOptionGroups/answerOptionGroup";
 
 export interface PassingTextFieldTestItemInfoProps {
@@ -22,14 +22,17 @@ const guidEmty = "00000000-0000-0000-0000-000000000000";
 
 export function PassingTextFieldTestItemInfo({ item, answer, changeAnswer, sx }: PassingTextFieldTestItemInfoProps) {
 
-    useComponent({
-        didMount: () => {
-            const answerGroupBlanks = item.answerOptionGroups.map(g => new AnswerGroup(g.id, []))
-            answerGroupBlanks.push(new AnswerGroup(guidEmty, item.answerOptions.map(o => o.id)))
+    useEffect(
+        load,
+        [item]
+    )
 
-            changeAnswer({ ...answer, answerGroups: answerGroupBlanks })
-        }
-    })
+    function load() {
+        const answerGroupBlanks = item.answerOptionGroups.map(g => new AnswerGroup(g.id, []))
+        answerGroupBlanks.push(new AnswerGroup(guidEmty, item.answerOptions.map(o => o.id)))
+
+        changeAnswer({ ...answer, answerGroups: answerGroupBlanks })
+    }
 
     function handleDragDrop(results: any) {
         const { source, destination } = results

@@ -3,6 +3,7 @@ using DoItTest.Tools.Types.Results;
 using Microsoft.AspNetCore.Mvc;
 using DoItTest.Domain.Services;
 using DoItTest.Domain.Students;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DoItTest.Site.Areas.Students
 {
@@ -23,6 +24,7 @@ namespace DoItTest.Site.Areas.Students
             return result.IsSuccess ? Result.Success() : Result.Fail(result.Errors);
         }
 
+        [AllowAnonymous]
         [HttpGet("/Students/GetStudent")]
         public Student? GetStudent(Guid id)
         {
