@@ -4,6 +4,7 @@ using DoItTest.Domain.Tests.TestItems.AnswerOptions;
 using DoItTest.Domain.Users;
 using DoItTest.Services.Tests.Repositories.Models;
 using DoItTest.Services.Users.Repositories.Models;
+using DoItTest.Tools.Extensions;
 using DoItTest.Tools.Types;
 
 namespace DoItTest.Services.Tests.Repositories.Converters
@@ -95,11 +96,28 @@ namespace DoItTest.Services.Tests.Repositories.Converters
                         foreach (var groupAnswerOption in groupAnswerOptions)
                         {
                             ComparisonAnswerOption firstAnswerOption = groupAnswerOption.First();
-                            AnswerOptionGroup answerOptionGroup = new(groupAnswerOption.Key, firstAnswerOption.TestItemId, firstAnswerOption.Type, firstAnswerOption.GroupName, groupAnswerOption.ToArray());
+                            AnswerOptionGroup answerOptionGroup = new(groupAnswerOption.Key!.Value, firstAnswerOption.TestItemId, firstAnswerOption.Type, firstAnswerOption.GroupName, getAnswers ? groupAnswerOption.ToArray() : Array.Empty<AnswerOptionGroup>());
                             answerOptionGroups.Add(answerOptionGroup);
                         }
 
-                        return new ComparisonItem(db.Id, db.TestId, db.Type, db.Question, db.ImageBase64, answerOptionGroups.ToArray());
+                        ComparisonAnswerOption[] fixedAnswerOptions = answerOptions.ToArray();
+
+                        if (!getAnswers)
+                        {
+                            foreach(ComparisonAnswerOption comparisonAnswer in fixedAnswerOptions)
+                            {
+                                comparisonAnswer.ClearGroup();
+                            }
+
+                            fixedAnswerOptions.Shuffle();
+                            // рандомизация ответов
+                        }
+                        else
+                        {
+                            fixedAnswerOptions = Array.Empty<ComparisonAnswerOption>();
+                        }
+
+                        return new ComparisonItem(db.Id, db.TestId, db.Type, db.Question, db.ImageBase64, answerOptionGroups.ToArray(), fixedAnswerOptions.ToArray());
                     }
 
                 default: throw new Exception("Неизвестный тип вопроса");

@@ -6,7 +6,7 @@ export class ComparisonAnswerOption extends AnswerOption {
         public id: string,
         public testItemId: string,
         public type: TestItemType,
-        public groupId: string,
+        public groupId: string | null,
         public title: string
     ) {
         super(id, testItemId, type)

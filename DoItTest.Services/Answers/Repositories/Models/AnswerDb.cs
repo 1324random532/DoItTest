@@ -1,4 +1,5 @@
-﻿using DoItTest.Domain.Tests.TestItems;
+﻿using DoItTest.Domain.Answers;
+using DoItTest.Domain.Tests.TestItems;
 
 namespace DoItTest.Services.Answers.Repositories.Models
 {
@@ -11,6 +12,7 @@ namespace DoItTest.Services.Answers.Repositories.Models
         public Decimal? NumberAnswer { get; set; }
         public Guid? AnswerOptionId { get; set; }
         public Guid[] AnswerOptionIds { get; set; }
+        public String[] AnswerGroupJsons { get; set; }
         public Boolean IsActive { get; set; }
         public Boolean IsTrue { get; set; }
 

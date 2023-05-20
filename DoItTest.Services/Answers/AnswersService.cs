@@ -18,7 +18,7 @@ namespace DoItTest.Services.Answers
 
 		public void CreateAnswer(StudentTest studentTest, TestItem testItem)
         {
-			Answer answer = new(Guid.NewGuid(), studentTest.Id, testItem.Id, null, null, null, new Guid[] { }, false);
+			Answer answer = new(Guid.NewGuid(), studentTest.Id, testItem.Id, null, null, null, new Guid[] { }, new AnswerGroup[] {}, false);
 
 			_answersRepository.SaveAnswer(answer, true, null);
 		}

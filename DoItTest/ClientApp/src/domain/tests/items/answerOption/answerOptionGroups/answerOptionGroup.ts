@@ -10,14 +10,14 @@ export class AnswerOptionGroup extends AnswerOption {
         public testItemId: string,
         public type: TestItemType,
         public name: string,
-        public answerOptions: AnswerOption[]
+        public answerOptions: ComparisonAnswerOption[]
     ) {
         super(id, testItemId, type)
     }
 }
 
 export function mapAnswerOptionGroup(value: any): AnswerOptionGroup {
-    const answerOptions = mapToAnswerOptions(value.answerOptions)
+    const answerOptions = mapComparisonAnswerOptions(value.answerOptions)
 
     return new AnswerOptionGroup(value.id, value.testItemId, value.type, value.name, answerOptions)
 }

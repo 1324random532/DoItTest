@@ -12,6 +12,8 @@ import { RadioButtonItem } from "domain/tests/items/radioButtonItem";
 import { CheckboxesItem } from "domain/tests/items/checkboxesItem";
 import { AnswerBlank } from "domain/answers/answerBlank";
 import { SetState } from "tools/setState";
+import { ComparisonItem } from "domain/tests/items/comparisonItem";
+import { PassingTextFieldTestItemInfo } from "./passingComparisonItem";
 
 
 export interface PassingTestItemProps {
@@ -36,8 +38,9 @@ export function PassingTestItem({ item, answer, changeAnswer, sx }: PassingTestI
     if (item instanceof CheckboxesItem) {
         return <PassingCheckBoxesItem item={item} answer={answer} changeAnswer={changeAnswer} sx={sx} />;
     }
+    if (item instanceof ComparisonItem) {
+        return <PassingTextFieldTestItemInfo item={item} answer={answer} changeAnswer={changeAnswer} sx={sx} />;
+    }
     return null
-    // if (item instanceof TextFieldItem) {
-    //     return <ComparisonItemInfo item={item} sx={sx} />;
-    // }
+
 }

@@ -10,5 +10,6 @@ namespace DoItTest.Domain.Answers
         public Decimal? NumberAnswer { get; set; }
         public Guid? AnswerOptionId { get; set; }
         public Guid[] AnswerOptionIds { get; set; }
+        public AnswerGroup[] AnswerGroups { get; set; }
     }
 }

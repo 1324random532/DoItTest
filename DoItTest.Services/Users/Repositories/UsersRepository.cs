@@ -1,11 +1,10 @@
 ﻿using Dapper;
-using System.Data;
-using Npgsql;
 using DoItTest.Domain.Users;
-using DoItTest.Services.Users.Repositories.Models;
 using DoItTest.Services.Users.Repositories.Converters;
-using DoItTest.Tools.DB;
+using DoItTest.Services.Users.Repositories.Models;
 using DoItTest.Tools.Types.Results;
+using Npgsql;
+using System.Data;
 
 namespace DoItTest.Services.Users.Repositories
 {

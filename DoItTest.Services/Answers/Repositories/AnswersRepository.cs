@@ -2,8 +2,10 @@
 using DoItTest.Domain.Answers;
 using DoItTest.Services.Answers.Repositories.Converters;
 using DoItTest.Services.Answers.Repositories.Models;
+using DoItTest.Tools.Json;
 using Npgsql;
 using System.Data;
+using System.Text.Json.Serialization;
 
 namespace DoItTest.Services.Answers.Repositories
 {
@@ -21,13 +23,13 @@ namespace DoItTest.Services.Answers.Repositories
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
-                String query = $"INSERT INTO answers(id, studenttestid, testitemid, stringanswer, numberanswer, answeroptionid, answeroptionids, isactive, istrue, createddatetimeutc) " +
-                    $"VALUES(@Id, @StudentTestId, @TestItemId, @StringAnswer, @NumberAnswer, @AnswerOptionId, @AnswerOptionIds, @IsActive, @IsTrue, @DateTime) " +
+                String query = $"INSERT INTO answers(id, studenttestid, testitemid, stringanswer, numberanswer, answeroptionid, answeroptionids, answergroupjsons, isactive, istrue, createddatetimeutc) " +
+                    $"VALUES(@Id, @StudentTestId, @TestItemId, @StringAnswer, @NumberAnswer, @AnswerOptionId, @AnswerOptionIds, (@AnswerGroupJsons)::json[], @IsActive, @IsTrue, @DateTime) " +
                     $"ON " +
                     $"CONFLICT(id) DO " +
                     $"UPDATE " +
                     $"SET id = @Id, studenttestid = @StudentTestId, testitemid = @TestItemId, stringanswer = @StringAnswer, numberanswer = @NumberAnswer, " +
-                    $"answeroptionid = @AnswerOptionId, answeroptionids = @AnswerOptionIds, isactive = @IsActive, istrue = @IsTrue, modifieduserid = @Userid, modifieddatetimeutc = @Datetime;";
+                    $"answeroptionid = @AnswerOptionId, answeroptionids = @AnswerOptionIds, answergroupjsons = (@AnswerGroupJsons)::json[], isactive = @IsActive, istrue = @IsTrue, modifieduserid = @Userid, modifieddatetimeutc = @Datetime;";
 
                 var parameters = new
                 {
@@ -38,6 +40,7 @@ namespace DoItTest.Services.Answers.Repositories
                     NumberAnswer = answer.NumberAnswer,
                     AnswerOptionId = answer.AnswerOptionId,
                     AnswerOptionIds = answer.AnswerOptionIds,
+                    AnswerGroupJsons = answer.AnswerGroups.Select(g => g.Serialize()).ToArray(),
                     IsActive = isActive,
                     IsTrue = answer.IsTrue,
                     Userid = userId,

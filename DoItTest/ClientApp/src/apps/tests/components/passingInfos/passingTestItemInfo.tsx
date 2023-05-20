@@ -11,6 +11,8 @@ import { RadioButtonItem } from "domain/tests/items/radioButtonItem";
 import { PassingRadioButtonsTestItemInfo } from "./passingRadioButtonsTestItemInfo";
 import { PassingCheckBoxesTestItemInfo } from "./passingCheckBoxesTestItemInfo";
 import { CheckboxesItem } from "domain/tests/items/checkboxesItem";
+import { ComparisonItem } from "domain/tests/items/comparisonItem";
+import { PassingComparisonTestItemInfo } from "./passingComparisonTestItemInfo";
 
 export interface PassingTestItemInfoProps {
     item: TestItem
@@ -24,5 +26,6 @@ export function PassingTestItemInfo({ item, answer, sx }: PassingTestItemInfoPro
     if (item instanceof NumberFieldItem) return <PassingNumberFieldTestItemInfo item={item} answer={answer} />
     if (item instanceof RadioButtonItem) return <PassingRadioButtonsTestItemInfo item={item} answer={answer} />
     if (item instanceof CheckboxesItem) return <PassingCheckBoxesTestItemInfo item={item} answer={answer} />
+    if (item instanceof ComparisonItem) return <PassingComparisonTestItemInfo item={item} answer={answer} />
     return null;
 }

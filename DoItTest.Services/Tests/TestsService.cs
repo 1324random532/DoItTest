@@ -9,6 +9,7 @@ using DoItTest.Services.Answers;
 using DoItTest.Services.Students;
 using DoItTest.Services.Tests.Repositories;
 using DoItTest.Services.Tests.Repositories.Converters;
+using DoItTest.Tools.Extensions;
 using DoItTest.Tools.Types.Results;
 
 namespace DoItTest.Services.Tests
@@ -48,6 +49,9 @@ namespace DoItTest.Services.Tests
 
 			if (test.NumberOfPercentagesByFour >= test.NumberOfPercentagesByFive)
 				return Result.Fail("Процент на 4 должен быть меньше чем на 5");
+
+			if (testItems.Length == 0)
+				return Result.Fail("Тест не имеет вопросов");
 
 			if (test.Id is null)
 			{
@@ -335,7 +339,7 @@ namespace DoItTest.Services.Tests
 						{
 							if (textFieldItem.AnswerOption.Answer!.ToLower() == answer.StringAnswer.ToLower()) return true;
 						}
-						else throw new Exception("Вопрос и ответ должны быть текстовыми");
+						//else throw new Exception("Вопрос и ответ должны быть текстовыми");
 						break;
 					}
 				case TestItemType.NumericField:
@@ -344,7 +348,7 @@ namespace DoItTest.Services.Tests
 						{
 							if (numberFieldItem.AnswerOption.Answer == answer.NumberAnswer) return true;
 						}
-						else throw new Exception("Вопрос и ответ должны быть числовыми");
+						//else throw new Exception("Вопрос и ответ должны быть числовыми");
 						break;
 					}
 				case TestItemType.RadioButtonsGroup:
@@ -353,7 +357,7 @@ namespace DoItTest.Services.Tests
 						{
 							if (radioGroupItem.AnswerOptions.First(o => o.IsTrue!.Value).Id == answer.AnswerOptionId) return true;
 						}
-						else throw new Exception("Вопрос и ответ должны быть \"Один из сиска\"");
+						//else throw new Exception("Вопрос и ответ должны быть \"Один из сиска\"");
 						break;
 					}
 				case TestItemType.CheckboxesGroup:
@@ -361,13 +365,24 @@ namespace DoItTest.Services.Tests
 						if (testItem is CheckboxesItem checkboxesItem)
 						{
 							Guid[] truecheckboxesItemIds = checkboxesItem.AnswerOptions.Where(o => o.IsTrue!.Value).Select(o => o.Id).ToArray();
-							Boolean isAnswerTrue = truecheckboxesItemIds.SequenceEqual(answer.AnswerOptionIds);
-							if (isAnswerTrue) return true;
-
+							return truecheckboxesItemIds.ToArray().CompareArraysWithoutOrder(answer.AnswerOptionIds);
 						}
-						else throw new Exception("Вопрос и ответ должны быть \"Несколько из списка\"");
+						//else throw new Exception("Вопрос и ответ должны быть \"Несколько из списка\"");
 						break;
 					}
+				case TestItemType.Comparison:
+                    {
+						if(testItem is ComparisonItem comparisonItem)
+                        {
+							foreach(AnswerOptionGroup answerOptionGroup in comparisonItem.AnswerOptionGroups)
+                            {
+								AnswerGroup? answerGroup = answer.AnswerGroups.FirstOrDefault(ag => ag.Id == answerOptionGroup.Id);
+								if (answerGroup is null || !answerOptionGroup.AnswerOptions.Select(o => o.Id).ToArray().CompareArraysWithoutOrder(answerGroup.AnswerOptionIds)) return false;
+							}
+							return true;
+                        }
+						break;
+                    }
 				default: throw new Exception("Неизвестный тип enam");
 			}
 			return false;
@@ -403,6 +418,14 @@ namespace DoItTest.Services.Tests
 						answer.SetAnswer(answerBlank.AnswerOptionIds);
 						return Result.Success();
 					}
+				case TestItemType.Comparison:
+                    {
+						AnswerGroup? defoultAnswerGroup = answerBlank.AnswerGroups.FirstOrDefault(g => g.Id == Guid.Empty);
+						if (defoultAnswerGroup is null) throw new Exception("У ответа для группированного вопроса должна быть группа по тандарту");
+						if (defoultAnswerGroup.AnswerOptionIds.Length != 0) return Result.Fail("Распределите все ответы по группам");
+						answer.SetAnswer(answerBlank.AnswerGroups.Where(g => g.Id != Guid.Empty).ToArray());
+						return Result.Success();
+                    }
 				default: throw new Exception("Неизвестный тип ответа");
 			}
 		}
@@ -417,7 +440,6 @@ namespace DoItTest.Services.Tests
 
 			SaveStudentTest(studentTest, null);
 		}
-
 		
 
 		public DataResult<StartTestResponse> StartTest(StudentBlank studentBlank, Guid testId)
