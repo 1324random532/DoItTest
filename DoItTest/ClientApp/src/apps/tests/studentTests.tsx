@@ -46,6 +46,8 @@ export function StudentTestsList() {
     const blockUi = useBlockUi();
     const [state, setState] = useState<State>(new State())
 
+    const confirmDialog = useDialog(ConfirmDialogAsync)
+
     const tableSize = {
         width: '90%',
         [`@media (min-width:${screenSize.lg}px)`]: {
@@ -82,19 +84,19 @@ export function StudentTestsList() {
         })
     }
 
-    // async function remove(id: string) {
-    //     const result = await confirmDialog.show({ title: "Вы действительно хотите удалить данный тест?" })
-    //     if (!result) return
+    async function remove(id: string) {
+        const result = await confirmDialog.show({ title: "Вы действительно хотите удалить данный тест?" })
+        if (!result) return
 
-    //     blockUi(async () => {
-    //         const result = await TestsProvider.removeTest(id);
-    //         if (!result.isSuccess) {
-    //             return showError(result.errors[0].message);
-    //         }
-    //         await loadTestsPage()
-    //         showSuccess("")
-    //     })
-    // }
+        blockUi(async () => {
+            const result = await StudentTestsProvider.removeStudentTest(id);
+            if (!result.isSuccess) {
+                return showError(result.errors[0].message);
+            }
+            await loadStudentTestsPage(filter)
+            showSuccess("Тест студента удален")
+        })
+    }
 
     return (
         <Content withSidebar={true}>
@@ -158,8 +160,8 @@ export function StudentTestsList() {
                                 <TableCell align='center'>{formatFullDateTime(st.beginDateTime)}</TableCell>
                                 <TableCell align='center'>{formatFullDateTime(st.endDateTime, "Не закончен")}</TableCell>
                                 <ActionTableCell>
+                                    <IconButton icon='delete' onClick={() => remove(st.id)} title='Удалить тест студента' />
                                     <IconButton icon='info' onClick={() => navigateTo(TestLinks.info(st.id))} title='Детализация' />
-                                    {/* <IconButton icon='delete' onClick={() => remove(t.id)} title='Удалить тест' />  */}
                                 </ActionTableCell>
                             </TableRow>
                         })}

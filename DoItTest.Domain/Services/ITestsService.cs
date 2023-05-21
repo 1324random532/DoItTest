@@ -10,20 +10,19 @@ namespace DoItTest.Domain.Services
     public interface ITestsService
     {
         Result SaveTest(TestBlank test, TestItemBlank[] testItems, Guid systemUserId);
-        DataResult<Guid> CopyTest(Guid testId, Guid userId);
+        DataResult<Guid> CopyTest(Guid testId, UserRole userRole, Guid userId);
         Test? GetTest(Guid id, Guid? userId);
-        Test[] GetTests(Guid[] ids);
+        Test[] GetTests(Guid[] ids, Guid? userId);
         Test[] GetTests(String? searchText, Guid? userId);
         PagedResult<Test> GetPagedTests(TestsFilter testsFilter);
-        Result RemoveTest(Guid id, Guid userId);
+        Result RemoveTest(Guid id, Guid? userId);
 
-        TestItem[] GetTestItems(Guid testId, Boolean getAnswers = true);
+        TestItem[] GetTestItems(Guid testId, Guid? userId, Boolean getAnswers = true);
 
         StudentTest? GetStudentTestById(Guid id, Guid? userId);
         StudentTest? GetStudentTest(Guid studentId, Guid? testId = null);
         PagedResult<StudentTest> GetPagedStudentTests(StudentTestFilter filter);
-
-
+        Result RemoveStudentTest(Guid id, Guid? userId);
 
         #region PaasingTest
         DataResult<TestItem?> AnswerQuestion(AnswerBlank answerBlank);

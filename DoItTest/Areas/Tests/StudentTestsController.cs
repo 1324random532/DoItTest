@@ -33,5 +33,12 @@ namespace DoItTest.Site.Areas.Tests
 
             return _testsService.GetPagedStudentTests(filter);
         }
+
+        [HttpPost("StudentTests/Remove")]
+        public Result RemoveStudentTest([FromBody] Guid id)
+        {
+            Guid? userId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
+            return _testsService.RemoveStudentTest(id, userId);
+        }
     }
 }

@@ -153,7 +153,7 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
-        public Test[] GetTests(Guid[] ids)
+        public Test[] GetTests(Guid[] ids, Guid? userId)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
@@ -161,11 +161,13 @@ namespace DoItTest.Services.Tests.Repositories
                 String query = $"SELECT * " +
                     $"FROM tests " +
                     $"WHERE id = ANY(@Ids) " +
+                    $"  AND (@UserId is null or userid = @UserId) " +
                     $"  AND NOT isremoved;";
 
                 var parameters = new
                 {
-                    Ids = ids
+                    Ids = ids,
+                    UserId = userId
                 };
 
                 return db.Query<TestDb>(query, parameters).ToTests();
@@ -222,7 +224,7 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
-        public void RemoveTest(Guid id, Guid userId)
+        public void RemoveTest(Guid id, Guid? userId)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
@@ -232,7 +234,7 @@ namespace DoItTest.Services.Tests.Repositories
                     $"update tests " +
                     $"set isremoved = true " +
                     $"where id = @Id " +
-                    $"AND  userid = @UserId " +
+                    $"AND  (@UserId is null or userid = @UserId) " +
                     $"returning id " +
                     $"), " +
                     $"ti as( " +
@@ -307,7 +309,7 @@ namespace DoItTest.Services.Tests.Repositories
             }
         }
 
-        public TestItem[] GetTestItems(Guid testId, Boolean getAnswers)
+        public TestItem[] GetTestItems(Guid testId, Boolean getAnswers, Guid? userId)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
@@ -315,14 +317,16 @@ namespace DoItTest.Services.Tests.Repositories
 
                 using (var transaction = db.BeginTransaction())
                 {
-                    String selectTestItemsQuery = $"SELECT * " +
-                    $"FROM testitems " +
+                    String selectTestItemsQuery = $"SELECT i.* " +
+                    $"FROM testitems i join tests t on t.id = i.testid " +
                     $"WHERE testid = @TestId " +
-                    $"  AND NOT isremoved;";
+                    $"  AND (@UserId IS NULL OR t.userid = @UserId) " +
+                    $"  AND NOT i.isremoved;";
 
                     var selectTestItemsParameters = new
                     {
-                        TestId = testId
+                        TestId = testId,
+                        UserId = userId
                     };
 
                     String selectAnswerOptionsQuery = $"SELECT * " +
@@ -509,6 +513,43 @@ namespace DoItTest.Services.Tests.Repositories
                 StudentTest[] studentTests = studentTestDbs.ToStudentTests();
 
                 return new PagedResult<StudentTest>(studentTests, totalRows);
+            }
+        }
+
+        public void RemoveStudentTest(Guid id, Guid? userId)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+
+                String query = $"with " +
+                    $"st as ( " +
+                    $"update studenttests st " +
+                    $"set isremoved = true " +
+                    $"from tests t  " +
+                    $"where st.id = @Id " +
+                    $"and st.testid = t.id " +
+                    $"and (@UserId IS NULL OR t.userid = @UserId) " +
+                    $"returning st.id, st.studentid " +
+                    $"), " +
+                    $"a as(" +
+                    $"update answers a " +
+                    $"set isremoved = true " +
+                    $"from st " +
+                    $"where st.id = a.studenttestid " +
+                    $") " +
+                    $"update students s " +
+                    $"set isremoved = true " +
+                    $"from st " +
+                    $"where st.studentid = s.id";
+
+                var parameters = new
+                {
+                    Id = id,
+                    UserId = userId
+                };
+
+                db.Execute(query, parameters);
             }
         }
     }

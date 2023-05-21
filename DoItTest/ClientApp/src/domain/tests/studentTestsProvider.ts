@@ -9,6 +9,7 @@ import { AnswerBlank } from "domain/answers/answerBlank";
 import { StartTestResponse, mapToStartTestResponse } from "./startTestResponse";
 import IStudentTestFilter from "./studentTestFilter";
 import ITestsFilter from "./ITestsFilter";
+import { Result } from "tools/results/result";
 
 export class StudentTestsProvider {
 
@@ -20,5 +21,9 @@ export class StudentTestsProvider {
     public static async getPagedStudentTest(studentTestFilter: IStudentTestFilter): Promise<PagedResult<StudentTest>> {
         const result = await HttpRequest.post("/StudentTests/GetPaged").withBody(studentTestFilter).asAny()
         return PagedResult.convert(result, mapToStudentTest);
+    }
+
+    public static async removeStudentTest(id: string): Promise<Result> {
+        return await HttpRequest.post("/StudentTests/Remove").withBody(id).asResult()
     }
 }

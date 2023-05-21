@@ -14,6 +14,17 @@ namespace DoItTest.Site.Infrastructure.Filters
         public static readonly string CookieName = "auth";
         public const string SystemUserContextItemName = "SystemUser";
 
+        public Boolean OnlySuperUser { get; }
+
+        public IsAuthorizedAttribute(){
+            OnlySuperUser = false;
+        }
+
+        public IsAuthorizedAttribute(Boolean onlySuperUser)
+        {
+            OnlySuperUser = onlySuperUser;
+        }
+
         public void OnActionExecuting(ActionExecutingContext context, IUsersService usersService)
         {
             if (context.ActionDescriptor.EndpointMetadata.Any(em => em.GetType() == typeof(AllowAnonymousAttribute))) return;
@@ -45,6 +56,11 @@ namespace DoItTest.Site.Infrastructure.Filters
                 return;
             }
 
+            if (OnlySuperUser && user.Role != UserRole.Super) {
+                SetUnauthorized(context);
+                return;
+             }
+
             SystemUser systemUser = new SystemUser(user);
             context.HttpContext.Items[SystemUserContextItemName] = systemUser;
         }
@@ -62,6 +78,19 @@ namespace DoItTest.Site.Infrastructure.Filters
                 context.Result = new RedirectResult("/Auth");
             }
         }
+
+        private void SetUnauthorized(ActionExecutingContext context)
+        {
+            if (context.HttpContext.Request.IsAjaxRequest())
+            {
+                ClearAjaxRequest(context);
+            }
+            else
+            {
+                context.Result = new RedirectResult("/Error/403");
+            }
+        }
+
         private void ClearAjaxRequest(ActionExecutingContext context)
         {
             context.Result = new EmptyResult();

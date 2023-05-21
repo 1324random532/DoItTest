@@ -34,7 +34,7 @@ namespace DoItTest.Site.Areas.Tests
         [HttpPost("/Tests/Copy")]
         public DataResult<Guid> CopyTest([FromBody] Guid testId)
         {
-            return _testsService.CopyTest(testId, SystemUser.Id);
+            return _testsService.CopyTest(testId, SystemUser.Role, SystemUser.Id);
         }
 
         [HttpGet("/Tests/GetTest")]
@@ -47,7 +47,8 @@ namespace DoItTest.Site.Areas.Tests
         [HttpGet("/Tests/GetTests")]
         public Test[] GetTests(Guid[] ids)
         {
-            return _testsService.GetTests(ids);
+            Guid? userId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
+            return _testsService.GetTests(ids, userId);
         }
 
         [HttpGet("/Tests/GetTestsBySearchText")]
@@ -67,13 +68,15 @@ namespace DoItTest.Site.Areas.Tests
         [HttpPost("/Tests/Remove")]
         public Result RemoveTest([FromBody] Guid id)
         {
-            return _testsService.RemoveTest(id, SystemUser.Id);
+            Guid? userId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
+            return _testsService.RemoveTest(id, userId);
         }
 
         [HttpGet("/Tests/GetItems")]
         public TestItem[] GetTestItems(Guid testId)
         {
-            return _testsService.GetTestItems(testId);
+            Guid? userId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
+            return _testsService.GetTestItems(testId, userId);
         }
     }
 }

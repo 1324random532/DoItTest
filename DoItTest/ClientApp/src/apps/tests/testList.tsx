@@ -78,7 +78,7 @@ export function TestsList() {
                 return showError(result.errors[0].message);
             }
             await loadTestsPage(filter)
-            showSuccess("Проект удален")
+            showSuccess("Тест удален")
         })
     }
 

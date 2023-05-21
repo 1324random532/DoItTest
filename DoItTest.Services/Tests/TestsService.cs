@@ -172,12 +172,13 @@ namespace DoItTest.Services.Tests
 			return Result.Success();
 		}
 
-		public DataResult<Guid> CopyTest(Guid testId, Guid userId)
+		public DataResult<Guid> CopyTest(Guid testId, UserRole userRole, Guid userId)
 		{
-			Test? test = GetTest(testId, userId);
+			Guid? userIdForSearch = userRole == UserRole.Super ? null : userId;
+			Test? test = GetTest(testId, userIdForSearch);
 			if (test is null) return DataResult<Guid>.Failed("Тест не найден или удален");
 
-			TestItem[] testItems = GetTestItems(test.Id);
+			TestItem[] testItems = GetTestItems(test.Id, userIdForSearch);
 
 			TestBlank testBlank = test.ToBlank();
 			TestItemBlank[] testItemBlanks = testItems.ToBlanks();
@@ -235,9 +236,9 @@ namespace DoItTest.Services.Tests
 			return _testsRepository.GetTest(id, userId);
 		}
 
-		public Test[] GetTests(Guid[] ids)
+		public Test[] GetTests(Guid[] ids, Guid? userId)
 		{
-			return _testsRepository.GetTests(ids);
+			return _testsRepository.GetTests(ids, userId);
 		}
 
 		public Test[] GetTests(String? searchText, Guid? userId)
@@ -250,7 +251,7 @@ namespace DoItTest.Services.Tests
 			return _testsRepository.GetPagedTests(filter);
 		}
 
-		public Result RemoveTest(Guid id, Guid userId)
+		public Result RemoveTest(Guid id, Guid? userId)
 		{
 			Test? test = GetTest(id, userId);
 			if (test is null) return Result.Fail("Тест не найден");
@@ -264,9 +265,9 @@ namespace DoItTest.Services.Tests
 			return id is null ? null : _testsRepository.GetTestItem(id.Value, true);
 		}
 
-		public TestItem[] GetTestItems(Guid testId, Boolean getAnswers = true)
+		public TestItem[] GetTestItems(Guid testId, Guid? userId, Boolean getAnswers = true)
 		{
-			return _testsRepository.GetTestItems(testId, getAnswers);
+			return _testsRepository.GetTestItems(testId, getAnswers, userId);
 		}
 
 		public void SaveStudentTest(StudentTest studentTest, Guid? userId)
@@ -292,6 +293,16 @@ namespace DoItTest.Services.Tests
 		public PagedResult<StudentTest> GetPagedStudentTests(StudentTestFilter filter)
 		{
 			return _testsRepository.GetPagedStudentTests(filter);
+		}
+
+		public Result RemoveStudentTest(Guid id, Guid? userId)
+        {
+			StudentTest? studentTest = GetStudentTestById(id, userId);
+			if (studentTest is null) return Result.Fail("Тест студента не найден");
+
+			_testsRepository.RemoveStudentTest(id, userId);
+			return Result.Success();
+
 		}
 
 		#region PassingTest
@@ -432,7 +443,7 @@ namespace DoItTest.Services.Tests
 
 		private void PrepareStudentTest(StudentTest studentTest, Test test)
 		{
-			TestItem[] testItems = GetTestItems(test.Id);
+			TestItem[] testItems = GetTestItems(test.Id, null);
 			Answer[] answers = _answersService.GetAnswers(studentTest.Id, null);
 
 			studentTest.Prepare(test, answers.Where(a => a.IsTrue).ToArray().Length, testItems.Count());

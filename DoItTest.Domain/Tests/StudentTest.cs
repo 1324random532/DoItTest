@@ -48,7 +48,7 @@
         public Int32 GetEstimation(Test test)
         {
             if (PercentageOfCorrectAnswers >= test.NumberOfPercentagesByFive) return 5;
-            if (PercentageOfCorrectAnswers >= test.NumberOfPercentagesByFive) return 4;
+            if (PercentageOfCorrectAnswers >= test.NumberOfPercentagesByFour) return 4;
             if (PercentageOfCorrectAnswers >= test.NumberOfPercentagesByThree) return 3;
             return 2;
         }
