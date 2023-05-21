@@ -1,6 +1,6 @@
 import { Theme } from '@emotion/react';
 import { SxProps, TextField } from '@mui/material';
-// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 export interface DateInputProps {
     label: string;
@@ -19,14 +19,12 @@ export function DateInput(props: DateInputProps) {
     }
 
     return (
-        // <DesktopDatePicker
-        //     label={props.label}
-        //     mask={props.mask}
-        //     value={props.value}
-        //     onChange={onChange}
-        //     disabled={props.disabled}
-        //     renderInput={(params) => <TextField {...params} sx={props.sx} />}
-        // />
-        <></>
+        <DesktopDatePicker
+            label={props.label}
+            value={props.value}
+            onChange={onChange}
+        // disabled={props.disabled}
+        // renderInput={(params) => <TextField {...params} sx={props.sx} />}
+        />
     )
 }

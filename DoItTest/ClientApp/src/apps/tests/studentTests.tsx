@@ -24,6 +24,7 @@ import useComponent from "tools/components/useComponent";
 import { distinct } from "tools/utils";
 import { TestLinks } from "./links";
 import { StudentTestsProvider } from "domain/tests/studentTestsProvider";
+import CDatePickerRange from "sharedComponents/inputs/CDatePickerRange";
 
 
 
@@ -120,6 +121,7 @@ export function StudentTestsList() {
                     label="Группа"
                     value={filter.group}
                     onChange={group => setFilter({ ...filter, group })}
+                    sx={{ width: 250 }}
                 />
 
                 <Input
@@ -127,6 +129,12 @@ export function StudentTestsList() {
                     label="ФИО"
                     value={filter.studentFIO}
                     onChange={studentFIO => setFilter({ ...filter, studentFIO })}
+                    sx={{ width: 250 }}
+                />
+
+                <CDatePickerRange
+                    value={filter.dateTimePeriod}
+                    onChange={dateTimePeriod => setFilter({ ...filter, dateTimePeriod })}
                 />
             </Box>
             <TableContainer sx={tableSize} component={Paper}>

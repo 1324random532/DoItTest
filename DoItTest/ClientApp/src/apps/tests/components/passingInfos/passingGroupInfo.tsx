@@ -9,7 +9,7 @@ export interface ComparisonItemInfoProps {
 }
 
 
-export function GroupInfo({ label, options, sx }: ComparisonItemInfoProps) {
+export function PassingGroupInfo({ label, options, sx }: ComparisonItemInfoProps) {
     return (
         <Card sx={{ backgroundColor: '#F0F0F0' }}>
             <CardHeader title={label} />

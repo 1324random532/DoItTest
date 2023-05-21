@@ -1,4 +1,6 @@
-﻿namespace DoItTest.Domain.Tests
+﻿using DoItTest.Tools.Types;
+
+namespace DoItTest.Domain.Tests
 {
     public class StudentTestFilter
     {
@@ -8,5 +10,6 @@
         public String? studentFIO { get; set; }
         public Guid? TestId { get; set; }
         public Guid? UserId { get; set; }
+        public DateTimePeriod DateTimePeriod { get; set; }
     }
 }

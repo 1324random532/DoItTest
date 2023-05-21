@@ -18,27 +18,33 @@ export function PassingComparisonTestItemInfo({ item, answer, sx }: PassingCompa
     return (
         <Box display='flex' flexDirection='column' gap={2} width={1} >
             {
-                answer == null ?
-                    <>
-                        Нет ответа
-                    </>
-                    : item.answerOptionGroups.map(ig =>
-                        <Card sx={{ backgroundColor: '#F0F0F0' }}>
-                            <CardHeader title={ig.name} />
-                            <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                {
-                                    answer.answerGroups.filter(g => ig.id == g.id).flatMap(o => o.answerOptionIds).map(o => {
+                item.answerOptionGroups.map(ig =>
+                    <Card sx={{ backgroundColor: '#F0F0F0' }}>
+                        <CardHeader title={ig.name} />
+                        <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            {
+                                answer != null ?
+                                    <>
+                                        {
+                                            answer.answerGroups.filter(g => ig.id == g.id).flatMap(o => o.answerOptionIds).map(o => {
 
-                                        const answerOption = allAnswerOtions.find(ao => ao.id == o)
+                                                const answerOption = allAnswerOtions.find(ao => ao.id == o)
 
-                                        return <Box sx={{ padding: 1, borderRadius: 1, backgroundColor: answerOption!.groupId != ig.id ? Color.error : Color.succes }}>
-                                            {answerOption?.title}
+                                                return <Box sx={{ padding: 1, borderRadius: 1, backgroundColor: answerOption!.groupId != ig.id ? Color.error() : Color.succes() }}>
+                                                    {answerOption?.title}
+                                                </Box>
+                                            })
+                                        }
+                                    </>
+                                    : <>
+                                        <Box sx={{ padding: 1, borderRadius: 1, backgroundColor: Color.error() }}>
+                                            Нет ответа
                                         </Box>
-                                    })
-                                }
-                            </CardContent>
-                        </Card>
-                    )
+                                    </>
+                            }
+                        </CardContent>
+                    </Card>
+                )
 
 
             }

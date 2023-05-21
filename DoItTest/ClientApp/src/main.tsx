@@ -1,13 +1,11 @@
 import { Box, Button, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { FC, PropsWithChildren, useEffect, useMemo, useState } from 'react';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import 'tools/prototypes/string'
 import { createRoot } from 'react-dom/client'
 import { AuthRouter } from 'apps/authorization/router';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Home } from 'apps/infrastructure/home';
-import { HomeLinks } from 'apps/infrastructure/links';
-import { AuthLinks } from 'apps/authorization/links';
-import { Authorization } from 'apps/authorization/auth';
+import ruLocale from 'date-fns/locale/ru';
 import { InfrastructureRouter } from 'apps/infrastructure/router';
 import { BlockUi } from 'sharedComponents/blockUi/blockUi';
 import { NotificationProvider } from 'sharedComponents/notification/store/notificationStore';
@@ -16,6 +14,7 @@ import { NotificationManager } from 'sharedComponents/notification/notificationM
 import { TestRouter } from 'apps/tests/router';
 import DialogProvider from 'sharedComponents/dialog/dialogProvider';
 import { UsersRouter } from 'apps/users/router';
+import { LocalizationProvider, ruRU } from '@mui/x-date-pickers';
 
 interface Props {
 
@@ -29,13 +28,15 @@ function AppBase(props: PropsWithChildren<Props>) {
     <ThemeProvider theme={theme}>
       <NotificationProvider>
         <NotificationManager />
-        <BlockUiProvider>
-          <DialogProvider>
-            <BlockUi />
-            <CssBaseline />
-            {props.children}
-          </DialogProvider>
-        </BlockUiProvider>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ruLocale} localeText={ruRU.components.MuiLocalizationProvider.defaultProps.localeText}>
+          <BlockUiProvider>
+            <DialogProvider>
+              <BlockUi />
+              <CssBaseline />
+              {props.children}
+            </DialogProvider>
+          </BlockUiProvider>
+        </LocalizationProvider>
       </NotificationProvider>
     </ThemeProvider>
   </BrowserRouter>)

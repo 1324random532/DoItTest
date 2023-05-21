@@ -4,6 +4,7 @@ using DoItTest.Domain.Tests.TestItems;
 using DoItTest.Domain.Tests.TestItems.AnswerOptions;
 using DoItTest.Services.Tests.Repositories.Converters;
 using DoItTest.Services.Tests.Repositories.Models;
+using DoItTest.Tools.Extensions;
 using DoItTest.Tools.Types.Results;
 using Npgsql;
 using System.Data;
@@ -491,11 +492,19 @@ namespace DoItTest.Services.Tests.Repositories
                     $"JOIN users u ON t.userid = u.id AND NOT u.isremoved " +
                     $"JOIN students s ON s.id = st.studentid AND NOT s.isremoved " +
                     $"WHERE NOT st.isremoved " +
+                    $"  AND (@BeginDateTimePeriod::timestamp IS NULL OR (st.enddatetime >= @BeginDateTimePeriod::timestamp OR st.maxenddatetime >= @BeginDateTimePeriod::timestamp)) " +
+                    $"  AND (@EndDateTimePeriod::timestamp IS NULL OR (st.enddatetime <= @EndDateTimePeriod::timestamp OR st.maxenddatetime <= @EndDateTimePeriod::timestamp)) " +
+                    $"  AND (st.enddatetime is not null OR st.maxenddatetime < @CurrentDateTimeUtc) " +
                     $"  AND (@UserId IS NULL OR u.id = @UserId)" +
                     $"  AND (@TestId IS NULL OR st.testid = @TestId)" +
                     $"  AND (@Group IS NULL OR @Group = '' OR s.group ilike '%' || @Group || '%')" +
                     $"  AND (@StudentFIO IS NULL OR @StudentFIO = '' OR s.fullname ilike '%' || @StudentFIO || '%')" +
-                    $"  OFFSET @Offset " +
+                    $"ORDER BY" +
+                    $"  CASE " +
+                    $"  WHEN st.enddatetime IS NULL THEN st.maxenddatetime " +
+                    $"  ELSE st.enddatetime " +
+                    $"  END DESC " +
+                    $"OFFSET @Offset " +
                     $"  LIMIT @Limit ";
 
                 var parameters = new
@@ -504,6 +513,9 @@ namespace DoItTest.Services.Tests.Repositories
                     UserId = filter.UserId,
                     Group = filter.Group,
                     StudentFIO = filter.studentFIO,
+                    CurrentDateTimeUtc = DateTime.UtcNow,
+                    BeginDateTimePeriod = filter.DateTimePeriod.BeginDateTime?.ToLocalTime(),
+                    EndDateTimePeriod = filter.DateTimePeriod.EndDateTime?.ToLocalTime().EndOfDay(),
                     Offset = Math.Max((filter.Page - 1) * filter.PageSize, 0),
                     Limit = Math.Max(filter.PageSize, 0)
                 };
