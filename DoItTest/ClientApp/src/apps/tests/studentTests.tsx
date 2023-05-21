@@ -81,7 +81,7 @@ export function StudentTestsList() {
                 StudentsProvider.getStudents(studentIds)
             ])
 
-            setState(prevState => ({ ...prevState, studentTests: studentTestsPage.values, tests, students, totalRows: studentTestsPage.totalRows, testsForSearch: [] }))
+            setState(prevState => ({ ...prevState, studentTests: studentTestsPage.values, tests, students, totalRows: studentTestsPage.totalRows }))
         })
     }
 
@@ -107,10 +107,12 @@ export function StudentTestsList() {
                     options={state.testsForSearch}
                     label="Тест"
                     getOptionLabel={test => test?.title}
-                    onChange={test => setFilter({ ...filter, testId: test?.id ?? null })}
+                    onChange={test => {
+                        setFilter({ ...filter, testId: test?.id ?? null })
+                    }}
                     onChangeText={async (text) => {
                         const testsForSearch = String.isNullOrWhitespace(text) ? [] : await TestsProvider.getTestsBySearchText(text);
-                        await setState(prevState => ({ ...prevState, testsForSearch }));
+                        setState(prevState => ({ ...prevState, testsForSearch }));
                     }}
                     value={state.testsForSearch.find(t => t.id == filter.testId) ?? null}
                     placeholder={"Введите название теста"}

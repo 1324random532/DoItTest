@@ -52,10 +52,10 @@ namespace DoItTest.Site.Areas.Tests
         }
 
         [HttpGet("/Tests/GetTestsBySearchText")]
-        public Test[] GetTests(String? serchText)
+        public Test[] GetTests(String? searchText)
         {
             Guid? userId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
-            return _testsService.GetTests(serchText, userId);
+            return _testsService.GetTests(searchText, userId);
         }
 
         [HttpPost("/Tests/GetPaged")]
