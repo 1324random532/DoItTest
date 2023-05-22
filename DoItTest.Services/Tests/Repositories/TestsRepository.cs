@@ -50,8 +50,8 @@ namespace DoItTest.Services.Tests.Repositories
                         TestItemIds = testItems.Select(i => i.Id!).ToArray()
                     };
 
-                    String saveTestQuery = $"INSERT INTO tests (id, userid, title, timetocompleteinseconds, numberofpercentagesbyfive, numberofpercentagesbyfour, numberofpercentagesbythree) " +
-                    $"VALUES(@Id,@UserId,@Title,@TimeToCompleteInSeconds,@NumberOfPercentagesByFive,@NumberOfPercentagesByFour,@NumberOfPercentagesByThree);";
+                    String saveTestQuery = $"INSERT INTO tests (id, userid, title, timetocompleteinseconds, numberofpercentagesbyfive, numberofpercentagesbyfour, numberofpercentagesbythree, blockpassage) " +
+                    $"VALUES(@Id,@UserId,@Title,@TimeToCompleteInSeconds,@NumberOfPercentagesByFive,@NumberOfPercentagesByFour,@NumberOfPercentagesByThree,@BlockPassage);";
 
                     var saveTestparameters = new
                     {
@@ -61,7 +61,8 @@ namespace DoItTest.Services.Tests.Repositories
                         test.TimeToCompleteInSeconds,
                         test.NumberOfPercentagesByFive,
                         test.NumberOfPercentagesByFour,
-                        test.NumberOfPercentagesByThree
+                        test.NumberOfPercentagesByThree,
+                        test.BlockPassage
                     };
 
                     String saveTestItemQuery = $"INSERT INTO testitems(id, testid, type, " +
@@ -130,6 +131,28 @@ namespace DoItTest.Services.Tests.Repositories
 
                     transaction.Commit();
                 }
+            }
+        }
+
+        public void BlockPassegeTest(Guid id, Guid? userId)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+
+                String query = $"update tests " +
+                    $"set blockpassage = not blockpassage " +
+                    $"where (@UserId is null or userid = @UserId)" +
+                    $"  and id = @Id" +
+                    $"  and not isremoved";
+
+                var parameters = new
+                {
+                    Id = id,
+                    UserId = userId
+                };
+
+                db.Execute(query, parameters);
             }
         }
 

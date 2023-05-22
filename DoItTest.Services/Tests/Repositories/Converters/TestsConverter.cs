@@ -18,7 +18,7 @@ namespace DoItTest.Services.Tests.Repositories.Converters
 
         public static Test ToTest(this TestDb db)
         {
-            return new Test(db.Id, db.UserId, db.Title, db.TimeToCompleteInSeconds, db.NumberOfPercentagesByFive, db.NumberOfPercentagesByFour, db.NumberOfPercentagesByThree);
+            return new Test(db.Id, db.UserId, db.Title, db.TimeToCompleteInSeconds, db.NumberOfPercentagesByFive, db.NumberOfPercentagesByFour, db.NumberOfPercentagesByThree, db.BlockPassage);
         }
 
         public static TestItem[] ToTestItems(this IEnumerable<TestItemDb> dbs, AnswerOptionDb[] allAnswerOptionDbs, Boolean getAnswers)

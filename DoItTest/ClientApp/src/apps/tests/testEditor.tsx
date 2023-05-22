@@ -39,18 +39,22 @@ export function TestEditor() {
     useComponent({
         didMount: async () => {
             blockUi(async () => {
-                const testId = routeParams.testId ?? null
-                if (testId == null) return
-
-                const test = await TestsProvider.getTest(testId);
-                setTestBlank(TestBlank.formTest(test));
-
-                const testItems = await TestsProvider.getTestItems(test.id);
-                const testItemBlanks = TestItemBlank.formTestItems(testItems)
-                setTestItemBlanks(testItemBlanks)
+                load()
             })
         }
     })
+
+    async function load() {
+        const testId = routeParams.testId ?? null
+        if (testId == null) return
+
+        const test = await TestsProvider.getTest(testId);
+        setTestBlank(TestBlank.formTest(test));
+
+        const testItems = await TestsProvider.getTestItems(test.id);
+        const testItemBlanks = TestItemBlank.formTestItems(testItems)
+        setTestItemBlanks(testItemBlanks)
+    }
 
     function setTestItemBlank(itemBlank: TestItemBlank) {
         setTestItemBlanks(prev => {
@@ -100,6 +104,18 @@ export function TestEditor() {
         })
     }
 
+    async function blockPassegeTest(testId: string) {
+        blockUi(async () => {
+            const result = await TestsProvider.blockPassegeTest(testId);
+            if (!result.isSuccess) {
+                return showError(result.errors[0].message);
+            }
+
+            load()
+            showSuccess("Изменение выполнено")
+        })
+    }
+
     return (
         <Content withSidebar={true}>
             <h1>{testBlank.id == null ? "Добавить" : "Изменить"}</h1>
@@ -110,7 +126,10 @@ export function TestEditor() {
 
                     {
                         testBlank.id != null &&
-                        <Button onClick={() => { copyTest(testBlank.id!) }} title='Создать копию' sx={{ mb: 2, width: 250, height: 56 }}>Создать копию</Button>
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                            <Button onClick={() => { copyTest(testBlank.id!) }} title='Создать копию' sx={{ mb: 2, width: 250, height: 56 }}>Создать копию</Button>
+                            <Button onClick={() => { blockPassegeTest(testBlank.id!) }} title={testBlank.blockPassage ? "Разблокировать доступ" : "Заблокировать доступ"} sx={{ mb: 2, width: 250, height: 56 }}>{testBlank.blockPassage ? "Разблокировать доступ" : "Заблокировать доступ"}</Button>
+                        </Box>
                     }
 
                 </Box>

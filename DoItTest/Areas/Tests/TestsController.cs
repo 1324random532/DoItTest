@@ -31,6 +31,13 @@ namespace DoItTest.Site.Areas.Tests
             return _testsService.SaveTest(request.TestBlank, request.TestItemBlanks, SystemUser.Id);
         }
 
+        [HttpPost("/Tests/BlockPassegeTest")]
+        public Result BlockPassegeTest([FromBody] Guid id)
+        {
+            Guid? userId = SystemUser.Role == UserRole.Super ? null : SystemUser.Id;
+            return _testsService.BlockPassegeTest(id, userId);
+        }
+
         [HttpPost("/Tests/Copy")]
         public DataResult<Guid> CopyTest([FromBody] Guid testId)
         {

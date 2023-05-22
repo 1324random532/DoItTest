@@ -10,7 +10,6 @@ import { StudentTest, mapToStudentTest } from "./studentTest";
 import { DataResult, mapToDataResult } from "tools/results/dataResult";
 import { mapToTestInfo } from "./testInfo";
 import { StudentBlank } from "domain/students/studentBlank";
-import { Student, mapToStudent } from "domain/students/student";
 import { AnswerBlank } from "domain/answers/answerBlank";
 import { StartTestResponse, mapToStartTestResponse } from "./startTestResponse";
 import IStudentTestFilter from "./studentTestFilter";
@@ -40,6 +39,11 @@ export class TestsProvider {
     public static async saveTest(testBlank: TestBlank, testItemBlanks: TestItemBlank[]) {
         const result = await HttpRequest.post("/Tests/Save").withBody({ testBlank, testItemBlanks }).asResult()
         return result;
+    }
+
+    public static async blockPassegeTest(id: string) {
+        const result = await HttpRequest.post("/Tests/BlockPassegeTest").withBody(id).asResult()
+        return result
     }
 
     public static async copyTest(testId: string) {
@@ -74,7 +78,7 @@ export class TestsProvider {
 
     public static async getItemForPassing(testId: string, studentId: string): Promise<DataResult<TestItem | null>> {
         const result = await HttpRequest.get("/Tests/GetItemForPassing").withQueryParams({ testId, studentId }).asAny()
-        if (result.data == null) return mapToDataResult(result)
+        if (!result.isSuccess || result.data == null) return mapToDataResult(result)
 
         return DataResult.get(result, mapToTestItem);
     }

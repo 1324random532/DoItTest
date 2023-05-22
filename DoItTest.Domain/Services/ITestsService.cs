@@ -10,6 +10,7 @@ namespace DoItTest.Domain.Services
     public interface ITestsService
     {
         Result SaveTest(TestBlank test, TestItemBlank[] testItems, Guid systemUserId);
+        Result BlockPassegeTest(Guid id, Guid? userId);
         DataResult<Guid> CopyTest(Guid testId, UserRole userRole, Guid userId);
         Test? GetTest(Guid id, Guid? userId);
         Test[] GetTests(Guid[] ids, Guid? userId);

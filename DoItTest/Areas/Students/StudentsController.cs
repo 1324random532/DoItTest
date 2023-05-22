@@ -16,13 +16,13 @@ namespace DoItTest.Site.Areas.Students
             _studentsService = studentsService;
         }
 
-        [HttpPost("/Students/Save")]
-        public Result SaveStudent([FromBody] StudentBlank studentBlank)
-        {
-            DataResult<Guid> result = _studentsService.SaveStudent(studentBlank, SystemUser.Id);
+        //[HttpPost("/Students/Save")]
+        //public Result SaveStudent([FromBody] StudentBlank studentBlank)
+        //{
+        //    DataResult<Guid> result = _studentsService.SaveStudent(studentBlank, SystemUser.Id);
 
-            return result.IsSuccess ? Result.Success() : Result.Fail(result.Errors);
-        }
+        //    return result.IsSuccess ? Result.Success() : Result.Fail(result.Errors);
+        //}
 
         [AllowAnonymous]
         [HttpGet("/Students/GetStudent")]

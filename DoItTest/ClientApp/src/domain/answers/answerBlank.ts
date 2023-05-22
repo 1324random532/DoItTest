@@ -1,4 +1,3 @@
-import { purple } from "@mui/material/colors"
 import { AnswerGroup } from "./answerGroup"
 
 export class AnswerBlank {
@@ -12,8 +11,13 @@ export class AnswerBlank {
         public readonly answerGroups: AnswerGroup[]
     ) { }
 
+    public static clearAnswer(answer: AnswerBlank): AnswerBlank {
+        return new AnswerBlank(answer.studentId, answer.testId, null, null, null, [], [])
+    }
+
     public static getDefault(studentId: string, testId: string): AnswerBlank {
         return new AnswerBlank(studentId, testId, null, null, null, [], [])
     }
+
 }
 

@@ -59,7 +59,7 @@ export function PassingTest() {
                 const student = await StudentsProvider.getStudent(studentId);
 
                 const result = await TestsProvider.getItemForPassing(testInfo.testId, student.id);
-                if (!result.isSuccess) return setState(prevState => ({ ...prevState, loading: false, errorss: result.errors.map(e => e.message) }))
+                if (!result.isSuccess) return setState(prevState => ({ ...prevState, loading: false, errorMessage: result.errors.find(e => e != null)?.message ?? null }))
 
                 const beginDateTime = await TestsProvider.getStartTestBeginDateTime(testInfo.testId, student.id)
                 if (beginDateTime == null) return setState(prevState => ({ ...prevState, loading: false, errorMessage: "Не удалось загрузить время прохождения" }))

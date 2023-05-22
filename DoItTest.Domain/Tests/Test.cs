@@ -9,8 +9,9 @@
         public Int32 NumberOfPercentagesByFive { get; }
         public Int32 NumberOfPercentagesByFour { get; }
         public Int32 NumberOfPercentagesByThree { get; }
+        public Boolean BlockPassage { get; }
 
-        public Test(Guid id, Guid userId, String title, Int32 timeToCompleteInSeconds, Int32 numberOfPercentagesByFive, Int32 numberOfPercentagesByFour, Int32 numberOfPercentagesByThree)
+        public Test(Guid id, Guid userId, String title, Int32 timeToCompleteInSeconds, Int32 numberOfPercentagesByFive, Int32 numberOfPercentagesByFour, Int32 numberOfPercentagesByThree, Boolean blockPassage)
         {
             Id = id;
             UserId = userId;
@@ -19,6 +20,7 @@
             NumberOfPercentagesByFive = numberOfPercentagesByFive;
             NumberOfPercentagesByFour = numberOfPercentagesByFour;
             NumberOfPercentagesByThree = numberOfPercentagesByThree;
+            BlockPassage = blockPassage;
         }
 
         public TestBlank ToBlank()
@@ -31,7 +33,8 @@
                 TimeToCompleteInSeconds = TimeToCompleteInSeconds,
                 NumberOfPercentagesByFive = NumberOfPercentagesByFive,
                 NumberOfPercentagesByFour = NumberOfPercentagesByFour,
-                NumberOfPercentagesByThree = NumberOfPercentagesByThree
+                NumberOfPercentagesByThree = NumberOfPercentagesByThree,
+                BlockPassage = BlockPassage
             };
         }
     }

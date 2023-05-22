@@ -172,6 +172,15 @@ namespace DoItTest.Services.Tests
 			return Result.Success();
 		}
 
+		public Result BlockPassegeTest(Guid id, Guid? userId)
+        {
+			Test? test = GetTest(id, userId);
+			if (test is null) return Result.Fail("Тест не найден или удален");
+
+			_testsRepository.BlockPassegeTest(id, userId);
+			return Result.Success();
+        }
+
 		public DataResult<Guid> CopyTest(Guid testId, UserRole userRole, Guid userId)
 		{
 			Guid? userIdForSearch = userRole == UserRole.Super ? null : userId;
@@ -313,7 +322,7 @@ namespace DoItTest.Services.Tests
 			if (student is null) return DataResult<TestItem?>.Failed("Студент не найден");
 
 			Test? test = GetTest(answerBlank.TestId, null);
-			if (test is null) return DataResult<TestItem?>.Failed("Тест не найден");
+			if (test is null || test.BlockPassage) return DataResult<TestItem?>.Failed("Тест не найден");
 
 			StudentTest? studentTest = GetStudentTest(student.Id, test.Id);
 			if (studentTest is null) throw new Exception("Не существует модели прохождения студента");
@@ -456,7 +465,7 @@ namespace DoItTest.Services.Tests
 		public DataResult<StartTestResponse> StartTest(StudentBlank studentBlank, Guid testId)
 		{
 			Test? test = GetTest(testId, null);
-			if (test is null) return DataResult<StartTestResponse>.Failed("Тест не существует");
+			if (test is null || test.BlockPassage) return DataResult<StartTestResponse>.Failed("Тест не существует");
 
 			DataResult<Guid> result = _studetnsService.SaveStudent(studentBlank, null);
 			if (!result.IsSuccess) return DataResult<StartTestResponse>.Failed(result.Errors);
@@ -491,7 +500,7 @@ namespace DoItTest.Services.Tests
 			if (student is null) return DataResult<TestItem?>.Failed("Студент не найден");
 
 			Test? test = GetTest(testId, null);
-			if (test is null) return DataResult<TestItem?>.Failed("Тест не найден");
+			if (test is null || test.BlockPassage) return DataResult<TestItem?>.Failed("Тест не найден");
 
 			StudentTest? studentTest = GetStudentTest(student.Id, test.Id);
 			if (studentTest is null) throw new Exception("Не существует модели прохождения студента");
@@ -538,7 +547,7 @@ namespace DoItTest.Services.Tests
 		public TestInfo? GetTestInfo(Guid testId)
 		{
 			Test? test = _testsRepository.GetTest(testId, null);
-			if (test is null) return null;
+			if (test is null || test.BlockPassage) return null;
 
 			return new TestInfo(test.Id, test.Title, test.TimeToCompleteInSeconds);
 		}
@@ -549,7 +558,7 @@ namespace DoItTest.Services.Tests
 			if (studentTest is null) return null;
 
 			Test? test = GetTest(studentTest.TestId, null);
-			if (test is null) return null;
+			if (test is null || test.BlockPassage) return null;
 
 			return test.Id;
         }

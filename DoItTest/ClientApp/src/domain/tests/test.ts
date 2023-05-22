@@ -9,12 +9,13 @@ export class Test {
         public readonly numberOfPercentagesByFive: number,
         public readonly numberOfPercentagesByFour: number,
         public readonly numberOfPercentagesByThree: number,
+        public readonly blockPassage: boolean
     ) { }
 }
 
 export function mapToTest(value: any): Test {
     return new Test(value.id, value.userId, value.title, value.timeToCompleteInSeconds,
-        value.numberOfPercentagesByFive, value.numberOfPercentagesByFour, value.numberOfPercentagesByThree)
+        value.numberOfPercentagesByFive, value.numberOfPercentagesByFour, value.numberOfPercentagesByThree, value.blockPassage)
 }
 
 export function mapToTests(value: any[]): Test[] {
