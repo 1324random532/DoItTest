@@ -19,6 +19,7 @@ import Time, { getTime } from "tools/time";
 import { TestItemCard } from "./components/infos/testItemInfoCard";
 import TestItemEditorModal from "./components/testItemEditorModal";
 import { TestLinks } from "./links";
+import AddingTestItemFromOtherTestsModal from "./components/addingTestItemFromOtherTestsModal";
 
 
 export function TestEditor() {
@@ -35,6 +36,8 @@ export function TestEditor() {
     const [testItemBlanks, setTestItemBlanks] = useState<TestItemBlank[]>([])
 
     const [editItem, setEditItem] = useState<TestItemBlank | null>(null)
+
+    const [isOpenAddingTestItemFromOtherTestsModal, setIsOpenAddingTestItemFromOtherTestsModal] = useState<boolean>(false)
 
     useComponent({
         didMount: async () => {
@@ -219,13 +222,23 @@ export function TestEditor() {
                         </Table>
                     </TableContainer>
                 </Paper>
-                <Button
-                    title="Добавить вопрос"
-                    onClick={() => { setEditItem(TestItemBlank.getDefault()) }}
-                    sx={{ mb: 2, width: 250, height: 56 }}
-                >
-                    Добавить вопрос
-                </Button>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                    <Button
+                        title="Добавить вопрос"
+                        onClick={() => { setEditItem(TestItemBlank.getDefault()) }}
+                        sx={{ mb: 2, width: 250, height: 56 }}
+                    >
+                        Добавить вопрос
+                    </Button>
+
+                    <Button
+                        title="Импортировать вопросы"
+                        onClick={() => setIsOpenAddingTestItemFromOtherTestsModal(true)}
+                        sx={{ mb: 2, width: 250, height: 56 }}
+                    >
+                        Импортировать вопросы
+                    </Button>
+                </Box>
                 {editItem !== null && <TestItemEditorModal
                     changeTestItemBlank={setTestItemBlank}
                     testItem={editItem}
@@ -234,6 +247,12 @@ export function TestEditor() {
                         setEditItem(null)
                     }}
                 />}
+                <AddingTestItemFromOtherTestsModal
+                    open={isOpenAddingTestItemFromOtherTestsModal}
+                    currentTestItemBlanks={testItemBlanks}
+                    changeCurrentTestItemBlanks={setTestItemBlanks}
+                    onClose={() => setIsOpenAddingTestItemFromOtherTestsModal(false)}
+                />
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     {testItemBlanks.map((i, index) => {
                         return <TestItemCard item={i} index={index + 1} removeItem={removeTestItemBlank} changeItem={() => setEditItem(i)} sx={{ width: 600 }} />

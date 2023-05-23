@@ -16,7 +16,9 @@ export default function Dialog(props: PropsWithChildren<DialogProps>) {
         <MaterialDialog
             open={props.isOpen}
             onClose={props.onClose}
-            sx={props.sx}
+            PaperProps={{
+                sx: props.sx
+            }}
         >
             <DialogTitle>{props.title}</DialogTitle>
             <DialogContent style={{ paddingTop: 5 }}>

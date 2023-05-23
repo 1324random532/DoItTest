@@ -105,7 +105,7 @@ namespace DoItTest.Services.Tests
 				}
 
 				if (testItem.AnswerOption.Id is null) testItem.AnswerOption.Id = Guid.NewGuid();
-				if (testItem.AnswerOption.TestItemId is null) testItem.AnswerOption.TestItemId = testItem.Id;
+				testItem.AnswerOption.TestItemId = testItem.Id;
 			}
 
 			if (testItem.Type == TestItemType.RadioButtonsGroup || testItem.Type == TestItemType.CheckboxesGroup)
@@ -117,7 +117,7 @@ namespace DoItTest.Services.Tests
 					if (String.IsNullOrEmpty(answerOpttion.Title)) return Result.Fail($"Не все ответы имеют заголовок у вопроса {testItemNumber}");
 
 					if (answerOpttion.Id is null) answerOpttion.Id = Guid.NewGuid();
-					if (answerOpttion.TestItemId is null) answerOpttion.TestItemId = testItem.Id;
+					answerOpttion.TestItemId = testItem.Id;
 				}
 
 				AnswerOptionBlank[] nullableAnswerOpttions = testItem.AnswerOptions.Where(a => a.IsTrue is null).ToArray();
@@ -156,7 +156,7 @@ namespace DoItTest.Services.Tests
 							new AnswerOptionBlank()
 							{
 								Id = answerOptionBlank.Id ?? Guid.NewGuid(),
-								TestItemId = answerOptionBlank.TestItemId ?? testItem.Id,
+								TestItemId = testItem.Id,
 								Type = answerOptionBlank.Type,
 								GroupId = answerOptionGroupBlank.Id,
 								GroupName = answerOptionGroupBlank.Name,

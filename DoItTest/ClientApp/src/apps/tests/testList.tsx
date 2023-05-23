@@ -110,6 +110,8 @@ export function TestsList() {
                             >
                                 <TableCell align='left' component="th" scope="row" >{t.title}</TableCell>
                                 <ActionTableCell>
+                                    <IconButton icon='delete' onClick={() => remove(t.id)} title='Удалить тест' />
+                                    <IconButton icon='create' onClick={() => navigateTo(TestLinks.edit(t.id))} title='Изменить тест' />
                                     <IconButton
                                         icon='copy'
                                         onClick={() => {
@@ -117,8 +119,6 @@ export function TestsList() {
                                         }}
                                         title="Скопировать ссылку"
                                     />
-                                    <IconButton icon='create' onClick={() => navigateTo(TestLinks.edit(t.id))} title='Изменить тест' />
-                                    <IconButton icon='delete' onClick={() => remove(t.id)} title='Удалить тест' />
                                 </ActionTableCell>
                             </TableRow>
                         ))}

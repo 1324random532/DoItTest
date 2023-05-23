@@ -15,13 +15,13 @@ export class AnswerOptionGroupBlank {
         return new AnswerOptionGroupBlank(null, null, [], crypto.randomUUID())
     }
 
-    public static fromAnswerOptionGroup(answerOptionGroup: AnswerOptionGroup): AnswerOptionGroupBlank {
-        const answerOptionBlanks = AnswerOptionBlank.formAnswerOptions(answerOptionGroup.answerOptions)
+    public static fromAnswerOptionGroup(answerOptionGroup: AnswerOptionGroup, withoutId: boolean): AnswerOptionGroupBlank {
+        const answerOptionBlanks = AnswerOptionBlank.formAnswerOptions(answerOptionGroup.answerOptions, withoutId)
 
         return new AnswerOptionGroupBlank(answerOptionGroup.id, answerOptionGroup.name, answerOptionBlanks, crypto.randomUUID())
     }
 
-    public static formAnswerOptionGroups(answerOptionGroups: AnswerOptionGroup[]): AnswerOptionGroupBlank[] {
-        return answerOptionGroups.map(g => AnswerOptionGroupBlank.fromAnswerOptionGroup(g))
+    public static formAnswerOptionGroups(answerOptionGroups: AnswerOptionGroup[], withoutId: boolean): AnswerOptionGroupBlank[] {
+        return answerOptionGroups.map(g => AnswerOptionGroupBlank.fromAnswerOptionGroup(g, withoutId))
     }
 }

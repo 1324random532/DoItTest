@@ -8,8 +8,9 @@ import { Box } from "@mui/system";
 export interface TestItemInfoProps {
     item: TestItemBlank
     index: number
-    removeItem: (itemKey: string) => void
-    changeItem: () => void
+    removeItem?: (itemKey: string) => void
+    changeItem?: () => void
+    onClick?: () => void
     sx?: SxProps<Theme>
 }
 
@@ -19,8 +20,14 @@ export function TestItemCard({ item, index, removeItem, changeItem, sx }: TestIt
             title={`Вопрос номер: ${index}`}
             action={
                 <Box>
-                    <IconButton icon="create" onClick={changeItem} />
-                    <IconButton icon="delete" onClick={() => removeItem(item.key)} />
+                    {
+                        changeItem &&
+                        <IconButton icon="create" onClick={changeItem} />
+                    }
+                    {
+                        removeItem &&
+                        <IconButton icon="delete" onClick={() => removeItem(item.key)} />
+                    }
                 </Box>
             }
         />
