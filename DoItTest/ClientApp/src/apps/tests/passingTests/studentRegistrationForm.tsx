@@ -43,20 +43,20 @@ export function StudentRegistrationForm({ testId, startTest }: StudentRegistrati
     return (
         <Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <Typography>Введите данные чтобы начать</Typography>
-
-                <Input
-                    type="text"
-                    label="Имя"
-                    value={studentBlank.firstName}
-                    onChange={firstName => setStudentBlank({ ...studentBlank, firstName })}
-                />
+                <Typography>Введите данные, чтобы начать</Typography>
 
                 <Input
                     type="text"
                     label="Фамилия"
                     value={studentBlank.lastName}
                     onChange={lastName => setStudentBlank({ ...studentBlank, lastName })}
+                />
+
+                <Input
+                    type="text"
+                    label="Имя"
+                    value={studentBlank.firstName}
+                    onChange={firstName => setStudentBlank({ ...studentBlank, firstName })}
                 />
 
                 <Input

@@ -16,7 +16,7 @@ export class StudentTest {
     public get spentTime() {
         if (this.endDateTime == null) return null;
 
-        const spentTimeInSeconds = this.endDateTime.getTime() - this.beginDateTime.getTime()
+        const spentTimeInSeconds = (this.endDateTime.getTime() - this.beginDateTime.getTime()) / 1000
         return new Time(spentTimeInSeconds)
     }
 }

@@ -87,17 +87,17 @@ export function StudentTestInfo() {
                     <h1>Результат прохождения теста</h1>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         <Card>
-                            <CardHeader title={"Иформация о студенте"} />
+                            <CardHeader title={"Иформация о студенте:"} />
                             <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                <Typography>Имя: {state.student.firstName}</Typography>
                                 <Typography>Фамилия: {state.student.lastName}</Typography>
+                                <Typography>Имя: {state.student.firstName}</Typography>
                                 <Typography>{state.student.patronymic && `Отчество: ${state.student.patronymic}`}</Typography>
                                 <Typography>Группа: {state.student.group}</Typography>
                             </CardContent>
                         </Card>
 
                         <Card>
-                            <CardHeader title="Ифнормация по прохождению" />
+                            <CardHeader title="Ифнормация по прохождению:" />
                             <CardContent>
                                 <Typography>Тест: {state.test.title}</Typography>
                                 <Typography>Затраченное время: {state.studentTest.spentTime?.getTimeString() ?? "Не закончен"} </Typography>

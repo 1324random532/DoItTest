@@ -154,7 +154,7 @@ export function TestEditor() {
                     />
                 </Box>
                 <Paper>
-                    <Box sx={{ textAlign: "center", fontSize: 20, padding: 2 }}> Количестов процентов на оценку</Box>
+                    <Box sx={{ textAlign: "center", fontSize: 20, padding: 2 }}> Количество процентов на оценку</Box>
                     <Divider />
                     <TableContainer>
                         <Table>
