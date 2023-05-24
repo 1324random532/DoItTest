@@ -132,7 +132,7 @@ export default function AddingTestItemFromOtherTestsModal(props: AddingTestItemF
                                 {(provided) => (
                                     <Box {...provided.droppableProps}
                                         ref={provided.innerRef}
-                                        sx={{ display: 'flex', flexDirection: 'column' }} height={1}>
+                                        sx={{ display: 'flex', flexDirection: 'column', overflow: "auto", maxHeight: 600 }} height={1}>
 
                                         {state.selectedTestTestItemBlanks.map((b, index) => <Draggable
                                             draggableId={b.key}
@@ -165,7 +165,7 @@ export default function AddingTestItemFromOtherTestsModal(props: AddingTestItemF
                                 {(provided) => (
                                     <Box {...provided.droppableProps}
                                         ref={provided.innerRef}
-                                        sx={{ display: 'flex', flexDirection: 'column' }} height={1}>
+                                        sx={{ display: 'flex', flexDirection: 'column', overflow: "auto", maxHeight: 600 }} height={1}>
 
                                         {state.selectedTestItemBlanks.map((b, index) => <Draggable
                                             draggableId={b.key}
