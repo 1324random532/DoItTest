@@ -76,6 +76,7 @@ export function StudentRegistrationForm({ testId, startTest }: StudentRegistrati
                 <Button
                     onClick={() => { save() }}
                     sx={{ height: 50 }}
+                    variant="contained"
                 >
                     Начать
                 </Button>
