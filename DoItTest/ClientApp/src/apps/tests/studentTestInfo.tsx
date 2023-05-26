@@ -29,6 +29,7 @@ import { PassingTestItemInfoCard } from "./components/passingInfos/passingTestIt
 import { AnswerProvider } from "domain/answers/answerProvider";
 import { Answer } from "domain/answers/answer";
 import { StudentTestsProvider } from "domain/tests/studentTestsProvider";
+import { IconButton } from "sharedComponents/buttons/iconButton";
 
 class State {
     constructor
@@ -84,7 +85,10 @@ export function StudentTestInfo() {
             {
                 state.studentTest != null && state.student != null && state.test != null &&
                 <>
-                    <h1>Результат прохождения теста</h1>
+                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                        <IconButton icon="back" onClick={() => history.back()} title="Назад" />
+                        <h1>Результат прохождения теста</h1>
+                    </Box>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         <Card>
                             <CardHeader title={"Иформация о студенте:"} />

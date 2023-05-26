@@ -20,6 +20,7 @@ import { TestItemCard } from "./components/infos/testItemInfoCard";
 import TestItemEditorModal from "./components/testItemEditorModal";
 import { TestLinks } from "./links";
 import AddingTestItemFromOtherTestsModal from "./components/addingTestItemFromOtherTestsModal";
+import { IconButton } from "sharedComponents/buttons/iconButton";
 
 
 export function TestEditor() {
@@ -121,7 +122,10 @@ export function TestEditor() {
 
     return (
         <Content withSidebar={true}>
-            <h1>{testBlank.id == null ? "Добавить" : "Изменить"}</h1>
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                <IconButton icon="back" onClick={() => history.back()} title="Назад" />
+                <h1>{testBlank.id == null ? "Добавить" : "Изменить"}</h1>
+            </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
 
                 <Box sx={{ display: "flex", gap: 2 }}>

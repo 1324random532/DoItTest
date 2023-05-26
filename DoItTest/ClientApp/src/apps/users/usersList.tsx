@@ -105,8 +105,8 @@ export function UsersList() {
                                 <TableCell align='left' component="th" scope="row" >{u.login}</TableCell>
                                 <TableCell align='left'>{RoleType.getDisplayName(u.role)}</TableCell>
                                 <ActionTableCell>
-                                    <IconButton icon='create' onClick={() => navigateTo(UsersLinks.edit(u.id))} title='Изменить пользователя' />
                                     <IconButton icon='delete' onClick={() => remove(u.id)} title='Удалить пользователя' />
+                                    <IconButton icon='create' onClick={() => navigateTo(UsersLinks.edit(u.id))} title='Изменить пользователя' />
                                 </ActionTableCell>
                             </TableRow>
                         ))}

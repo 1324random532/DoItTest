@@ -93,7 +93,6 @@ export default function AddingTestItemFromOtherTestsModal(props: AddingTestItemF
             }}
             title="Импортирование вопросов"
             sx={{
-                minWidth: 1500,
                 maxWidth: 1500
             }}
             actionsContent={< Button
@@ -107,7 +106,8 @@ export default function AddingTestItemFromOtherTestsModal(props: AddingTestItemF
             <Box sx={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 2
+                gap: 2,
+                minWidth: 1000
             }}>
                 <CAsyncAutocomplete
                     options={state.tests}

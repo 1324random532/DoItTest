@@ -13,8 +13,9 @@ import { IconButton as MaterialIconButton, SxProps, Theme } from '@mui/material'
 import { Tooltip } from 'sharedComponents/tooltip/tooltip';
 import { NeverUnreachable } from 'tools/errors/neverUnreachable';
 import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-type IconType = 'delete' | 'create' | 'add' | 'home' | 'users' | 'exit' | 'menu' | 'chevronLeft' | 'door' | 'tests' | 'cross' | 'studentTests' | 'copy' | "info"
+type IconType = 'delete' | 'create' | 'add' | 'home' | 'users' | 'exit' | 'menu' | 'chevronLeft' | 'door' | 'tests' | 'cross' | 'studentTests' | 'copy' | "info" | 'back'
 interface IconProps {
     icon: IconType
     onClick?: () => void
@@ -48,6 +49,7 @@ export function Icon(props: { type: IconType }) {
         case 'studentTests': return <AssignmentTurnedInIcon />
         case 'copy': return <ContentCopyIcon />
         case 'info': return <InfoIcon />
+        case 'back': return <ArrowBackIcon />
         default: throw new NeverUnreachable(props.type);
     }
 }
