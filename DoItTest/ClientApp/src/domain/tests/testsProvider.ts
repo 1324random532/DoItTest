@@ -14,6 +14,7 @@ import { AnswerBlank } from "domain/answers/answerBlank";
 import { StartTestResponse, mapToStartTestResponse } from "./startTestResponse";
 import IStudentTestFilter from "./studentTestFilter";
 import ITestsFilter from "./ITestsFilter";
+import { StudentTestInfo, mapToStudentTestInfo } from "./studentTestInfo";
 
 export class TestsProvider {
 
@@ -51,9 +52,9 @@ export class TestsProvider {
         return mapToDataResult(result)
     }
 
-    public static async getTest(id: string): Promise<Test> {
+    public static async getTest(id: string): Promise<Test | null> {
         const result = await HttpRequest.get("/Tests/GetTest").withQueryParams({ id }).asAny()
-        return mapToTest(result)
+        return result != null ? mapToTest(result) : null
     }
 
     public static async getTests(ids: string[]): Promise<Test[]> {
@@ -108,8 +109,8 @@ export class TestsProvider {
         return result
     }
 
-    public static async getStartTestBeginDateTime(testId: string, studentId: string): Promise<Date | null> {
-        const result = await HttpRequest.get("/Tests/GetStartTestBeginDateTime").withQueryParams({ testId, studentId }).asAny()
-        return result != null ? new Date(result) : null;
+    public static async getStudentTestInfo(testId: string, studentId: string): Promise<StudentTestInfo | null> {
+        const result = await HttpRequest.get("/Tests/GetStudentTestInfo").withQueryParams({ testId, studentId }).asAny()
+        return result != null ? mapToStudentTestInfo(result) : null;
     }
 }

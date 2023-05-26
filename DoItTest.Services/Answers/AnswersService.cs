@@ -33,9 +33,9 @@ namespace DoItTest.Services.Answers
 			return _answersRepository.GetActive(studentTestId);
         }
 
-		public Answer[] GetAnswers(Guid studentTestId, Guid? userId)
+		public Answer[] GetAnswers(Guid studentTestId, Guid? userId, Boolean withActive = false)
 		{
-			return _answersRepository.GetAnswers(studentTestId, userId);
+			return _answersRepository.GetAnswers(studentTestId, userId, withActive);
 		}
 	}
 }

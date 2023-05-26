@@ -117,6 +117,7 @@ export function TestsList() {
                                         onClick={() => {
                                             navigator.clipboard.writeText(`${location.origin}${TestLinks.passing(t.id)}`)
                                         }}
+                                        disabled={t.blockPassage}
                                         title="Скопировать ссылку"
                                     />
                                 </ActionTableCell>

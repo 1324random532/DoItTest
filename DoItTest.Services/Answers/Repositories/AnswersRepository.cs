@@ -71,7 +71,7 @@ namespace DoItTest.Services.Answers.Repositories
             }
         }
 
-        public Answer[] GetAnswers(Guid studentTestId, Guid? userId)
+        public Answer[] GetAnswers(Guid studentTestId, Guid? userId, Boolean withActive = false)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
@@ -85,13 +85,14 @@ namespace DoItTest.Services.Answers.Repositories
                     $"JOIN users u ON u.id = t.userid AND NOT u.isremoved " +              
                     $"WHERE a.studenttestid = @StudentTestId " +
                     $"  AND (@UserId IS NULL OR u.id = @UserId)" +
-                    $"  AND NOT a.isactive" +
+                    $"  AND (@WithActive or NOT a.isactive)" +
                     $"  AND NOT a.isremoved;";
 
                     var parameters = new
                     {
                         StudentTestId = studentTestId,
-                        UserId = userId
+                        UserId = userId,
+                        WithActive = withActive
                     };                   
 
                     return db.Query<AnswerDb>(query, parameters).ToArray().ToDomains();

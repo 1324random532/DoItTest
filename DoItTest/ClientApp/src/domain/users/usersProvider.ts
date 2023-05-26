@@ -11,9 +11,9 @@ export class UsersProvider {
         return result
     }
 
-    public static async getUserById(id: string): Promise<User> {
+    public static async getUserById(id: string): Promise<User | null> {
         const result = await HttpRequest.get("/Users/GetById").withQueryParams({ id }).asAny()
-        return mapToUser(result)
+        return result != null ? mapToUser(result) : null
     }
 
     public static async getPagedUsers(page: number, count: number): Promise<PagedResult<User>> {

@@ -548,8 +548,9 @@ namespace DoItTest.Services.Tests
 		{
 			Test? test = _testsRepository.GetTest(testId, null);
 			if (test is null || test.BlockPassage) return null;
+			TestItem[] testItems = GetTestItems(testId, null, false);
 
-			return new TestInfo(test.Id, test.Title, test.TimeToCompleteInSeconds);
+			return new TestInfo(test.Id, test.Title, test.TimeToCompleteInSeconds, testItems.Length);
 		}
 
 		public Guid? GetActiveTestId(Guid studentId)
@@ -563,10 +564,15 @@ namespace DoItTest.Services.Tests
 			return test.Id;
         }
 
-		public DateTime? GetStartTestBeginDateTime(Guid testId, Guid studentId)
+		public StudentTestInfo? GetStudentTestInfo(Guid testId, Guid studentId)
 		{
 			StudentTest? studentTest = GetStudentTest(studentId, testId);
-			return studentTest?.BeginDateTime;
+			if (studentTest is null) return null;
+
+			Answer[] studentAnswers = _answersService.GetAnswers(studentTest.Id, null, true);
+			Guid[] reservedTestItemIds = studentAnswers.Select(a => a.TestItemId).Distinct().ToArray();
+
+			return new StudentTestInfo(studentTest.BeginDateTime, reservedTestItemIds.Length);
 		}
 
         #endregion PassingTest

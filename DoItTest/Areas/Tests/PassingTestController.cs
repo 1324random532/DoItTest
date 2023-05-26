@@ -67,10 +67,10 @@ namespace DoItTest.Site.Areas.Tests
         }
 
         [AllowAnonymous]
-        [HttpGet("/Tests/GetStartTestBeginDateTime")]
-        public DateTime? GetStartTestBeginDateTime(Guid studentId, Guid testId)
+        [HttpGet("/Tests/GetStudentTestInfo")]
+        public StudentTestInfo? GetStudentTestInfo(Guid studentId, Guid testId)
         {
-            return _testsService.GetStartTestBeginDateTime(testId, studentId);
+            return _testsService.GetStudentTestInfo(testId, studentId);
         }
     }
 }

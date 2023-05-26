@@ -53,6 +53,8 @@ export function TestEditor() {
         if (testId == null) return
 
         const test = await TestsProvider.getTest(testId);
+        if (test == null) return;
+
         setTestBlank(TestBlank.formTest(test));
 
         const testItems = await TestsProvider.getTestItems(test.id);
@@ -135,7 +137,13 @@ export function TestEditor() {
                         testBlank.id != null &&
                         <Box sx={{ display: "flex", gap: 2 }}>
                             <Button onClick={() => { copyTest(testBlank.id!) }} title='Создать копию' sx={{ mb: 2, width: 250, height: 56 }}>Создать копию</Button>
-                            <Button onClick={() => { blockPassegeTest(testBlank.id!) }} title={testBlank.blockPassage ? "Разблокировать доступ" : "Заблокировать доступ"} sx={{ mb: 2, width: 250, height: 56 }}>{testBlank.blockPassage ? "Разблокировать доступ" : "Заблокировать доступ"}</Button>
+                            <Button
+                                onClick={() => { blockPassegeTest(testBlank.id!) }} title={testBlank.blockPassage ? "Разблокировать доступ" : "Заблокировать доступ"}
+                                sx={{ mb: 2, width: 250, height: 56 }}
+                                variant={testBlank.blockPassage ? "contained" : "outlined"}
+                            >
+                                {testBlank.blockPassage ? "Разблокировать доступ" : "Заблокировать доступ"}
+                            </Button>
                         </Box>
                     }
 

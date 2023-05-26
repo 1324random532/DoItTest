@@ -23,11 +23,12 @@ interface IconProps {
     size?: 'small' | 'medium' | 'large'
     sx?: SxProps<Theme>
     children?: string
+    disabled?: boolean
 }
 
 export function IconButton(props: IconProps) {
     return <Tooltip title={props.title}>
-        <MaterialIconButton onClick={props.onClick} sx={props.sx} size={props.size}>
+        <MaterialIconButton onClick={props.onClick} sx={props.sx} size={props.size} disabled={props.disabled}>
             <Icon type={props.icon}></Icon>
         </MaterialIconButton>
     </Tooltip>

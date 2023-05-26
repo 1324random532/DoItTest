@@ -2,7 +2,7 @@ import { Box, Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { Student } from "domain/students/student";
 import { TestItem } from "domain/tests/items/testItem";
 import { TestsProvider } from "domain/tests/testsProvider";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useBlockUi } from "sharedComponents/blockUi/blockUiContext";
 import { ConfirmDialogAsync } from "sharedComponents/dialog/dialog2";
 import useDialog from "sharedComponents/dialog/useDialog";
@@ -14,31 +14,33 @@ import { PassingTestItem } from "./passingTsetItems/passingTestItem";
 import { Button } from "sharedComponents/buttons/button";
 import { createCookie, removeCookie } from "tools/Cookie";
 import { SetState } from "tools/setState";
+import { TestInfo } from "domain/tests/testInfo";
+import { StudentTestInfo } from "domain/tests/studentTestInfo";
 
 export interface PassingTestCardProps {
-    testId: string
     student: Student
     testItem: TestItem | null
+    testInfo: TestInfo
+    studentTestInfo: StudentTestInfo | null
     setTestItem: (testItem: TestItem | null) => void
     finishTest: (studentId: string, testId: string) => void
     setStartTimer: (startTimer: boolean) => void
 }
 
-export function PassingTestForm({ testId, student, testItem, setTestItem, finishTest, setStartTimer }: PassingTestCardProps) {
+export function PassingTestForm({ student, testItem, testInfo, studentTestInfo, setTestItem, finishTest, setStartTimer }: PassingTestCardProps) {
 
     const { showError } = useNotification()
-    const confirmDialog = useDialog(ConfirmDialogAsync)
 
-    const blockUi = useBlockUi();
-
-    const [answer, setAnswer] = useState<AnswerBlank>(AnswerBlank.getDefault(student.id, testId))
+    const [answer, setAnswer] = useState<AnswerBlank>(AnswerBlank.getDefault(student.id, testInfo.testId))
+    const testItemNumber = useRef(studentTestInfo?.passedTestItemtCount ?? 1);
 
     async function answerQuestion(answerBlank: AnswerBlank) {
         const answerQuestionResult = await TestsProvider.answerQuestion(answerBlank)
         if (!answerQuestionResult.isSuccess) return showError(answerQuestionResult.errors[0].message);
 
-        setAnswer(AnswerBlank.getDefault(student.id, testId))
+        setAnswer(AnswerBlank.getDefault(student.id, testInfo.testId))
         setTestItem(answerQuestionResult.data)
+        testItemNumber.current++
 
         if (answerQuestionResult.data == null) {
             setStartTimer(false)
@@ -67,9 +69,13 @@ export function PassingTestForm({ testId, student, testItem, setTestItem, finish
                             changeAnswer={setAnswer}
                         />
 
-                        <Box display="flex" gap={1}>
-                            <Button onClick={() => answerQuestion(answer)}>Далее</Button>
-                            <Button onClick={() => finishTest(student.id, testId)}>Завершить</Button>
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                            <Box display="flex" gap={1}>
+                                <Button onClick={() => answerQuestion(answer)}>Далее</Button>
+                                <Button onClick={() => finishTest(student.id, testInfo.testId)}>Завершить</Button>
+                            </Box>
+
+                            <h3>Вопрос: {testItemNumber.current} из {testInfo.testItemCount}</h3>
                         </Box>
                     </Box>
                     :

@@ -33,6 +33,8 @@ export function UserEditor() {
                 if (userId == null) return
 
                 const user = await UsersProvider.getUserById(userId)
+                if (user == null) return;
+
                 setBlank(UserBlank.formUser(user))
             })
         }

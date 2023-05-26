@@ -32,7 +32,7 @@ namespace DoItTest.Domain.Services
         DataResult<TestItem?> GetTestItemForPassing(Guid studentId, Guid testId);
         TestInfo? GetTestInfo(Guid testId);
         Guid? GetActiveTestId(Guid studentId);
-        DateTime? GetStartTestBeginDateTime(Guid testId, Guid studentId);
+        StudentTestInfo? GetStudentTestInfo(Guid testId, Guid studentId);
 
         #endregion PassingTest
     }

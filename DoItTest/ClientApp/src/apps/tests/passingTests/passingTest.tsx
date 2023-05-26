@@ -17,12 +17,15 @@ import Timer from "sharedComponents/timer/timer";
 import { getCookie, removeCookie } from "tools/Cookie";
 import { StudentsProvider } from "domain/students/studentProvider";
 import { TestItem } from "domain/tests/items/testItem";
+import { Button } from "sharedComponents/buttons/button";
+import { StudentTestInfo } from "domain/tests/studentTestInfo";
 
 class State {
     constructor
         (
             public student: Student | null = null,
             public testInfo: TestInfo | null = null,
+            public studentTestInfo: StudentTestInfo | null = null,
             public testItem: TestItem | null = null,
             public remainingTimeInSeconds: number | null = null,
             public startTimer: boolean = false,
@@ -57,19 +60,20 @@ export function PassingTest() {
                 }
 
                 const student = await StudentsProvider.getStudent(studentId);
+                if (student == null) return setState(prevState => ({ ...prevState, loading: false, errorMessage: "Студент не найден" ?? null }))
 
                 const result = await TestsProvider.getItemForPassing(testInfo.testId, student.id);
                 if (!result.isSuccess) return setState(prevState => ({ ...prevState, loading: false, errorMessage: result.errors.find(e => e != null)?.message ?? null }))
 
-                const beginDateTime = await TestsProvider.getStartTestBeginDateTime(testInfo.testId, student.id)
-                if (beginDateTime == null) return setState(prevState => ({ ...prevState, loading: false, errorMessage: "Не удалось загрузить время прохождения" }))
+                const studentTestInfo = await TestsProvider.getStudentTestInfo(testInfo.testId, student.id)
+                if (studentTestInfo == null) return setState(prevState => ({ ...prevState, loading: false, errorMessage: "Не удалось загрузить информацию о прохождении теста" }))
 
                 const currentDateTime = new Date();
-                const passageTimeInSeconds = (currentDateTime.getTime() - beginDateTime.getTime()) / 1000
+                const passageTimeInSeconds = (currentDateTime.getTime() - studentTestInfo.beginDateTime.getTime()) / 1000
                 const remainingTimeInSeconds = testInfo.timeToCompleteInSeconds - passageTimeInSeconds
                 const timeIsUp = remainingTimeInSeconds <= 0
 
-                setState(prevState => ({ ...prevState, testInfo, student, testItem: timeIsUp ? null : result.data, remainingTimeInSeconds: timeIsUp ? 0 : remainingTimeInSeconds, startTimer: !timeIsUp, loading: false }))
+                setState(prevState => ({ ...prevState, testInfo, student, testItem: timeIsUp ? null : result.data, remainingTimeInSeconds: timeIsUp ? 0 : remainingTimeInSeconds, startTimer: !timeIsUp, studentTestInfo, loading: false }))
             })
         }
     })
@@ -109,9 +113,19 @@ export function PassingTest() {
                                 <CardContent>
                                     {
                                         state.student != null ?
-                                            <PassingTestForm student={state.student} testId={state.testInfo.testId} testItem={state.testItem} setTestItem={setTestItem} finishTest={finishTest} setStartTimer={setStartTimer} />
+                                            <PassingTestForm
+                                                student={state.student}
+                                                testInfo={state.testInfo}
+                                                studentTestInfo={state.studentTestInfo}
+                                                testItem={state.testItem}
+                                                setTestItem={setTestItem}
+                                                finishTest={finishTest}
+                                                setStartTimer={setStartTimer} />
                                             :
-                                            <StudentRegistrationForm testId={state.testInfo.testId} startTest={startTest} />
+                                            <>
+                                                Количество вопросов: {state.testInfo.testItemCount}
+                                                <StudentRegistrationForm testId={state.testInfo.testId} startTest={startTest} />
+                                            </>
                                     }
                                 </CardContent>
                             </Card>
@@ -120,6 +134,13 @@ export function PassingTest() {
                                 sx={{ minWidth: 200, minHeight: 100, backgroundColor: "#ffa199", display: "flex", justifyContent: "center", alignItems: "center", padding: 3 }}
                             >
                                 {state.errorMessage}
+                                {
+                                    state.errorMessage != "Тест не найден" &&
+                                    <Button onClick={() => {
+                                        removeCookie("studentId")
+                                        window.location.reload()
+                                    }}>Перепройти</Button>
+                                }
                             </Paper>
                     }
                 </Box>

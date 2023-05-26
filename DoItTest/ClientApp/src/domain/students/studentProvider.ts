@@ -10,9 +10,9 @@ export class StudentsProvider {
     //     return DataResult.get(result, toString);
     // }
 
-    public static async getStudent(id: string): Promise<Student> {
+    public static async getStudent(id: string): Promise<Student | null> {
         const result = await HttpRequest.get("/Students/GetStudent").withQueryParams({ id }).asAny()
-        return mapToStudent(result)
+        return result != null ? mapToStudent(result) : null
     }
 
     public static async getStudents(ids: string[]): Promise<Student[]> {
