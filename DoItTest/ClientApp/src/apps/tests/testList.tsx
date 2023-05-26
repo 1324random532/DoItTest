@@ -85,8 +85,9 @@ export function TestsList() {
     return (
         <Content withSidebar={true}>
             <h1>Тесты</h1>
-            <LinkButton href={TestLinks.add} title='Добавить тест' sx={{ mb: 2 }}><Icon type='add' /> Добавить</LinkButton>
+
             <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
+                <LinkButton href={TestLinks.add} title='Добавить тест' sx={{ mb: 2, height: 55, width: 222 }}><Icon type='add' /> Добавить</LinkButton>
                 <Input
                     type="text"
                     label="Название"
