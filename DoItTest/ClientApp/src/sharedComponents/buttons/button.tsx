@@ -7,6 +7,7 @@ interface Props {
     title?: string,
     sx?: SxProps<Theme>
     variant?: 'text' | 'outlined' | 'contained',
+    color?: "inherit" | "primary" | "secondary" | "success" | "error" | "info" | "warning"
 }
 
 export function Button(props: PropsWithChildren<Props>) {
@@ -18,6 +19,7 @@ export function Button(props: PropsWithChildren<Props>) {
                 variant={props.variant ?? "outlined"}
                 onClick={() => props.onClick()}
                 sx={props.sx}
+                color={props.color}
                 component='label'
             />
         </Tooltip>

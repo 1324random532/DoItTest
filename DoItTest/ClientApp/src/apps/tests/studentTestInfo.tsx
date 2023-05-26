@@ -46,8 +46,6 @@ export function StudentTestInfo() {
 
     const routeParams = useParams();
 
-    const confirmDialog = useDialog(ConfirmDialogAsync)
-
     const blockUi = useBlockUi();
     const { showError, showSuccess } = useNotification()
 
@@ -87,7 +85,7 @@ export function StudentTestInfo() {
                 <>
                     <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                         <IconButton icon="back" onClick={() => history.back()} title="Назад" />
-                        <h1>Результат прохождения теста</h1>
+                        <h1>Детальный просмотр теста студента</h1>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         <Card>

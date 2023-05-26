@@ -15,7 +15,7 @@ export interface PassingTestItemInfoCardProps {
 }
 
 export function PassingTestItemInfoCard({ item, answer, index, sx }: PassingTestItemInfoCardProps) {
-    return <Card>
+    return <Card sx={{ width: 600 }}>
         <CardHeader
             title={`Вопрос номер: ${index}`}
         />

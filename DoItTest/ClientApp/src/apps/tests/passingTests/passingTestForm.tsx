@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CardHeader, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardHeader, Tooltip, Typography } from "@mui/material";
 import { Student } from "domain/students/student";
 import { TestItem } from "domain/tests/items/testItem";
 import { TestsProvider } from "domain/tests/testsProvider";
@@ -16,6 +16,7 @@ import { createCookie, removeCookie } from "tools/Cookie";
 import { SetState } from "tools/setState";
 import { TestInfo } from "domain/tests/testInfo";
 import { StudentTestInfo } from "domain/tests/studentTestInfo";
+import CustomizedProgressBars from "sharedComponents/progressBar/progressBar";
 
 export interface PassingTestCardProps {
     student: Student
@@ -30,6 +31,9 @@ export interface PassingTestCardProps {
 export function PassingTestForm({ student, testItem, testInfo, studentTestInfo, setTestItem, finishTest, setStartTimer }: PassingTestCardProps) {
 
     const { showError } = useNotification()
+
+    const blockUi = useBlockUi();
+    const confirmDialog = useDialog(ConfirmDialogAsync)
 
     const [answer, setAnswer] = useState<AnswerBlank>(AnswerBlank.getDefault(student.id, testInfo.testId))
     const testItemNumber = useRef(studentTestInfo?.passedTestItemtCount ?? 1);
@@ -48,8 +52,18 @@ export function PassingTestForm({ student, testItem, testInfo, studentTestInfo, 
         }
     }
 
+    async function endTest(studentId: string, testId: string) {
+        const result = await confirmDialog.show({ title: "Вы действительно хотите завершить тест?" })
+        if (!result) return
+
+        blockUi(async () => {
+            finishTest(studentId, testId)
+        })
+    }
+
     return (
-        <Box>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Box><Typography sx={{ fontSize: 20 }}>Прогресс:</Typography> <CustomizedProgressBars value={testItemNumber.current} maxValue={testInfo.testItemCount} /> </Box>
             {
                 testItem != null
                     ? <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -70,22 +84,19 @@ export function PassingTestForm({ student, testItem, testInfo, studentTestInfo, 
                         />
 
                         <Box display="flex" justifyContent="space-between" alignItems="center">
-                            <Box display="flex" gap={1}>
-                                <Button onClick={() => answerQuestion(answer)}>Далее</Button>
-                                <Button onClick={() => finishTest(student.id, testInfo.testId)}>Завершить</Button>
-                            </Box>
-
-                            <h3>Вопрос: {testItemNumber.current} из {testInfo.testItemCount}</h3>
+                            <Button onClick={() => endTest(student.id, testInfo.testId)} sx={{ width: 230, height: 50 }} variant="contained" color="error">Завершить тест</Button>
+                            <Button onClick={() => answerQuestion(answer)} sx={{ width: 230, height: 50 }} variant="contained" color="success">Далее</Button>
                         </Box>
                     </Box>
                     :
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                        <Typography>Тест завершен</Typography>
                         <Box display="flex">
-                            <Button onClick={() => {
-                                removeCookie("studentId")
-                                window.location.reload()
-                            }}>
+                            <Button
+                                sx={{ height: 50, width: "100%" }} variant="contained" color="success"
+                                onClick={() => {
+                                    removeCookie("studentId")
+                                    window.location.reload()
+                                }}>
                                 Перепройти
                             </Button>
                         </Box>

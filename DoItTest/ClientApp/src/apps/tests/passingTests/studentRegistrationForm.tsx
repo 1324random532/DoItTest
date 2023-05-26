@@ -43,7 +43,7 @@ export function StudentRegistrationForm({ testId, startTest }: StudentRegistrati
     return (
         <Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <Typography>Введите данные, чтобы начать</Typography>
+                <Typography sx={{ fontSize: 20 }}>Введите данные, чтобы начать.</Typography>
 
                 <Input
                     type="text"
@@ -73,7 +73,12 @@ export function StudentRegistrationForm({ testId, startTest }: StudentRegistrati
                     onChange={group => setStudentBlank({ ...studentBlank, group })}
                 />
 
-                <Button onClick={() => { save() }}>Начать</Button>
+                <Button
+                    onClick={() => { save() }}
+                    sx={{ height: 50 }}
+                >
+                    Начать
+                </Button>
             </Box>
         </Box>
     )

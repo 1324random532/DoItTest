@@ -15,7 +15,7 @@ export class StudentTestsProvider {
 
     public static async getStudentTest(id: string): Promise<StudentTest | null> {
         const result = await HttpRequest.get("/StudentTests/GetStudentTest").withQueryParams({ id }).asAny()
-        return mapToStudentTest(result)
+        return result != null ? mapToStudentTest(result) : null
     }
 
     public static async getPagedStudentTest(studentTestFilter: IStudentTestFilter): Promise<PagedResult<StudentTest>> {

@@ -10,7 +10,7 @@ import useComponent from "tools/components/useComponent";
 import { StudentRegistrationForm } from "./studentRegistrationForm";
 import { PassingTestForm } from "./passingTestForm";
 import { Student } from "domain/students/student";
-import { Box, Card, CardContent, CardHeader, Paper } from "@mui/material";
+import { Box, Card, CardContent, CardHeader, Paper, Typography } from "@mui/material";
 import { TestInfo } from "domain/tests/testInfo";
 import { TestsProvider } from "domain/tests/testsProvider";
 import Timer from "sharedComponents/timer/timer";
@@ -98,10 +98,10 @@ export function PassingTest() {
     }
 
     return (
-        <Content withSidebar={false}>
+        <Content withSidebar={false} backGroundColor="rgb(246, 246, 246)">
             {
                 !state.loading &&
-                <Box sx={{ paddingTop: "5%" }}>
+                <Box>
                     {
                         state.errorMessage == null && state.testInfo != null ?
                             <Card sx={{ width: "600px" }}>
@@ -110,7 +110,12 @@ export function PassingTest() {
                                         start={state.startTimer}
                                         sx={{ fontSize: 25 }}
                                         finish={() => state.student != null && finishTest(state.student.id, state.testInfo!.testId)} />} />
-                                <CardContent>
+                                <CardContent sx={{
+                                    "&:last-child": {
+                                        padding: 3,
+                                        paddingBottom: 2
+                                    }
+                                }}>
                                     {
                                         state.student != null ?
                                             <PassingTestForm
@@ -123,7 +128,7 @@ export function PassingTest() {
                                                 setStartTimer={setStartTimer} />
                                             :
                                             <>
-                                                Количество вопросов: {state.testInfo.testItemCount}
+                                                <Typography sx={{ fontSize: 20 }}>Количество вопросов: {state.testInfo.testItemCount}</Typography>
                                                 <StudentRegistrationForm testId={state.testInfo.testId} startTest={startTest} />
                                             </>
                                     }
@@ -136,10 +141,12 @@ export function PassingTest() {
                                 {state.errorMessage}
                                 {
                                     state.errorMessage != "Тест не найден" &&
-                                    <Button onClick={() => {
-                                        removeCookie("studentId")
-                                        window.location.reload()
-                                    }}>Перепройти</Button>
+                                    <Button
+                                        sx={{ width: 230, height: 50 }} variant="contained" color="success"
+                                        onClick={() => {
+                                            removeCookie("studentId")
+                                            window.location.reload()
+                                        }}>Перепройти</Button>
                                 }
                             </Paper>
                     }
