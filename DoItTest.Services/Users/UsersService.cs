@@ -9,9 +9,9 @@ namespace DoItTest.Services.Users
 	{
         private readonly UsersRepository _usersRepository;
 
-        public UsersService(String connectionString)
+        public UsersService(UsersRepository usersRepository)
         {
-            _usersRepository = new UsersRepository(connectionString);
+            _usersRepository = usersRepository;
         }
 
 		public Result SaveUser(UserBlank userBlank, Guid? userId)

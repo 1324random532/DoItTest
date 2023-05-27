@@ -20,11 +20,11 @@ namespace DoItTest.Services.Tests
 		private readonly IAnswersService _answersService;
 		private readonly IStudentsService _studetnsService;
 
-		public TestsService(String connectionString)
+		public TestsService(TestsRepository testsRepository, IAnswersService answersService, IStudentsService studentsService)
 		{
-			_testsRepository = new TestsRepository(connectionString);
-			_answersService = new AnswersService(connectionString);
-			_studetnsService = new StudentsService(connectionString);
+			_testsRepository = testsRepository;
+			_answersService = answersService;
+			_studetnsService = studentsService;
 		}
 
 		public Result SaveTest(TestBlank test, TestItemBlank[] testItems, Guid systemUserId)

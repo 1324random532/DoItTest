@@ -10,9 +10,9 @@ namespace DoItTest.Services.Answers
 	{
 		private readonly AnswersRepository _answersRepository;
 
-		public AnswersService(String connectionString)
+		public AnswersService(AnswersRepository answersRepository)
 		{
-			_answersRepository = new AnswersRepository(connectionString);
+			_answersRepository = answersRepository;
 		}
 
 

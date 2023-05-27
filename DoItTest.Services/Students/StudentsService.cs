@@ -9,9 +9,9 @@ namespace DoItTest.Services.Students
 	{
 		private readonly StudentsRepository _studentsRepository;
 
-		public StudentsService(String connectionString)
+		public StudentsService(StudentsRepository studentsRepository)
 		{
-			_studentsRepository = new StudentsRepository(connectionString);
+			_studentsRepository = studentsRepository;
 		}
 
 		public DataResult<Guid> SaveStudent(StudentBlank studentBlank, Guid? userId)
