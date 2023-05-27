@@ -126,7 +126,7 @@ export function TestEditor() {
         <Content withSidebar={true}>
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                 <IconButton icon="back" onClick={() => history.back()} title="Назад" />
-                <h1>{testBlank.id == null ? "Добавить" : "Изменить"}</h1>
+                <h1>{testBlank.id == null ? "Добавить" : "Изменить"} тест</h1>
             </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
 

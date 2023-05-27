@@ -86,7 +86,7 @@ export function UsersList() {
     return (
         <Content withSidebar={true}>
             <h1>Пользователи</h1>
-            <LinkButton href={UsersLinks.add} title='Добавить пользователя' sx={{ mb: 2 }}><Icon type='add' /> Добавить</LinkButton>
+            <LinkButton href={UsersLinks.add} title='Добавить пользователя' sx={{ mb: 2, height: 55, width: 222 }}><Icon type='add' /> Добавить</LinkButton>
             <TableContainer sx={tableSize} component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>

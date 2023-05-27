@@ -70,7 +70,7 @@ export function UserEditor() {
         <Content withSidebar={true}>
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                 <IconButton icon="back" onClick={() => history.back()} title="Назад" />
-                <h1>{userBlank.id == null ? "Добавить" : "Изменить"}</h1>
+                <h1>{userBlank.id == null ? "Добавить" : "Изменить"} пользователя</h1>
             </Box>
             <Button onClick={save} title='Сохранить именения' sx={{ mb: 2, width: 250, height: 60 }}>Сохранить</Button>
             <Input type='text' label="Логин" value={userBlank.login} onChange={changeLogin} sx={{ mb: 2, width: 250 }} />
