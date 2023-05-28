@@ -1,6 +1,6 @@
 export class Color {
     public static error() {
-        return "#f381a7"
+        return "#ffa199"
     }
 
     public static succes() {
