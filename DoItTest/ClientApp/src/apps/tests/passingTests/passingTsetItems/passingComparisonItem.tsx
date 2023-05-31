@@ -63,7 +63,8 @@ export function PassingTextFieldTestItemInfo({ item, answer, changeAnswer, sx }:
                     {(provided) => (
                         <Box {...provided.droppableProps}
                             ref={provided.innerRef}
-                            sx={{ display: 'flex', flexDirection: 'column' }}>
+                            sx={{ display: 'flex', flexDirection: 'column' }}
+                            minHeight={3}>
                             {answerGroupBlanks.answerOptionIds.map((id, index) => {
                                 const answerOption = item.answerOptions.find(o => o.id == id)
                                 return <Draggable
