@@ -83,6 +83,7 @@ export function PassingTest() {
         if (!result.isSuccess) return showError(result.errors[0].message)
 
         setState(prevState => ({ ...prevState, startTimer: false, testItem: null }))
+        return removeCookie("studentId")
     }
 
     function startTest(student: Student, testItem: TestItem) {
@@ -101,55 +102,57 @@ export function PassingTest() {
         <Content withSidebar={false} backGroundColor="rgb(246, 246, 246)">
             {
                 !state.loading &&
-                <Box>
-                    {
-                        state.errorMessage == null && state.testInfo != null ?
-                            <Card sx={{ width: "600px" }}>
-                                <CardHeader title={state.testInfo.title} sx={{ color: "white", backgroundColor: "#2196f3" }}
-                                    action={<Timer seconds={state.remainingTimeInSeconds ?? state.testInfo.timeToCompleteInSeconds}
-                                        start={state.startTimer}
-                                        sx={{ fontSize: 25 }}
-                                        finish={() => state.student != null && finishTest(state.student.id, state.testInfo!.testId)} />} />
-                                <CardContent sx={{
-                                    "&:last-child": {
-                                        padding: 3,
-                                        paddingBottom: 2
-                                    }
-                                }}>
+                <Box height={1} paddingTop={"10%"}>
+                    <Box height={1} paddingBottom={"10%"} sx={{ display: "table" }}>
+                        {
+                            state.errorMessage == null && state.testInfo != null ?
+                                <Card sx={{ minWidth: "700px", maxWidth: "1000px" }}>
+                                    <CardHeader title={state.testInfo.title} sx={{ color: "white", backgroundColor: "#2196f3" }}
+                                        action={<Timer seconds={state.remainingTimeInSeconds ?? state.testInfo.timeToCompleteInSeconds}
+                                            start={state.startTimer}
+                                            sx={{ fontSize: 25 }}
+                                            finish={() => state.student != null && finishTest(state.student.id, state.testInfo!.testId)} />} />
+                                    <CardContent sx={{
+                                        "&:last-child": {
+                                            padding: 3,
+                                            paddingBottom: 2,
+                                        }
+                                    }}>
+                                        {
+                                            state.student != null ?
+                                                <PassingTestForm
+                                                    student={state.student}
+                                                    testInfo={state.testInfo}
+                                                    studentTestInfo={state.studentTestInfo}
+                                                    testItem={state.testItem}
+                                                    setTestItem={setTestItem}
+                                                    finishTest={finishTest}
+                                                    setStartTimer={setStartTimer} />
+                                                :
+                                                <>
+                                                    <Typography sx={{ fontSize: 20 }}>Количество вопросов: {state.testInfo.testItemCount}</Typography>
+                                                    <StudentRegistrationForm testId={state.testInfo.testId} startTest={startTest} />
+                                                </>
+                                        }
+                                    </CardContent>
+                                </Card>
+                                : <Paper
+                                    elevation={3}
+                                    sx={{ minWidth: 200, minHeight: 100, backgroundColor: "#ffa199", display: "flex", justifyContent: "center", alignItems: "center", padding: 3 }}
+                                >
+                                    {state.errorMessage}
                                     {
-                                        state.student != null ?
-                                            <PassingTestForm
-                                                student={state.student}
-                                                testInfo={state.testInfo}
-                                                studentTestInfo={state.studentTestInfo}
-                                                testItem={state.testItem}
-                                                setTestItem={setTestItem}
-                                                finishTest={finishTest}
-                                                setStartTimer={setStartTimer} />
-                                            :
-                                            <>
-                                                <Typography sx={{ fontSize: 20 }}>Количество вопросов: {state.testInfo.testItemCount}</Typography>
-                                                <StudentRegistrationForm testId={state.testInfo.testId} startTest={startTest} />
-                                            </>
+                                        state.errorMessage != "Тест не найден" &&
+                                        <Button
+                                            sx={{ width: 230, height: 50 }} variant="contained" color="success"
+                                            onClick={() => {
+                                                removeCookie("studentId")
+                                                window.location.reload()
+                                            }}>Перепройти</Button>
                                     }
-                                </CardContent>
-                            </Card>
-                            : <Paper
-                                elevation={3}
-                                sx={{ minWidth: 200, minHeight: 100, backgroundColor: "#ffa199", display: "flex", justifyContent: "center", alignItems: "center", padding: 3 }}
-                            >
-                                {state.errorMessage}
-                                {
-                                    state.errorMessage != "Тест не найден" &&
-                                    <Button
-                                        sx={{ width: 230, height: 50 }} variant="contained" color="success"
-                                        onClick={() => {
-                                            removeCookie("studentId")
-                                            window.location.reload()
-                                        }}>Перепройти</Button>
-                                }
-                            </Paper>
-                    }
+                                </Paper>
+                        }
+                    </Box>
                 </Box>
             }
         </Content >

@@ -32,7 +32,10 @@ namespace DoItTest.Site.Areas.Authorizations
         {
             string? oldToken = (string?)CookieManager.Read(Request, IsAuthorizedAttribute.CookieName);
             if (oldToken != null)
-                return Result.Fail("Возможно вы уже авторизованы. Обновите страницу");
+            {
+                CookieManager.Delete(Response, IsAuthorizedAttribute.CookieName);
+                _usersService.LogOut(oldToken);
+            }
 
             DataResult<UserToken> tokenResult = _usersService.LogIn(authorizationData);
             if (!tokenResult.IsSuccess) return Result.Fail(tokenResult.Errors);

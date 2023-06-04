@@ -12,12 +12,14 @@
         "react": "18.2.0",
         "react-beautiful-dnd": "^13.1.1",
         "react-dom": "18.2.0",
-        "react-router-dom": "6.8.0"
+        "react-router-dom": "6.8.0",
+        "uuid": "^9.0.0"
     },
     "devDependencies": {
         "@types/react": "18.0.28",
         "@types/react-beautiful-dnd": "^13.1.3",
         "@types/react-dom": "18.0.11",
+        "@types/uuid": "^9.0.1",
         "css-loader": "6.7.3",
         "source-map-loader": "4.0.1",
         "style-loader": "3.3.1",
@@ -29,6 +31,7 @@
     },
     "scripts": {
         "dev": "webpack --mode \"development\" --devtool \"source-map\" --progress --watch",
-        "debug": "webpack --mode \"development\" --devtool \"source-map\" --progress"
+        "debug": "webpack --mode \"development\" --devtool \"source-map\" --progress",
+        "prod": "webpack --mode \"production\""
     }
 }

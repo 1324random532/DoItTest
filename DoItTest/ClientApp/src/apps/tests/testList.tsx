@@ -92,7 +92,7 @@ export function TestsList() {
                     type="text"
                     label="Название"
                     value={filter.title}
-                    onChange={title => setFilter({ ...filter, title })}
+                    onChange={title => setFilter({ ...filter, title, page: 1 })}
                 />
             </Box>
             <TableContainer sx={tableSize} component={Paper}>

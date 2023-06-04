@@ -505,6 +505,8 @@ namespace DoItTest.Services.Tests
 			StudentTest? studentTest = GetStudentTest(student.Id, test.Id);
 			if (studentTest is null) throw new Exception("Не существует модели прохождения студента");
 
+			if (studentTest.Status != StudentTestStatus.Passing) return DataResult<TestItem?>.Success(null);
+
 			TestItem[] testItems = GetNotPassedTestItems(studentTest.Id);
 			if (testItems.Length == 0) return DataResult<TestItem?>.Success(null);
 

@@ -93,7 +93,7 @@ export default function AddingTestItemFromOtherTestsModal(props: AddingTestItemF
             }}
             title="Импортирование вопросов"
             sx={{
-                maxWidth: 1500
+                minWidth: "80%"
             }}
             actionsContent={< Button
                 title="Подтвердить"

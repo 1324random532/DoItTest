@@ -108,7 +108,7 @@ export function StudentTestsList() {
                     label="Тест"
                     getOptionLabel={test => test?.title}
                     onChange={test => {
-                        setFilter({ ...filter, testId: test?.id ?? null })
+                        setFilter({ ...filter, testId: test?.id ?? null, page: 1 })
                     }}
                     onChangeText={async (text) => {
                         const testsForSearch = String.isNullOrWhitespace(text) ? [] : await TestsProvider.getTestsBySearchText(text);
@@ -122,7 +122,7 @@ export function StudentTestsList() {
                     type="text"
                     label="Группа"
                     value={filter.group}
-                    onChange={group => setFilter({ ...filter, group })}
+                    onChange={group => setFilter({ ...filter, group, page: 1 })}
                     sx={{ width: 250 }}
                 />
 
@@ -130,13 +130,13 @@ export function StudentTestsList() {
                     type="text"
                     label="ФИО"
                     value={filter.studentFIO}
-                    onChange={studentFIO => setFilter({ ...filter, studentFIO })}
+                    onChange={studentFIO => setFilter({ ...filter, studentFIO, page: 1 })}
                     sx={{ width: 250 }}
                 />
 
                 <CDatePickerRange
                     value={filter.dateTimePeriod}
-                    onChange={dateTimePeriod => setFilter({ ...filter, dateTimePeriod })}
+                    onChange={dateTimePeriod => setFilter({ ...filter, dateTimePeriod, page: 1 })}
                 />
             </Box>
             <TableContainer sx={tableSize} component={Paper}>

@@ -16,6 +16,8 @@ builder.Services.AddControllersWithViews(mvcOptions =>
 });
 
 WebApplication app = builder.Build();
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 app.UseCors();
 app.UseHttps();
 app.UseStaticFiles();

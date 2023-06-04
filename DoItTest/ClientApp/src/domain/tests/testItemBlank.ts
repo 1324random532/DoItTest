@@ -7,6 +7,7 @@ import { RadioButtonItem } from "./items/radioButtonItem";
 import { TestItem } from "./items/testItem";
 import { TestItemType } from "./items/testItemType";
 import { TextFieldItem } from "./items/textFieldItem";
+import { v4 as uuidv4 } from 'uuid';
 
 export class TestItemBlank {
     public constructor(
@@ -23,7 +24,7 @@ export class TestItemBlank {
     ) { }
 
     public static getDefault(): TestItemBlank {
-        return new TestItemBlank(null, null, null, null, null, [], null, [], crypto.randomUUID(), false)
+        return new TestItemBlank(null, null, null, null, null, [], null, [], uuidv4(), false)
     }
 
     public static formTestItem(testItem: TestItem, withoutId: boolean = false): TestItemBlank {
@@ -35,7 +36,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 id, testItem.testId, testItem.type,
-                testItem.question, testItem.imageBase64, answerOptions, null, [], crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, answerOptions, null, [], uuidv4(), true
             );
         }
         if (testItem instanceof RadioButtonItem) {
@@ -43,7 +44,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 id, testItem.testId, testItem.type,
-                testItem.question, testItem.imageBase64, answerOptions, null, [], crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, answerOptions, null, [], uuidv4(), true
             );
         }
         if (testItem instanceof TextFieldItem) {
@@ -51,7 +52,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 id, testItem.testId, testItem.type,
-                testItem.question, testItem.imageBase64, [], answerOption, [], crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, [], answerOption, [], uuidv4(), true
             );
         }
         if (testItem instanceof NumberFieldItem) {
@@ -59,7 +60,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 id, testItem.testId, testItem.type,
-                testItem.question, testItem.imageBase64, [], answerOption, [], crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, [], answerOption, [], uuidv4(), true
             );
         }
         if (testItem instanceof ComparisonItem) {
@@ -67,7 +68,7 @@ export class TestItemBlank {
 
             return new TestItemBlank(
                 id, testItem.testId, testItem.type,
-                testItem.question, testItem.imageBase64, [], null, answerOptionGroups, crypto.randomUUID(), true
+                testItem.question, testItem.imageBase64, [], null, answerOptionGroups, uuidv4(), true
             );
         }
 

@@ -11,8 +11,10 @@ export function Content(props: PropsWithChildren<{ withSidebar: Boolean, backGro
                 </Box>
             </Sidebar>
             :
-            <Box sx={{ height: '100%', m: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: props.backGroundColor }}>
-                {props.children}
+            <Box sx={{ overflow: "hidden" }} height={1} width={1}>
+                <Box height={1} sx={{ m: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', overflow: "auto", backgroundColor: props.backGroundColor }}>
+                    {props.children}
+                </Box>
             </Box>
     )
 }

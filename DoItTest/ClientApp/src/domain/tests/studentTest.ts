@@ -1,6 +1,7 @@
 import Time from "tools/time";
 import { StudentTestStatus } from "./studentTestStatus";
 import { Test } from "./test";
+import { getLocalAsUtc, getUtcAsLocal } from "tools/localeDate";
 
 export class StudentTest {
     public constructor(
@@ -22,8 +23,9 @@ export class StudentTest {
 }
 
 export function mapToStudentTest(value: any): StudentTest {
-    const beginDateTime = new Date(value.beginDateTime)
-    const endDateTime = value.endDateTime == null ? null : new Date(value.endDateTime)
+
+    const beginDateTime = getUtcAsLocal(new Date(value.beginDateTime))
+    const endDateTime = value.endDateTime == null ? null : getUtcAsLocal(new Date(value.endDateTime))
 
     return new StudentTest(value.id, value.testId, value.studentId,
         value.percentageOfCorrectAnswers, value.estimation, beginDateTime, endDateTime)

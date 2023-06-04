@@ -1,3 +1,5 @@
+import { getLocalAsUtc, getUtcAsLocal } from "tools/localeDate"
+
 export class StudentTestInfo {
     public constructor(
         public readonly beginDateTime: Date,
@@ -6,6 +8,6 @@ export class StudentTestInfo {
 }
 
 export function mapToStudentTestInfo(value: any): StudentTestInfo {
-    const beginDateTime = new Date(value.beginDateTime)
+    const beginDateTime = getUtcAsLocal(new Date(value.beginDateTime))
     return new StudentTestInfo(beginDateTime, value.passedTestItemtCount)
 }

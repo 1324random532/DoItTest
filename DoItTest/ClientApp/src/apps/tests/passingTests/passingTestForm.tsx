@@ -39,17 +39,19 @@ export function PassingTestForm({ student, testItem, testInfo, studentTestInfo, 
     const testItemNumber = useRef(studentTestInfo?.passedTestItemtCount ?? 1);
 
     async function answerQuestion(answerBlank: AnswerBlank) {
-        const answerQuestionResult = await TestsProvider.answerQuestion(answerBlank)
-        if (!answerQuestionResult.isSuccess) return showError(answerQuestionResult.errors[0].message);
+        blockUi(async () => {
+            const answerQuestionResult = await TestsProvider.answerQuestion(answerBlank)
+            if (!answerQuestionResult.isSuccess) return showError(answerQuestionResult.errors[0].message);
 
-        setAnswer(AnswerBlank.getDefault(student.id, testInfo.testId))
-        setTestItem(answerQuestionResult.data)
-        testItemNumber.current++
+            setAnswer(AnswerBlank.getDefault(student.id, testInfo.testId))
+            setTestItem(answerQuestionResult.data)
+            testItemNumber.current++
 
-        if (answerQuestionResult.data == null) {
-            setStartTimer(false)
-            return removeCookie("studentId")
-        }
+            if (answerQuestionResult.data == null) {
+                setStartTimer(false)
+                return removeCookie("studentId")
+            }
+        })
     }
 
     async function endTest(studentId: string, testId: string) {

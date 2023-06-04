@@ -56,14 +56,16 @@ export function PassingTextFieldTestItemInfo({ item, answer, changeAnswer, sx }:
     function getCard(answerGroupBlanks: AnswerGroup, title: string) {
 
         return <Card
-            sx={{ backgroundColor: '#F0F0F0' }}>
-            <CardHeader title={title} />
+            sx={{ backgroundColor: '#F0F0F0', width: 440 }}>
+            <CardHeader title={title} sx={{ wordWrap: "break-word", display: "block" }} />
             <CardContent>
                 <Droppable droppableId={answerGroupBlanks.id}>
                     {(provided) => (
                         <Box {...provided.droppableProps}
                             ref={provided.innerRef}
-                            sx={{ display: 'flex', flexDirection: 'column' }}
+                            sx={{
+                                display: 'flex', flexDirection: 'column',
+                            }}
                             minHeight={3}>
                             {answerGroupBlanks.answerOptionIds.map((id, index) => {
                                 const answerOption = item.answerOptions.find(o => o.id == id)
@@ -96,34 +98,51 @@ export function PassingTextFieldTestItemInfo({ item, answer, changeAnswer, sx }:
             display: "flex",
             gap: 2,
         }}
-            width={1}>
+            width={1}
+            height={1}>
             <DragDropContext onDragEnd={handleDragDrop}>
-                {
-                    answer.answerGroups.map(b => {
-                        const isDefaultAnswerGroup = b.id === guidEmty
-                        if (!isDefaultAnswerGroup) return;
-
-                        return <Box width={1}>
-                            {getCard(b, "Варианты ответов")}
-                        </Box>
-                    })
-                }
                 <Box sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1
+                    overflowY: "scroll",
+                    maxHeight: "500px",
+                    paddingRight: 1
                 }}
+                    height={1}
                     width={1}>
                     {
                         answer.answerGroups.map(b => {
                             const isDefaultAnswerGroup = b.id === guidEmty
-                            if (isDefaultAnswerGroup) return;
+                            if (!isDefaultAnswerGroup) return;
 
-                            const itemAnswerOptionGroup = item.answerOptionGroups.find(g => g.id == b.id)!
-
-                            return getCard(b, itemAnswerOptionGroup.name)
+                            return <Box width={1} height={1}>
+                                {getCard(b, "Варианты ответов")}
+                            </Box>
                         })
                     }
+                </Box>
+                <Box sx={{
+                    overflowY: "scroll",
+                    maxHeight: "500px",
+                    paddingRight: 1
+                }}
+                    height={1}
+                    width={1}>
+                    <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                    }}
+                        width={1}>
+                        {
+                            answer.answerGroups.map(b => {
+                                const isDefaultAnswerGroup = b.id === guidEmty
+                                if (isDefaultAnswerGroup) return;
+
+                                const itemAnswerOptionGroup = item.answerOptionGroups.find(g => g.id == b.id)!
+
+                                return getCard(b, itemAnswerOptionGroup.name)
+                            })
+                        }
+                    </Box>
                 </Box>
             </DragDropContext >
         </Box >

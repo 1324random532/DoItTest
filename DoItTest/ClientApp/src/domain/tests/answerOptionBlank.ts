@@ -5,6 +5,7 @@ import { NumericAnswerOption } from "./items/answerOption/numericAnswerOption";
 import { RadioButtonAnswerOption as RadioButtonAnswerOption } from "./items/answerOption/radioButtonAnswerOption";
 import { TextFildAnswerOption as TextFildAnswerOption } from "./items/answerOption/textFildAnswerOption";
 import { TestItemType } from "./items/testItemType";
+import { v4 as uuidv4 } from 'uuid';
 
 export class AnswerOptionBlank {
     public constructor(
@@ -20,11 +21,11 @@ export class AnswerOptionBlank {
     ) { }
 
     public static getDefault(type: TestItemType, isTrue?: boolean): AnswerOptionBlank {
-        return new AnswerOptionBlank(null, null, type, null, null, null, isTrue ?? null, null, crypto.randomUUID())
+        return new AnswerOptionBlank(null, null, type, null, null, null, isTrue ?? null, null, uuidv4())
     }
 
     public static formAnswerOption(answerOption: AnswerOption, withoutId: boolean): AnswerOptionBlank {
-        const key = crypto.randomUUID()
+        const key = uuidv4()
 
         let id: string | null = answerOption.id
         if (withoutId) id = null;
