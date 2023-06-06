@@ -92,14 +92,15 @@ export function PassingTestForm({ student, testItem, testInfo, studentTestInfo, 
                     </Box>
                     :
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                        <Box display="flex">
+                        <Box display="flex" flexDirection="column" gap={2}>
+                            Тест завершен
                             <Button
                                 sx={{ height: 50, width: "100%" }} variant="contained" color="success"
                                 onClick={() => {
                                     removeCookie("studentId")
                                     window.location.reload()
                                 }}>
-                                Перепройти
+                                Пройти заново
                             </Button>
                         </Box>
                     </Box>

@@ -27,17 +27,33 @@ namespace DoItTest.Services.Users
 			if (userBlank.Login.Length > 40)
 				return Result.Fail("Логин превышает 40 символов");
 
-			if (String.IsNullOrEmpty(userBlank.Password))
-				return Result.Fail("Не указан пароль");
-
-			if (userBlank.Password.Length > 40)
-				return Result.Fail("Пароль превышает 40 символов");
-
 			if (userBlank.Role is null)
 				return Result.Fail("Не указана роль");
 
-			if (userBlank.Id is null) userBlank.Id = Guid.NewGuid();
-			_usersRepository.SaveUser(userBlank, userId);
+			if (userBlank.Id is null)
+			{
+				if (String.IsNullOrWhiteSpace(userBlank.Password))
+					return Result.Fail("Не указан пароль");
+
+				if (userBlank.Password.Length > 40)
+					return Result.Fail("Пароль превышает 40 символов");
+
+				userBlank.Id = Guid.NewGuid();
+
+				_usersRepository.AddUser(userBlank, userId);
+
+				return Result.Success();
+			}
+
+			if(userBlank.Password is not null && userBlank.Password.Length > 40) 
+				return Result.Fail("Пароль превышает 40 символов");
+
+			User? user = GetUser(userBlank.Id.Value);
+			if (user is null) return Result.Fail("Пользователь не найден");
+
+			_usersRepository.DeleteUserToken(user.Id);
+
+			_usersRepository.UpdateUser(userBlank, userId);
 			return Result.Success();
 		}
 
@@ -71,7 +87,6 @@ namespace DoItTest.Services.Users
 		{
 			UserBlank userBlank = new UserBlank
 			{
-				Id = Guid.NewGuid(),
 				Login = registrationData.Login,
 				Password = registrationData.Password,
 				Role = UserRole.TestCreator

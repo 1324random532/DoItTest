@@ -31,7 +31,7 @@ export default function TestItemEditorModal(props: TestItemEditorModalProps) {
     }, [props.testItem])
 
     const testItemTypes = useMemo<TestItemType[]>(() => Enum.getNumberValues(TestItemType), []);
-    const title = props.testItem.isCreated ? "Изменение вопроса" : "Добаление вопроса"
+    const title = props.testItem.isCreated ? "Изменение вопроса" : "Добавление вопроса"
 
     function saveItem() {
         const validateResult = ValidateTestItem(itemBlank)

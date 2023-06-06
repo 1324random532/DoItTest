@@ -148,7 +148,7 @@ export function PassingTest() {
                                             onClick={() => {
                                                 removeCookie("studentId")
                                                 window.location.reload()
-                                            }}>Перепройти</Button>
+                                            }}>Перезапустить тест</Button>
                                     }
                                 </Paper>
                         }

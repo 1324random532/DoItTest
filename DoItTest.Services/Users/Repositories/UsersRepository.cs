@@ -17,18 +17,44 @@ namespace DoItTest.Services.Users.Repositories
             ConnectionString = connectionSettings;
         }
 
-        public void SaveUser(UserBlank userBlank, Guid? userId)
+        public void AddUser(UserBlank userBlank, Guid? userId)
         {
             using (IDbConnection db = new NpgsqlConnection(ConnectionString))
             {
                 db.Open();
                 String query = $"INSERT INTO users(id, login, passwordhash, role, createddatetimeutc) " +
-                    $"VALUES(@Id,@Login,@PasswordHash,@Role,@DateTime) " +
-                    $"ON " +
-                    $"CONFLICT(id) DO " +
-                    $"UPDATE " +
-                    $"SET id = @Id, login = @Login, passwordhash = @PasswordHash, role = @Role," +
-                    $"modifieduserid = @Userid, modifieddatetimeutc = @Datetime;";
+                    $"VALUES(@Id,@Login,@PasswordHash,@Role,@DateTime) ";
+
+                var parameters = new
+                {
+                    Id = userBlank.Id,
+                    Login = userBlank.Login,
+                    PasswordHash = userBlank.PasswordHash,
+                    Role = userBlank.Role,
+                    Userid = userId,
+                    Datetime = DateTime.UtcNow
+                };
+
+                db.Execute(query, parameters);
+            }
+        }
+
+        public void UpdateUser(UserBlank userBlank, Guid? userId)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"UPDATE users as u " +
+                    $"SET " +
+                    $" login = @Login," +
+                    $" passwordhash = (CASE WHEN @PasswordHash IS NULL OR @PasswordHash = '' " +
+                    $" THEN u.passwordhash " +
+                    $" ELSE @PasswordHash " +
+                    $" END)," +
+                    $" role = @Role," +
+                    $" modifieduserid = @Userid," +
+                    $" modifieddatetimeutc = @Datetime" +
+                    $" WHERE id = @Id;";
 
                 var parameters = new
                 {
@@ -198,6 +224,24 @@ namespace DoItTest.Services.Users.Repositories
                 var parameters = new
                 {
                     Token = token
+                };
+
+                db.Execute(query, parameters);
+            }
+        }
+
+        public void DeleteUserToken(Guid userId)
+        {
+            using (IDbConnection db = new NpgsqlConnection(ConnectionString))
+            {
+                db.Open();
+                String query = $"DELETE " +
+                    $"FROM usertokens " +
+                    $"WHERE userid = @UserId;";
+
+                var parameters = new
+                {
+                    UserId = userId
                 };
 
                 db.Execute(query, parameters);
